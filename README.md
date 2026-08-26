@@ -174,13 +174,32 @@ npm test             # 전 화면·검색·체크리스트·영상 연결을 자
 
 기종이나 영상을 고친 뒤 이걸 돌리면, 오타로 화면이 깨지는 일을 미리 잡습니다.
 
-## 올리는 법 (Vercel)
+## 공개 주소
+
+**https://manual.firstoa.co.kr**
+
+GitHub 저장소에 push 하면 Vercel 이 자동으로 반영합니다. 따로 배포 명령이 필요 없습니다.
 
 ```bash
-npx vercel --prod
+git add -A
+git commit -m "영상 추가"
+git push          # 1~2분 뒤 사이트에 반영
 ```
 
-정적 파일이라 GitHub Pages·Netlify 어디든 그대로 올라갑니다.
+### 처음 한 번만 하는 설정
+
+1. **Vercel** 에서 이 저장소를 Import — 빌드 설정은 건드릴 것이 없습니다(정적 파일).
+   Framework Preset `Other`, Build Command 비움, Output Directory 비움.
+2. Vercel 프로젝트 → **Settings → Domains** 에 `manual.firstoa.co.kr` 추가
+3. 도메인 DNS 에 Vercel 이 알려주는 **CNAME** 한 줄 추가
+4. 주소가 바뀌면 `node scripts/set-domain.mjs https://새주소` 를 한 번 실행
+   (카카오톡 링크 미리보기에 쓰는 절대 주소가 박힙니다)
+
+### 고칠 때 주의
+
+`index.html` 과 `data/manuals.js` 는 캐시하지 않도록 해두었습니다(고치면 바로 반영).
+이미지는 일주일 캐시되므로, **같은 파일명으로 사진을 바꾸면 바로 안 보일 수 있습니다.**
+파일명을 바꾸거나 Vercel 에서 캐시를 비우세요.
 
 ## 주소 규칙
 
