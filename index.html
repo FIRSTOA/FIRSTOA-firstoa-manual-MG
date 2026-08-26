@@ -5,36 +5,70 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>퍼스트전산 복합기 사용설명서</title>
 <meta name="description" content="퍼스트전산 복합기 사용설명서 — 기종별 토너 교체, 폐토너통 교체, 용지 걸림, 검침 카운터 확인 방법을 영상으로 안내합니다.">
-<meta name="theme-color" content="#1E293B">
+<meta name="theme-color" content="#0A1120">
+<meta name="color-scheme" content="light dark">
 <meta property="og:type" content="website">
 <meta property="og:title" content="퍼스트전산 복합기 사용설명서">
 <meta property="og:description" content="토너 교체부터 검침까지, 영상 보고 그대로 따라 하세요.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%232563EB'/><rect x='14' y='16' width='36' height='13' rx='3' fill='white'/><rect x='10' y='29' width='44' height='18' rx='4' fill='%23E0F2FE'/><rect x='18' y='47' width='28' height='9' rx='2' fill='white'/></svg>">
+<meta property="og:locale" content="ko_KR">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><rect width='36' height='36' rx='10.5' fill='%231F5EFF'/><rect x='11' y='7' width='14' height='6.4' rx='2' fill='white' opacity='.55'/><rect x='7' y='15' width='22' height='8.6' rx='3' fill='white'/><rect x='13.5' y='25.4' width='9' height='4' rx='2' fill='white' opacity='.75'/></svg>">
+
+<!-- 한글 본문용 Pretendard, 숫자·영문용 Manrope. 못 받아오면 기기 기본 글꼴로 내려앉습니다. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
-<header class="hd">
-  <div class="hd-in">
-    <a class="hd-logo" href="#/">
-      <b>FIRST</b>
-      <span class="hd-txt"><span id="brandName">퍼스트전산</span><small id="brandSub">복합기 사용설명서</small></span>
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brandmark" href="#/" aria-label="처음으로">
+      <span id="logo"></span>
+      <span class="txt"><b id="bName">퍼스트전산</b><span id="bSub">복합기 사용설명서</span></span>
     </a>
-    <span class="hd-sp"></span>
-    <a class="hd-call" id="hdCall" href="#">전화 문의</a>
+    <nav class="nav-links">
+      <a href="#/#models">기종 전체</a>
+      <a href="#/t/toner">토너 교체</a>
+      <a href="#/t/jam">용지 걸림</a>
+      <a href="#/t/meter">검침 카운터</a>
+    </nav>
+    <span class="nav-sp"></span>
+    <button class="navbtn" id="navSearch" aria-label="검색 열기"></button>
+    <a class="navbtn solid" id="navCall" href="#"></a>
   </div>
 </header>
 
-<main class="wrap" id="app"></main>
+<main id="app"></main>
 
-<footer class="foot" id="foot"></footer>
+<footer class="footer">
+  <div class="container footer-in">
+    <div class="fl" id="footBrand"></div>
+    <div class="fr" id="footLinks"></div>
+  </div>
+</footer>
 
 <div class="callbar" id="callbar">
-  <div class="t" id="barText"></div>
-  <a id="barCall" href="#">전화</a>
+  <span class="t" id="barTx"></span>
+  <a id="barCall" href="#"></a>
+</div>
+
+<!-- 검색 창 -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="검색">
+  <div class="sheet">
+    <div class="top">
+      <span id="sIcon"></span>
+      <input id="sq" placeholder="기종명, 증상, 작업 이름으로 검색" autocomplete="off" spellcheck="false">
+      <button class="esc" id="sClose">ESC</button>
+    </div>
+    <div class="res" id="res"></div>
+  </div>
 </div>
 
 <script src="data/manuals.js"></script>
+<script src="assets/ui.js"></script>
 <script src="assets/app.js"></script>
 </body>
 </html>

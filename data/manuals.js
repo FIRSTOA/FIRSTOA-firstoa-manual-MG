@@ -25,19 +25,19 @@ window.FIRSTOA_MANUAL = {
     company: "퍼스트전산",
     title: "복합기 사용설명서",
     tagline: "토너 교체부터 검침까지, 영상 보고 그대로 따라 하세요",
-    phone: "000-0000-0000",          // TODO: 대표 A/S 전화번호
+    phone: "1522-1093",
     hours: "평일 09:00 – 18:00",
     kakao: "",                        // 카카오톡 채널 주소(있으면)
-    channel: "",                      // 유튜브 채널 주소
+    channel: "https://www.youtube.com/channel/UCiXGLLxY8xwpcP1_-PQrlJw",
   },
 
   /* ── 작업 분류 ─────────────────────────────────────────────── */
   CATEGORIES: [
-    { id: "consumable", name: "소모품 교체", icon: "🧴", desc: "토너·폐토너통·드럼" },
-    { id: "paper",      name: "용지·걸림",   icon: "📄", desc: "용지 넣기, 걸린 종이 빼기" },
-    { id: "feature",    name: "복사·스캔·팩스", icon: "🖨️", desc: "기본 사용법" },
-    { id: "care",       name: "관리·검침",   icon: "📋", desc: "청소, 카운터 확인" },
-    { id: "trouble",    name: "문제 해결",   icon: "🛠️", desc: "화질 불량, 오류 표시" },
+    { id: "consumable", name: "소모품 교체", icon: "toner", desc: "토너·폐토너통·드럼" },
+    { id: "paper", name: "용지·걸림", icon: "paper", desc: "용지 넣기, 걸린 종이 빼기" },
+    { id: "feature", name: "복사·스캔·팩스", icon: "printer", desc: "기본 사용법" },
+    { id: "care", name: "관리·검침", icon: "spark", desc: "청소, 카운터 확인" },
+    { id: "trouble", name: "문제 해결", icon: "error", desc: "화질 불량, 오류 표시" },
   ],
 
   /* ── 작업 종류 ──────────────────────────────────────────────
@@ -47,7 +47,7 @@ window.FIRSTOA_MANUAL = {
    * ------------------------------------------------------------ */
   TASKS: [
     {
-      id: "toner", cat: "consumable", title: "토너 교체", icon: "🧴", minutes: 3,
+      id: "toner", cat: "consumable", title: "토너 교체", icon: "toner", minutes: 3,
       summary: "화면에 토너 부족·교체 표시가 뜰 때",
       steps: [
         "화면에 표시된 색상(K 검정 / C 파랑 / M 빨강 / Y 노랑)을 확인합니다.",
@@ -63,7 +63,7 @@ window.FIRSTOA_MANUAL = {
       ],
     },
     {
-      id: "waste", cat: "consumable", title: "폐토너통 교체", icon: "🗑️", minutes: 3,
+      id: "waste", cat: "consumable", title: "폐토너통 교체", icon: "waste", minutes: 3,
       summary: "폐토너통 가득 참 표시가 뜰 때",
       steps: [
         "앞쪽 커버를 열고 폐토너통 위치를 확인합니다.",
@@ -78,7 +78,7 @@ window.FIRSTOA_MANUAL = {
       ],
     },
     {
-      id: "drum", cat: "consumable", title: "드럼(이미징 유닛) 교체", icon: "🥁", minutes: 5,
+      id: "drum", cat: "consumable", title: "드럼(이미징 유닛) 교체", icon: "drum", minutes: 5,
       summary: "드럼 수명 경고가 뜨거나 인쇄물에 반복 자국이 생길 때",
       steps: [
         "표시된 색상의 드럼 위치를 확인합니다.",
@@ -92,7 +92,7 @@ window.FIRSTOA_MANUAL = {
       ],
     },
     {
-      id: "jam", cat: "paper", title: "걸린 용지 빼기", icon: "📛", minutes: 3,
+      id: "jam", cat: "paper", title: "걸린 용지 빼기", icon: "jam", minutes: 3,
       summary: "용지 걸림 / JAM 표시가 뜰 때",
       steps: [
         "화면에 표시된 위치 번호를 먼저 확인합니다. 표시된 곳부터 여세요.",
@@ -107,7 +107,7 @@ window.FIRSTOA_MANUAL = {
       ],
     },
     {
-      id: "paper", cat: "paper", title: "용지 넣기 · 용지함 설정", icon: "📄", minutes: 2,
+      id: "paper", cat: "paper", title: "용지 넣기 · 용지함 설정", icon: "paper", minutes: 2,
       summary: "A4·A3 넣는 법과 용지함 크기 지정",
       steps: [
         "용지함을 끝까지 당겨 빼냅니다.",
@@ -121,7 +121,7 @@ window.FIRSTOA_MANUAL = {
       ],
     },
     {
-      id: "copy", cat: "feature", title: "복사 기본 사용법", icon: "📑", minutes: 2,
+      id: "copy", cat: "feature", title: "복사 기본 사용법", icon: "copy", minutes: 2,
       summary: "양면, 매수, 확대·축소",
       steps: [
         "원본을 위쪽 급지대에 넣거나 유리면에 올립니다.",
@@ -131,7 +131,7 @@ window.FIRSTOA_MANUAL = {
       cautions: [],
     },
     {
-      id: "scan", cat: "feature", title: "스캔해서 메일·USB로 보내기", icon: "📤", minutes: 3,
+      id: "scan", cat: "feature", title: "스캔해서 메일·USB로 보내기", icon: "scan", minutes: 3,
       summary: "스캔 파일을 메일이나 USB로 받는 방법",
       steps: [
         "원본을 급지대에 넣습니다.",
@@ -141,7 +141,7 @@ window.FIRSTOA_MANUAL = {
       cautions: ["메일 주소를 새로 등록해야 하면 연락 주세요. 원격으로 넣어 드립니다."],
     },
     {
-      id: "fax", cat: "feature", title: "팩스 보내기 · 받기", icon: "📠", minutes: 2,
+      id: "fax", cat: "feature", title: "팩스 보내기 · 받기", icon: "fax", minutes: 2,
       summary: "번호 입력과 수신 확인",
       steps: [
         "원본을 급지대에 넣습니다.",
@@ -151,7 +151,7 @@ window.FIRSTOA_MANUAL = {
       cautions: [],
     },
     {
-      id: "meter", cat: "care", title: "검침 카운터 확인", icon: "🔢", minutes: 1,
+      id: "meter", cat: "care", title: "검침 카운터 확인", icon: "meter", minutes: 1,
       summary: "매달 알려주셔야 하는 흑백·컬러 장수 보는 법",
       steps: [
         "화면에서 기기 정보 또는 카운터 항목을 찾습니다.",
@@ -161,7 +161,7 @@ window.FIRSTOA_MANUAL = {
       cautions: ["매달 같은 시기에 알려주시면 요금이 정확하게 정산됩니다."],
     },
     {
-      id: "clean", cat: "care", title: "유리면 · 급지대 청소", icon: "🧽", minutes: 3,
+      id: "clean", cat: "care", title: "유리면 · 급지대 청소", icon: "clean", minutes: 3,
       summary: "복사물에 검은 줄이 생길 때 제일 먼저 할 일",
       steps: [
         "덮개를 열고 유리면을 마른 부드러운 천으로 닦습니다.",
@@ -174,7 +174,7 @@ window.FIRSTOA_MANUAL = {
       ],
     },
     {
-      id: "quality", cat: "trouble", title: "인쇄 화질 문제 (줄·얼룩·흐림)", icon: "🩹", minutes: 5,
+      id: "quality", cat: "trouble", title: "인쇄 화질 문제 (줄·얼룩·흐림)", icon: "quality", minutes: 5,
       summary: "세로줄, 가로줄, 번짐, 색이 흐릴 때",
       steps: [
         "유리면과 급지대 유리띠를 먼저 닦아 봅니다.",
@@ -185,7 +185,7 @@ window.FIRSTOA_MANUAL = {
       cautions: ["증상 사진 한 장이면 방문 전에 부품을 챙겨갈 수 있어 훨씬 빨리 해결됩니다."],
     },
     {
-      id: "error", cat: "trouble", title: "화면에 오류 표시가 뜰 때", icon: "⚠️", minutes: 2,
+      id: "error", cat: "trouble", title: "화면에 오류 표시가 뜰 때", icon: "error", minutes: 2,
       summary: "에러 코드가 떴을 때 대처",
       steps: [
         "화면에 뜬 코드(예: SC-xxx, E-xxx)를 그대로 적거나 사진을 찍습니다.",
@@ -198,207 +198,612 @@ window.FIRSTOA_MANUAL = {
 
   /* ── 브랜드 ────────────────────────────────────────────────── */
   BRANDS: [
-    { id: "samsung", name: "삼성", full: "삼성 / HP 삼성" },
-    { id: "sindoh",  name: "신도리코", full: "신도리코 SINDOH" },
-    { id: "xerox",   name: "제록스", full: "후지제록스 / 후지필름" },
-    { id: "kyocera", name: "교세라", full: "교세라 TASKalfa" },
-    { id: "brother", name: "브라더", full: "브라더 Brother" },
-    { id: "hp",      name: "HP",     full: "HP OfficeJet / LaserJet" },
-    { id: "etc",     name: "그 외",  full: "오키 · 렉스마크 등" },
+    { id: "samsung", name: "삼성", full: "삼성 / HP 삼성", accent: "#2F6BFF" },
+    { id: "sindoh", name: "신도리코", full: "신도리코 SINDOH", accent: "#0FA3A0" },
+    { id: "xerox", name: "제록스", full: "후지제록스 / 후지필름", accent: "#E0393E" },
+    { id: "kyocera", name: "교세라", full: "교세라 TASKalfa", accent: "#6D4AFF" },
+    { id: "brother", name: "브라더", full: "브라더 Brother", accent: "#1FA55C" },
+    { id: "hp", name: "HP", full: "HP OfficeJet / LaserJet", accent: "#0B8FD4" },
+    { id: "etc", name: "그 외", full: "오키 · 렉스마크 등", accent: "#64748B" },
   ],
 
   /* ── 기종 ──────────────────────────────────────────────────
-   * videos 의 값이 유튜브 영상 ID 입니다. 비우면 "준비 중"으로 표시됩니다.
-   * notes 로 그 기종만의 안내를 덧붙일 수 있습니다. (없으면 지워도 됩니다)
+   * videos 의 값이 유튜브 영상 ID 입니다. 비우면 "영상 준비 중"으로 표시되고
+   * 글로 된 순서만 나옵니다. 사이트는 깨지지 않으니 있는 것부터 채우면 됩니다.
+   *
+   * name  = 고객 화면에 보이는 이름. 기기 스티커의 실제 모델명을 씁니다.
+   * aka   = 화면에 안 보이는 검색용 별칭. 사내 코드명(키슈·세이토·마블)은 여기에만.
+   * photo = 직접 찍은 기기 사진 경로. 넣으면 일러스트 대신 사진이 나옵니다.
+   *
+   * ※ 아직 연결하지 못한 영상 2편 — "쇼부"가 어느 기종인지 확인되면 넣어야 합니다.
+   *     Gc_NI3IdhuI  쇼부 토너 교체 방법
+   *     P6-hVPSTV8Q  쇼부 토너 회수통R5 교체 방법
    * ------------------------------------------------------------ */
   MODELS: [
-    // ── 삼성 ──────────────────────────────────────────────
     {
-      id: "samsung-x3", brand: "samsung",
+      id: "samsung-x3220", brand: "samsung",
       name: "삼성 SL-X3220NR / X3280NR",
       aka: ["MX3", "3220", "3250", "3255", "3280", "엑스3"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/samsung-x3220.jpg
+      videos: {
+        toner: "RODkrd6bfeY", // 3220 토너 교체 방법
+        waste: "bBUR7V6VRYs", // 3220,4220 폐통 교체 방법
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
-      id: "samsung-x4", brand: "samsung",
+      id: "samsung-x4220", brand: "samsung",
       name: "삼성 SL-X4220RX / X4300LX",
       aka: ["MX4", "4220", "4225", "4250", "4255", "4300", "4305", "4350", "4355"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/samsung-x4220.jpg
+      videos: {
+        toner: "0ZQ_yvoX85c", // 4220 토너 교체 방법
+        waste: "bBUR7V6VRYs", // 3220,4220 폐통 교체 방법
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
-      id: "samsung-x7", brand: "samsung",
-      name: "삼성 SL-X7400GX / X7600GX",
-      aka: ["MX7", "7400", "7500", "7600"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      id: "samsung-x7500", brand: "samsung",
+      name: "삼성 SL-X7500GX / X7600GX",
+      aka: ["MX7", "7400", "7500", "7600", "엑스7"],
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/samsung-x7500.jpg
+      videos: {
+        toner: "moTYQ3usG9c", // x7500 토너 교체 방법
+        waste: "2JuxnMC19p8", // x7500 폐통 교체 방법
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
+      notes: {},
+    },
+    {
+      id: "samsung-k4250", brand: "samsung",
+      name: "삼성 SL-K4250RX (흑백)",
+      aka: ["K4250", "4250", "흑백", "케이4250"],
+      device: "floor-mono",
+      photo: "",            // 실제 사진: assets/models/samsung-k4250.jpg
+      videos: {
+        toner: "Swn0LRQpoi8", // K4250 토너 교체 방법
+        waste: "OzhlvZ4f0E8", // K4250 폐통 교체 방법
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
+      notes: {},
+    },
+    {
+      id: "samsung-k7500", brand: "samsung",
+      name: "삼성 SL-K7500GX (흑백)",
+      aka: ["K7500", "7500", "흑백", "케이7500"],
+      device: "floor-mono",
+      photo: "",            // 실제 사진: assets/models/samsung-k7500.jpg
+      videos: {
+        toner: "cythI1d3bwU", // k7500 토너 교체 방법
+        waste: "4D9fZRltgMQ", // k7500 폐통 교체방법
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
       id: "samsung-clx9201", brand: "samsung",
       name: "삼성 CLX-9201NA / 9251NA / 9301NA",
       aka: ["9201", "9251", "9301"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/samsung-clx9201.jpg
+      videos: {
+        toner: "",
+        waste: "",
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
-      id: "samsung-k", brand: "samsung",
-      name: "삼성 SL-K3300 / K4350 (흑백)",
-      aka: ["흑백기", "K3300", "K4350", "K7600", "흑백"],
-      videos: { toner: "", waste: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      id: "sindoh-420", brand: "sindoh",
+      name: "신도리코 D320 / D410 / D420",
+      aka: ["320", "321", "410", "411", "420", "422"],
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/sindoh-420.jpg
+      videos: {
+        toner: "us13Br3-aBM", // 320,410,420 토너 교체 방법
+        waste: "e_iTXoxXwM8", // 320,410,420 폐통 교체 방법
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
-    // ── 신도리코 ──────────────────────────────────────────
     {
-      id: "sindoh-d420", brand: "sindoh",
-      name: "신도리코 D420 / D422",
-      aka: ["420", "422"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
-      notes: {},
-    },
-    {
-      id: "sindoh-d450", brand: "sindoh",
+      id: "sindoh-450", brand: "sindoh",
       name: "신도리코 D450 / D451 / D452",
       aka: ["450", "451", "452"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/sindoh-450.jpg
+      videos: {
+        toner: "JvlmiOwwRo4", // 450 토너 교체 방법
+        waste: "R1iJHkdYDes", // 450 폐통 교체 방법
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
       id: "sindoh-n501", brand: "sindoh",
       name: "신도리코 N501 / N502",
-      aka: ["501", "502", "N501"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      aka: ["501", "502", "N501", "엔501"],
+      device: "floor-mono",
+      photo: "",            // 실제 사진: assets/models/sindoh-n501.jpg
+      videos: {
+        toner: "WYMZ-5k4prs", // N501 토너 교체 방법
+        waste: "6Stqgvl5Rf8", // N501 폐통 교체 방법
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
       id: "sindoh-d600", brand: "sindoh",
       name: "신도리코 D600 시리즈",
       aka: ["600", "601"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/sindoh-d600.jpg
+      videos: {
+        toner: "",
+        waste: "",
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
-    // ── 제록스 ────────────────────────────────────────────
     {
-      id: "xerox-dcv-c2263", brand: "xerox",
-      name: "DocuCentre-V C2263 / C2265",
-      aka: ["마블", "2263", "2265", "DCVC2263"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      id: "xerox-apiv", brand: "xerox",
+      name: "ApeosPort-IV C2270 / C3370",
+      aka: ["키슈", "2270", "3370", "APIV", "IV"],
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/xerox-apiv.jpg
+      videos: {
+        toner: "DFJcuPt5yZk", // 키슈,세이토 토너 교체 방법
+        waste: "LIhB66g5V6s", // 키슈,세이토 토너 회수통R5 교체 방법
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
       id: "xerox-dcv-c2276", brand: "xerox",
       name: "DocuCentre-V C2276 / C3375",
       aka: ["세이토", "2276", "3375", "VC3375"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/xerox-dcv-c2276.jpg
+      videos: {
+        toner: "DFJcuPt5yZk", // 키슈,세이토 토너 교체 방법
+        waste: "LIhB66g5V6s", // 키슈,세이토 토너 회수통R5 교체 방법
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
+      notes: {},
+    },
+    {
+      id: "xerox-dcv-c2263", brand: "xerox",
+      name: "DocuCentre-V C2263 / C2265",
+      aka: ["마블", "2263", "2265", "DCVC2263"],
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/xerox-dcv-c2263.jpg
+      videos: {
+        toner: "3XZ7PJaull4", // 마블 토너 교체 방법
+        waste: "yBCH8_ouEmM", // 마블 토너 회수통R5 교체 방법
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
       id: "xerox-apvi", brand: "xerox",
       name: "ApeosPort-VI C2271 / C3371",
       aka: ["베니", "2271", "3371", "APVI"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/xerox-apvi.jpg
+      videos: {
+        toner: "OG7jeQmpsbs", // 베니 토너 교체 방법
+        waste: "WsK67N5FjC4", // 베니 토너 회수통R5 교체 방법
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
       id: "xerox-apvii", brand: "xerox",
       name: "ApeosPort-VII C2273 / C3373",
       aka: ["보탄", "2273", "3373", "APVII"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
-      notes: {},
-    },
-    {
-      id: "xerox-apiv", brand: "xerox",
-      name: "ApeosPort-IV C2270 / C3370",
-      aka: ["키슈", "2270", "3370", "APIV"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/xerox-apvii.jpg
+      videos: {
+        toner: "",
+        waste: "",
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
       id: "xerox-c5585", brand: "xerox",
       name: "DocuCentre-V C5585 / C6680 (대형)",
       aka: ["헤라", "5580", "5585", "6680"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/xerox-c5585.jpg
+      videos: {
+        toner: "",
+        waste: "",
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
-      id: "xerox-apeos-c2060", brand: "xerox",
+      id: "xerox-apeos", brand: "xerox",
       name: "ApeosPort C2060 / C3070",
       aka: ["APEOS", "2060", "3070", "2560"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/xerox-apeos.jpg
+      videos: {
+        toner: "",
+        waste: "",
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
       id: "xerox-sc2022", brand: "xerox",
       name: "DocuCentre SC2022",
       aka: ["SC2022", "2022"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "desktop",
+      photo: "",            // 실제 사진: assets/models/xerox-sc2022.jpg
+      videos: {
+        toner: "",
+        waste: "",
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
-    // ── 교세라 ────────────────────────────────────────────
     {
       id: "kyocera-2100", brand: "kyocera",
       name: "교세라 TASKalfa 2100 / 2101",
       aka: ["2100", "2101"],
-      videos: { toner: "", waste: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "floor-mono",
+      photo: "",            // 실제 사진: assets/models/kyocera-2100.jpg
+      videos: {
+        toner: "pRqyQJ5Lqns", // 교세라 토너 교체 방법
+        waste: "",
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
       id: "kyocera-5521", brand: "kyocera",
       name: "교세라 TASKalfa 5521ci / 5526ci",
       aka: ["5521", "5526"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "floor-color",
+      photo: "",            // 실제 사진: assets/models/kyocera-5521.jpg
+      videos: {
+        toner: "pRqyQJ5Lqns", // 교세라 토너 교체 방법
+        waste: "",
+        drum: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
-    // ── 브라더 ────────────────────────────────────────────
     {
       id: "brother-5700", brand: "brother",
       name: "브라더 MFC-L5700DN",
       aka: ["5700"],
-      videos: { toner: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "desktop",
+      photo: "",            // 실제 사진: assets/models/brother-5700.jpg
+      videos: {
+        toner: "3GypB534uSs", // 브라더 토너 교체 방법
+        waste: "",
+        drum: "Vok3STCstrQ",  // 브라더 드럼 교체 방법
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
       id: "brother-8900", brand: "brother",
       name: "브라더 MFC-L8900CDW",
       aka: ["8900"],
-      videos: { toner: "", waste: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "desktop",
+      photo: "",            // 실제 사진: assets/models/brother-8900.jpg
+      videos: {
+        toner: "3GypB534uSs", // 브라더 토너 교체 방법
+        waste: "",
+        drum: "Vok3STCstrQ",  // 브라더 드럼 교체 방법
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
-    // ── HP ────────────────────────────────────────────────
     {
       id: "hp-8710", brand: "hp",
       name: "HP OfficeJet Pro 8710 / 8720 / 8730",
       aka: ["8710", "8720", "8730", "8600", "8610"],
-      videos: { toner: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
-      notes: { toner: "이 기종은 가루 토너가 아니라 잉크 카트리지를 씁니다." },
+      device: "inkjet",
+      photo: "",            // 실제 사진: assets/models/hp-8710.jpg
+      videos: {
+        toner: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
+      notes: {},
     },
     {
       id: "hp-9010", brand: "hp",
       name: "HP OfficeJet Pro 9010 / 7740",
       aka: ["9010", "7740"],
-      videos: { toner: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
-      notes: { toner: "이 기종은 가루 토너가 아니라 잉크 카트리지를 씁니다." },
+      device: "inkjet",
+      photo: "",            // 실제 사진: assets/models/hp-9010.jpg
+      videos: {
+        toner: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
+      notes: {},
     },
     {
       id: "hp-laser", brand: "hp",
       name: "HP LaserJet M477 / M530 / M650",
       aka: ["477", "530", "650"],
-      videos: { toner: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "desktop",
+      photo: "",            // 실제 사진: assets/models/hp-laser.jpg
+      videos: {
+        toner: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
-    // ── 그 외 ─────────────────────────────────────────────
     {
       id: "oki-5473", brand: "etc",
       name: "오키 OKI MC5473",
       aka: ["5473", "오키"],
-      videos: { toner: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "desktop",
+      photo: "",            // 실제 사진: assets/models/oki-5473.jpg
+      videos: {
+        toner: "BvbcfG8QZYM", // 오키 토너 교체 방법
+        waste: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
     {
       id: "lexmark-mx410", brand: "etc",
       name: "렉스마크 Lexmark MX410",
       aka: ["MX410", "렉스마크"],
-      videos: { toner: "", drum: "", jam: "", paper: "", copy: "", scan: "", fax: "", meter: "", clean: "", quality: "", error: "" },
+      device: "desktop",
+      photo: "",            // 실제 사진: assets/models/lexmark-mx410.jpg
+      videos: {
+        toner: "",
+        waste: "",
+        jam: "",
+        paper: "",
+        copy: "",
+        scan: "",
+        fax: "",
+        meter: "",
+        clean: "",
+        quality: "",
+        error: "",
+      },
       notes: {},
     },
   ],
