@@ -29,7 +29,7 @@ const junk = s => /undefined|\[object Object\]|NaN|&lt;svg/.test(s);
 /* 1. 모든 주소가 그려지는가 */
 console.log('\n[1] 화면 그리기');
 const routes = ['#/', '#/m/samsung-3220', '#/m/samsung-3220/toner', '#/m/hp-8710/toner',
-  '#/fixes', '#/pattern', '#/meter', '#/notices', '#/f/jam', '#/f/acr-ctd', '#/m/samsung-3220/f/jam', '#/m/samsung-3220/f/acr-ctd',
+  '#/fixes', '#/fixes/samsung', '#/fixes/samsung/acr-ctd', '#/fixes/xerox', '#/fixes/xerox/jam', '#/pattern', '#/meter', '#/notices', '#/f/jam', '#/f/acr-ctd', '#/m/samsung-3220/f/jam', '#/m/samsung-3220/f/acr-ctd',
   '#/m/xerox-c2263/f/line-copy',
   '#/t/toner', '#/t/meter', '#/s/3220', '#/s/줄', '#/s/zzz없음', '#/m/없음', '#/헛주소'];
 for (const r of routes) {
@@ -152,7 +152,9 @@ const imgs = [...doc.querySelectorAll('#app img')].map(i => i.getAttribute('src'
 const missing = [...new Set(imgs)].filter(p => !fs.existsSync(HOME + '/' + p));
 missing.length ? bad('없는 이미지 파일: ' + missing.join(', ')) : ok(`이미지 ${new Set(imgs).size}장 모두 존재`);
 // 머리말·꼬리말
-doc.getElementById('topbar').innerHTML.includes('퍼스트전산') ? ok('상단 안내 띠 채워짐') : bad('상단 띠 비어 있음');
+const logo = doc.querySelector('.brandmark img.logo');
+logo && logo.getAttribute('src').includes('logo-firstoa') ? ok('헤더에 실제 회사 로고') : bad('로고 이미지 없음');
+doc.getElementById('navTel')?.innerHTML.includes(D.meta.phone) ? ok('헤더에 대표번호') : bad('헤더 전화번호 없음');
 const foot = doc.getElementById('footer').innerHTML;
 foot.includes(D.meta.bizNo) && foot.includes('유튜브') ? ok('바닥글: 사업자번호·유튜브 채널 포함') : bad('바닥글 내용 누락');
 nav('#/m/samsung-3220');
@@ -208,6 +210,29 @@ navLinks.join('/') === '기종 전체/자주 생기는 문제/4색 패턴 출력
 // 용지는 브랜드 사진을 쓰지 않는다
 const paper = D.PRODUCTS.find(p => p.id === 'paper');
 paper && !paper.img ? ok('복사용지는 상표 없는 일러스트') : bad('용지에 특정 상품 사진이 붙어 있음');
+
+/* 13. 브랜드별 증상 구조 · 5장 출력 */
+console.log('\n[13] 브랜드별 증상 · 출력 5장');
+nav('#/fixes');
+const bCards = doc.querySelectorAll('#app .mcard');
+bCards.length >= 5 ? ok(`브랜드 고르기 ${bCards.length}곳`) : bad('브랜드 카드 부족 ' + bCards.length);
+nav('#/fixes/samsung');
+const sTiles = [...doc.querySelectorAll('#app .tile')].map(t => t.querySelector('b').textContent);
+sTiles.some(t => t.includes('ACR')) ? ok('삼성 전용 증상이 삼성 목록에 있음') : bad('삼성 전용 누락');
+nav('#/fixes/xerox');
+const xTiles = [...doc.querySelectorAll('#app .tile')].map(t => t.querySelector('b').textContent);
+!xTiles.some(t => t.includes('ACR')) ? ok('제록스 목록엔 삼성 전용 없음') : bad('삼성 전용이 제록스로 샘');
+xTiles.some(t => t.includes('용지 걸림')) ? ok('공통 증상은 모든 브랜드에 표시') : bad('공통 증상 누락');
+nav('#/pattern');
+const ppages = doc.querySelectorAll('#printArea .ppage');
+ppages.length === 5 ? ok('인쇄 대상 5장 준비됨') : bad('인쇄 장수 ' + ppages.length);
+const inks = [...doc.querySelectorAll('#printArea .ppage svg.fullpage')].map(s => s.getAttribute('data-ink'));
+inks.join('') === 'KCMY' ? ok('전면 페이지 K·C·M·Y 순서') : bad('전면 페이지 구성: ' + inks.join(','));
+const full = doc.querySelector('#printArea .ppage[data-page="K"] svg rect');
+full && full.getAttribute('width') === '210' && full.getAttribute('height') === '297'
+  ? ok('전면 페이지가 A4를 꽉 채움') : bad('전면이 A4를 채우지 않음');
+const cards = doc.querySelectorAll('#app .pagecard');
+cards.length === 5 ? ok('미리보기 카드 5장, 한 장씩 출력 가능') : bad('미리보기 ' + cards.length);
 
 console.log(fails ? `\n실패 ${fails}건` : '\n전 항목 통과');
 process.exit(fails ? 1 : 0);

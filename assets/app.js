@@ -19,6 +19,11 @@
   const inScope = (f, m) => !!(f.scope.all || f.scope.brand === m.brand || (f.scope.models || []).includes(m.id));
   const fixesOf = m => (D.FIXES || []).filter(f => inScope(f, m));
   const modelsForFix = f => D.MODELS.filter(m => inScope(f, m));
+  // 브랜드마다 구조가 달라 증상도 브랜드 단위로 본다
+  const fixesForBrand = bid => (D.FIXES || []).filter(f =>
+    f.scope.all || f.scope.brand === bid || (f.scope.models || []).some(id => MODEL[id]?.brand === bid));
+  const brandOwn = bid => (D.FIXES || []).filter(f =>
+    f.scope.brand === bid || (f.scope.models || []).some(id => MODEL[id]?.brand === bid));
 
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -566,49 +571,68 @@
 
   /* ── 화면: 4색 패턴 출력 ──────────────────────────────────────────── */
   function viewPattern() {
+    const pages = [
+      ...CHART.INKS.map(k => ({ id: k, kind: "full", title: CHART.NAME[k] + " 전면",
+        desc: k === "K" ? "드럼·정착기 자국과 세로줄이 가장 잘 드러납니다"
+            : k === "C" ? "파랑 계열 얼룩과 농도 차이를 봅니다"
+            : k === "M" ? "빨강 계열 얼룩과 농도 차이를 봅니다"
+            : "노랑은 옅어서 흐린 얼룩까지 드러납니다" })),
+      { id: "chart", kind: "chart", title: "종합 점검 차트",
+        desc: "원색·농도·회색 균형·가는 선·글자·확인란이 한 장에" },
+    ];
+
     return `<div class="container">
       <div class="phead">
         ${crumbs([{ label: "처음", to: "/" }, { label: "4색 패턴 출력" }])}
         <h1 class="h1" style="margin-top:14px; display:flex; align-items:center; gap:12px">
           ${ic("palette", 30)}4색 패턴 출력</h1>
-        <p class="lead">인쇄 상태를 한 장으로 확인하는 점검 차트입니다.
-           아래 버튼을 누르면 A4 한 장으로 바로 출력됩니다.</p>
+        <p class="lead">각 색을 A4 한 장씩 꽉 채워 뽑습니다. 색이 넓게 깔려야
+           줄·얼룩·반복 자국이 드러납니다. 종합 차트까지 모두 <b>5장</b>입니다.</p>
         <div class="statrow">
-          <button class="btn" onclick="FIRSTOA.printChart()">${ic("printer", 19)}A4로 출력하기</button>
-          <button class="btn ghost sm" onclick="FIRSTOA.downloadChart()">${ic("book", 17)}그림 파일로 저장</button>
+          <button class="btn" onclick="FIRSTOA.printChart('all')">${ic("printer", 19)}5장 전부 출력</button>
+          <button class="btn ghost sm" onclick="FIRSTOA.printChart('chart')">${ic("book", 17)}종합 차트만</button>
         </div>
       </div>
 
       <section class="section tight">
-        <div class="cards" style="grid-template-columns:1fr">
-          <div class="callout info" data-rv>
-            <b>${ic("spark", 17)}이 차트로 무엇을 알 수 있나요</b>
-            <p><b>색이 빠졌는지</b> — 네 가지 원색 중 흐리거나 안 나오는 색이 있으면 그 색 토너·드럼 문제입니다.<br>
-               <b>줄이 생기는지</b> — 가는 선 구간에서 세로줄·가로줄이 보이면 유리면이나 드럼 쪽입니다.<br>
-               <b>얼룩·띠가 있는지</b> — 전면 구간에 가로 띠가 반복되면 정착기나 롤러 쪽일 수 있습니다.<br>
-               <b>색이 치우쳤는지</b> — 회색 두 줄의 색이 다르면 색 균형이 틀어진 것입니다.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="section tight">
-        <div class="sec-head" data-rv><div><span class="eyebrow">미리 보기</span>
-          <h2 class="h2" style="margin-top:8px">출력되는 모습</h2>
-          <p class="lead">화면에 보이는 그대로 A4 한 장에 나옵니다.
-             컬러 복합기에서 <b>컬러</b>로 출력해 주세요.</p></div></div>
-        <div class="chartbox" id="chartBox">${CHART.chartSVG(D.meta.company)}</div>
-      </section>
-
-      <section class="section tight">
         <div class="callout warn" data-rv>
-          <b>${ic("error", 17)}출력한 뒤에</b>
+          <b>${ic("error", 17)}뽑기 전에</b>
           <ul>
-            <li>이상이 보이면 <b>그 종이를 사진으로 찍어</b> 카카오톡이나 문자로 보내주세요.</li>
-            <li>사진 한 장이면 방문 전에 원인을 좁혀 부품을 챙겨갈 수 있습니다.</li>
-            <li>흑백 기종은 검정 칸만 확인하시면 됩니다.</li>
+            <li><b>컬러</b>로, <b>A4 한 장씩</b> 설정해 주세요. 흑백 기종은 검정 한 장만 뽑으시면 됩니다.</li>
+            <li>전면 출력은 토너를 꽤 씁니다. 증상이 있을 때만 뽑아 주세요.</li>
+            <li>이상이 보이면 <b>그 종이를 사진으로 찍어</b> 카카오톡으로 보내주세요.</li>
           </ul>
         </div>
       </section>
+
+      <section class="section tight">
+        <div class="sec-head" data-rv><div><span class="eyebrow">출력할 5장</span>
+          <h2 class="h2" style="margin-top:8px">한 장씩 따로 뽑을 수도 있습니다</h2></div></div>
+        <div class="pages">${pages.map(p => `<div class="pagecard" data-rv>
+          <div class="pv ${p.kind}">${p.kind === "full" ? CHART.fullSVG(p.id, D.meta.company)
+                                                        : CHART.chartSVG(D.meta.company)}</div>
+          <div class="pinfo">
+            <b>${esc(p.title)}</b><p>${esc(p.desc)}</p>
+            <button class="btn ghost sm wide" onclick="FIRSTOA.printChart('${p.id}')">
+              ${ic("printer", 16)}이 장만 출력</button>
+          </div></div>`).join("")}</div>
+      </section>
+
+      <section class="section tight">
+        <div class="callout info" data-rv>
+          <b>${ic("spark", 17)}무엇을 보면 되나요</b>
+          <p><b>세로줄</b> — 종이가 나오는 방향으로 길게 난 줄. 유리면이나 드럼 쪽입니다.<br>
+             <b>가로 띠</b> — 일정한 간격으로 반복되면 롤러나 정착기 쪽입니다.<br>
+             <b>얼룩·농도 차이</b> — 한쪽만 옅으면 토너가 한쪽으로 몰렸거나 드럼 수명입니다.<br>
+             <b>색이 안 나옴</b> — 그 색 토너·드럼을 먼저 확인합니다.</p>
+        </div>
+      </section>
+
+      <!-- 인쇄 전용 영역 (화면에는 보이지 않습니다) -->
+      <div id="printArea" aria-hidden="true">
+        ${CHART.INKS.map(k => `<div class="ppage" data-page="${k}">${CHART.fullSVG(k, D.meta.company)}</div>`).join("")}
+        <div class="ppage" data-page="chart">${CHART.chartSVG(D.meta.company)}</div>
+      </div>
       ${band()}
     </div>`;
   }
@@ -691,30 +715,156 @@
 
   /* ── 화면: 증상 목록 (문제가 생겼어요) ───────────────────────────── */
   function viewFixes() {
-    const common = (D.FIXES || []).filter(f => f.scope.all);
-    const byBrand = D.BRANDS.map(b => ({ b, list: (D.FIXES || []).filter(f => f.scope.brand === b.id) }))
-      .filter(x => x.list.length);
-    const tile = f => `<a class="tile" href="#/f/${f.id}" data-rv>
+    const brands = D.BRANDS.filter(b => modelsOf(b.id).length);
+    return `<div class="container">
+      <div class="phead">
+        ${crumbs([{ label: "처음", to: "/" }, { label: "자주 생기는 문제" }])}
+        <h1 class="h1" style="margin-top:14px">어느 회사 복합기인가요?</h1>
+        <p class="lead">브랜드마다 화면 구성과 커버 여는 방식이 달라, 처리 방법도 다릅니다.
+           쓰시는 복합기 제조사를 먼저 골라 주세요.</p>
+      </div>
+      <section class="section tight">
+        <div class="models">${brands.map(b => {
+          const own = brandOwn(b.id).length, all = fixesForBrand(b.id).length;
+          const rep = D.MODELS.find(m => m.brand === b.id && m.photo);
+          return `<a class="mcard" href="#/fixes/${b.id}" data-rv>
+            <div class="art">${rep ? `<img class="photo" src="${esc(rep.photo)}" alt="" loading="lazy">`
+                                   : U.device("floor-color")}
+              <span class="bdot"><i style="background:${esc(b.accent)}"></i>${esc(b.name)}</span></div>
+            <div class="info"><b>${esc(b.name)}</b>
+              <span class="sub">${esc(b.full)}</span>
+              <div class="meta">
+                <span class="badge b-gold">증상 ${all}가지</span>
+                <span>기종 ${modelsOf(b.id).length}종</span>
+                <span class="go">${ic("arrow", 18)}</span></div></div></a>`;
+        }).join("")}</div>
+      </section>
+      <section class="section tight">
+        <div class="callout info" data-rv>
+          <b>${ic("spark", 17)}브랜드를 모르시겠으면</b>
+          <p>기기 앞면에 붙은 제조사 표시(SAMSUNG · Sindoh · FUJIFILM/XEROX · KYOCERA · brother · OKI)를
+             확인하시거나, <a href="#/#models" style="color:inherit; text-decoration:underline">기종 전체</a>에서
+             모델 번호로 찾으셔도 됩니다.</p>
+        </div>
+      </section>
+      ${band()}
+    </div>`;
+  }
+
+  /* ── 화면: 브랜드별 증상 목록 ─────────────────────────────────────── */
+  function viewFixesBrand(bid) {
+    const b = BRAND[bid];
+    if (!b) return view404();
+    const own = brandOwn(bid), common = (D.FIXES || []).filter(f => f.scope.all);
+    const tile = f => {
+      const ready = (f.steps || []).length > 0;
+      return `<a class="tile" href="#/fixes/${bid}/${f.id}" data-rv>
         <span class="box">${ic(f.icon, 24)}</span>
         <b>${esc(f.title)}</b><p>${esc(f.summary)}</p>
-        <span class="foot">${ic("clock", 14)}약 ${f.minutes}분 · ${modelsForFix(f).length}종</span></a>`;
+        <span class="foot">${ready ? `${ic("clock", 14)}약 ${f.minutes}분`
+                                   : `${ic("spark", 14)}내용 준비 중`}</span></a>`;
+    };
+    return `<div class="container">
+      <div class="phead">
+        ${crumbs([{ label: "처음", to: "/" }, { label: "자주 생기는 문제", to: "/fixes" }, { label: b.name }])}
+        <h1 class="h1" style="margin-top:14px; display:flex; align-items:center; gap:12px">
+          <i style="width:12px;height:12px;border-radius:50%;background:${esc(b.accent)};flex:none"></i>
+          ${esc(b.name)} 복합기</h1>
+        <p class="lead">${esc(b.full)} · 어떤 증상인지 고르시면 처리 순서를 보여드립니다.</p>
+      </div>
+      ${own.length ? `<section class="section tight">
+        <div class="sec-head" data-rv><div><span class="eyebrow">${esc(b.name)} 전용</span>
+          <h2 class="h2" style="margin-top:8px">이 브랜드에서 생기는 증상</h2>
+          <p class="lead">화면 구성과 부품이 달라 ${esc(b.name)} 기종에만 해당합니다.</p></div></div>
+        <div class="tiles">${own.map(tile).join("")}</div></section>` : `
+      <section class="section tight"><div class="callout info" data-rv>
+        <b>${ic("spark", 17)}${esc(b.name)} 전용 항목을 준비하고 있습니다</b>
+        <p>지금은 전 기종 공통 항목만 있습니다. ${esc(b.name)} 기종에서 자주 생기는 증상은
+           기사가 정리하는 대로 이 자리에 올라갑니다.</p></div></section>`}
+      ${common.length ? `<section class="section tight">
+        <div class="sec-head" data-rv><div><span class="eyebrow">전 기종 공통</span>
+          <h2 class="h2" style="margin-top:8px">어느 복합기든 방법이 같습니다</h2></div></div>
+        <div class="tiles">${common.map(tile).join("")}</div></section>` : ""}
+      <section class="section tight">
+        <div class="sec-head" data-rv><div><span class="eyebrow">${esc(b.name)} 기종</span>
+          <h2 class="h2" style="margin-top:8px">기종을 골라 소모품 교체도 보기</h2></div></div>
+        <div class="models">${modelsOf(bid).map(modelCard).join("")}</div>
+      </section>
+      ${band()}
+    </div>`;
+  }
+
+  /* ── 화면: 브랜드 단위 증상 상세 ──────────────────────────────────── */
+  function viewFixBrand(bid, fid) {
+    const b = BRAND[bid], f = FIX[fid];
+    if (!b || !f) return view404();
+    const ready = (f.steps || []).length > 0;
+    const others = fixesForBrand(bid).filter(x => x.id !== fid);
+    const models = modelsOf(bid);
+    const myTel = tel();
 
     return `<div class="container">
       <div class="phead">
-        ${crumbs([{ label: "처음", to: "/" }, { label: "문제 해결" }])}
-        <h1 class="h1" style="margin-top:14px">어떤 증상인가요?</h1>
-        <p class="lead">고르면 처리 순서를 보여드립니다. 기사 방문 없이 해결되는 것이 많습니다.</p>
+        ${crumbs([{ label: "처음", to: "/" }, { label: "자주 생기는 문제", to: "/fixes" },
+                  { label: b.name, to: "/fixes/" + bid }, { label: f.title }])}
+        <h1 class="h1" style="margin-top:14px; display:flex; align-items:center; gap:12px">
+          ${ic(f.icon, 30)}${esc(f.title)}</h1>
+        <p class="lead">${esc(b.name)} 복합기 · ${esc(f.summary)}</p>
+        <div class="statrow">
+          <span class="stat">${ic("clock", 16)}약 ${f.minutes}분</span>
+          <span class="stat">${ic("grid", 16)}${f.scope.all ? "전 기종 같은 방법" : esc(b.name) + " 전용"}</span>
+        </div>
       </div>
-      <section class="section tight">
-        <div class="sec-head" data-rv><div><span class="eyebrow">전 기종 공통</span>
-          <h2 class="h2" style="margin-top:8px">어느 복합기든 방법이 같습니다</h2></div></div>
-        <div class="tiles">${common.map(tile).join("")}</div>
-      </section>
-      ${byBrand.map(({ b, list }) => `<section class="section tight">
-        <div class="sec-head" data-rv><div><span class="eyebrow">${esc(b.name)} 전용</span>
-          <h2 class="h2" style="margin-top:8px">${esc(b.name)} 기종에서 생기는 증상</h2></div></div>
-        <div class="tiles">${list.map(tile).join("")}</div>
-      </section>`).join("")}
+
+      <div class="work" style="margin-top:22px">
+        <div>
+          ${f.video ? `<div class="player" id="player" data-v="${esc(f.video)}">
+                 <img src="${thumb(f.video, true)}" onerror="${fallback(f.video)}" alt="">
+                 <span class="veil"></span>
+                 <button class="go" onclick="FIRSTOA.play()" aria-label="영상 재생"><i>${ic("play", 26)}</i></button>
+               </div>` : ""}
+          ${ready ? `<div class="panel">
+              <div class="panel-h">${ic("book", 19)}<b>따라 하는 순서</b>
+                <button class="rst" onclick="FIRSTOA.reset()">처음부터</button></div>
+              <div class="progress"><i id="bar"></i></div>
+              <div class="pmeta"><span id="pnum" class="num">0 / ${f.steps.length}</span> 단계 · 누르면 체크됩니다</div>
+              <ol class="steps" id="steps" data-key="${esc(bid + ".f." + fid)}">
+                ${f.steps.map((t, k) => `<li data-k="${k}" tabindex="0" role="button" aria-pressed="false">
+                  <span class="mark"><span class="num">${k + 1}</span>${ic("check", 16)}</span>
+                  <span class="tx">${esc(t)}</span></li>`).join("")}
+              </ol></div>`
+            : `<div class="callout info">
+                 <b>${ic("spark", 17)}내용을 준비하고 있습니다</b>
+                 <p>이 항목은 기사가 처리 방법을 정리하는 중입니다.
+                    지금은 전화나 카카오톡으로 연락 주시면 바로 안내해 드립니다.</p></div>`}
+          ${f.cautions?.length ? `<div class="callout warn" style="margin-top:16px">
+            <b>${ic("error", 17)}주의하세요</b>
+            <ul>${f.cautions.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>` : ""}
+        </div>
+
+        <aside class="aside">
+          ${others.length ? `<div class="box">
+            <b>${esc(b.name)}의 다른 증상</b>
+            <div class="links">${others.slice(0, 8).map(x =>
+              `<a href="#/fixes/${bid}/${x.id}">${ic(x.icon, 18)}${esc(x.title)}
+                 ${(x.steps || []).length ? "" : `<span class="badge b-soon">준비 중</span>`}
+                 <span class="arw">${ic("chev", 16)}</span></a>`).join("")}</div></div>` : ""}
+          <div class="box">
+            <b>기종별로 보기</b>
+            <p class="muted" style="margin:-6px 0 12px">소모품 교체 영상까지 함께 보시려면</p>
+            <div class="links">${models.slice(0, 6).map(m =>
+              `<a href="#/m/${m.id}/f/${fid}">${ic("grid", 18)}${esc(m.name)}
+                 <span class="arw">${ic("chev", 16)}</span></a>`).join("")}</div>
+          </div>
+          <div class="box">
+            <b>해결이 안 되시면</b>
+            <p class="muted" style="margin:-6px 0 14px">${esc(D.meta.company)} · ${esc(D.meta.hours)}</p>
+            ${myTel ? `<a class="btn wide sm" href="tel:${myTel}">${ic("phone", 17)}전화 ${esc(D.meta.phone)}</a>` : ""}
+            ${D.meta.kakao ? `<a class="btn kko wide sm" style="margin-top:8px"
+              href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">${ic("kakao", 17)}카카오톡 상담</a>` : ""}
+          </div>
+        </aside>
+      </div>
       ${band()}
     </div>`;
   }
@@ -894,7 +1044,9 @@
     else if (p[0] === "m" && p[2]) { html = viewTask(p[1], p[2]); title = `${TASK[p[2]]?.title || ""} · ${MODEL[p[1]]?.name || ""} | ${D.meta.company}`; }
     else if (p[0] === "m") { html = viewModel(p[1]); title = `${MODEL[p[1]]?.name || "기종"} | ${D.meta.company}`; }
     else if (p[0] === "t") { html = viewPick(p[1]); title = `${TASK[p[1]]?.title || "작업"} | ${D.meta.company}`; }
-    else if (p[0] === "fixes") { html = viewFixes(); title = `문제 해결 | ${D.meta.company}`; }
+    else if (p[0] === "fixes" && p[2]) { html = viewFixBrand(p[1], p[2]); title = `${FIX[p[2]]?.title || ""} · ${BRAND[p[1]]?.name || ""} | ${D.meta.company}`; }
+    else if (p[0] === "fixes" && p[1]) { html = viewFixesBrand(p[1]); title = `${BRAND[p[1]]?.name || ""} 자주 생기는 문제 | ${D.meta.company}`; }
+    else if (p[0] === "fixes") { html = viewFixes(); title = `자주 생기는 문제 | ${D.meta.company}`; }
     else if (p[0] === "pattern") { html = viewPattern(); title = `4색 패턴 출력 | ${D.meta.company}`; }
     else if (p[0] === "meter") { html = viewMeter(); title = `사용량 카운터 | ${D.meta.company}`; }
     else if (p[0] === "notices") { html = viewNotices(); title = `이용 안내 | ${D.meta.company}`; }
@@ -904,6 +1056,11 @@
 
     app.innerHTML = html;
     document.title = title;
+    // 헤더에서 지금 보고 있는 곳 표시
+    const key = p[0] === "fixes" ? "#/fixes" : p[0] === "pattern" ? "#/pattern"
+              : p[0] === "meter" ? "#/meter" : p[0] === "m" || p[0] === "t" ? "#/#models" : "";
+    document.querySelectorAll("#navLinks a").forEach(el =>
+      el.classList.toggle("on", !!key && el.getAttribute("href") === key));
     bindSteps(); bindTabs(); bindJump(); reveal();
     if (anchor) document.getElementById(anchor)?.scrollIntoView({ behavior: "instant", block: "start" });
     else window.scrollTo({ top: 0, behavior: "instant" });
@@ -932,8 +1089,14 @@
     },
     close() { ov().classList.remove("open"); document.body.style.overflow = ""; },
     // 차트는 SVG 라서 배경 인쇄 설정과 무관하게 색이 그대로 나옵니다
-    printChart() { document.body.classList.add("printing-chart"); window.print();
-      setTimeout(() => document.body.classList.remove("printing-chart"), 500); },
+    // 인쇄할 장을 골라 body 에 표시하면 인쇄 CSS 가 그 장만 남깁니다
+    printChart(which = "all") {
+      const b = document.body;
+      b.classList.add("printing-chart");
+      b.dataset.print = which;
+      window.print();
+      setTimeout(() => { b.classList.remove("printing-chart"); delete b.dataset.print; }, 600);
+    },
     downloadChart() {
       const svg = document.getElementById("chartSvg");
       if (!svg) return;
@@ -950,23 +1113,14 @@
   function chrome() {
     const t = tel(), k = D.meta.kakaoChat || D.meta.kakao;
 
-    // 맨 위 안내 띠
-    document.getElementById("topbar").innerHTML = `
-      <span class="brandline"><i></i>${esc(D.meta.legal || D.meta.company)}</span>
-      <span class="only-wide">${esc(D.meta.oneStop)}</span>
-      <span class="sp"></span>
-      ${t ? `<a href="tel:${t}">${ic("phone", 14)}${esc(D.meta.phone)}</a>` : ""}
-      ${D.meta.homepage ? `<a class="only-wide" href="${esc(D.meta.homepage)}" target="_blank" rel="noopener">
-        ${ic("home", 14)}본사 홈페이지</a>` : ""}`;
-
     // 상단 바
-    document.getElementById("logo").innerHTML = U.logo(34);
-    document.getElementById("bName").textContent = D.meta.company;
-    document.getElementById("bSub").textContent = D.meta.title;
     document.getElementById("navSearch").innerHTML = `${ic("search", 18)}<span>검색</span><span class="kbd">/</span>`;
     const navK = document.getElementById("navKakao");
     if (k) { navK.href = k; navK.innerHTML = `${ic("kakao", 17)}<span>카카오 상담</span>`; }
     else navK.remove();
+    const navT = document.getElementById("navTel");
+    if (t) { navT.href = "tel:" + t; navT.innerHTML = `${ic("phone", 15)}<b>${esc(D.meta.phone)}</b>`; }
+    else navT.remove();
 
     // 하단 고정 막대
     const bar = document.getElementById("callbar");

@@ -35,7 +35,7 @@
   --sh-3:0 14px 36px -14px rgba(3,24,63,.22), 0 4px 12px -4px rgba(3,24,63,.08);
   --sh-4:0 36px 72px -28px rgba(3,24,63,.38);
   --ease:cubic-bezier(.22,.61,.36,1);
-  --wrap:1200px; --nav-h:66px; --top-h:34px;
+  --wrap:1200px; --nav-h:62px;
 }
 
 @media (prefers-color-scheme: dark){
@@ -90,47 +90,50 @@ h1,h2,h3{margin:0; letter-spacing:-.035em; line-height:1.22; font-weight:800; te
 .lead{color:var(--ink-2); font-size:clamp(15px,1.6vw,18px); line-height:1.66; margin:12px 0 0}
 .muted{color:var(--ink-3); font-size:14px}
 
-/* ── 맨 위 안내 띠 ─────────────────────────────────────────────────────── */
-.topbar{background:var(--navy); color:var(--dark-ink-2); font-size:12.5px; font-weight:600}
-.topbar-in{max-width:var(--wrap); margin:0 auto; padding:0 20px; height:var(--top-h);
-  display:flex; align-items:center; gap:16px}
-@media(min-width:900px){ .topbar-in{padding:0 32px} }
-.topbar .brandline{display:flex; align-items:center; gap:7px; color:#fff; font-weight:700}
-.topbar .brandline i{width:5px; height:5px; border-radius:50%; background:var(--gold)}
-.topbar .sp{flex:1}
-.topbar a{display:inline-flex; align-items:center; gap:6px; padding:4px 0; transition:.15s}
-.topbar a:hover{color:#fff}
-.topbar .ic{width:14px; height:14px; opacity:.8}
-.topbar .only-wide{display:none}
-@media(min-width:760px){ .topbar .only-wide{display:inline-flex} }
+/* ── 상단 바 (네이비 한 줄로 통합) ────────────────────────────────────── */
+.nav{position:sticky; top:0; z-index:70; background:var(--navy); color:var(--dark-ink);
+  box-shadow:0 1px 0 rgba(255,255,255,.07); transition:box-shadow .25s}
+.nav.stuck{box-shadow:0 6px 24px -10px rgba(3,24,63,.55), 0 1px 0 rgba(255,255,255,.07)}
+.nav-in{max-width:var(--wrap); margin:0 auto; padding:0 20px; height:var(--nav-h);
+  display:flex; align-items:center; gap:14px}
+@media(min-width:1000px){ .nav-in{padding:0 32px; gap:18px} }
 
-/* ── 상단 바 ──────────────────────────────────────────────────────────── */
-.nav{position:sticky; top:0; z-index:70; height:var(--nav-h);
-  background:color-mix(in srgb, var(--bg) 84%, transparent);
-  backdrop-filter:saturate(180%) blur(18px); -webkit-backdrop-filter:saturate(180%) blur(18px);
-  border-bottom:1px solid transparent; transition:border-color .25s, background .25s}
-.nav.stuck{border-bottom-color:var(--line); background:color-mix(in srgb, var(--bg) 94%, transparent)}
-.nav-in{max-width:var(--wrap); margin:0 auto; padding:0 20px; height:100%; display:flex; align-items:center; gap:10px}
-@media(min-width:900px){ .nav-in{padding:0 32px; gap:14px} }
-.brandmark{display:flex; align-items:center; gap:11px; min-width:0}
-.brandmark .txt{display:flex; flex-direction:column; line-height:1.18; min-width:0}
-.brandmark .txt b{font-size:15.5px; font-weight:850; letter-spacing:-.035em; white-space:nowrap}
-.brandmark .txt span{font-size:11.5px; font-weight:600; color:var(--ink-3); white-space:nowrap}
-.nav-links{display:none; margin-left:12px; gap:2px}
-@media(min-width:1040px){ .nav-links{display:flex} }
-.nav-links a{padding:8px 13px; border-radius:999px; font-size:14.5px; font-weight:650; color:var(--ink-2); transition:.16s var(--ease)}
-.nav-links a:hover{background:var(--surface-2); color:var(--ink)}
-.nav-sp{flex:1}
-.navbtn{display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 14px; border-radius:999px;
-  border:1px solid var(--line); background:var(--surface); color:var(--ink-2);
-  font-size:14px; font-weight:650; box-shadow:var(--sh-1); transition:.16s var(--ease)}
-.navbtn:hover{border-color:var(--ink-4); color:var(--ink); transform:translateY(-1px)}
-.navbtn .kbd{display:none; font-size:11px; font-weight:700; color:var(--ink-4);
-  border:1px solid var(--line); border-radius:5px; padding:1px 5px}
-@media(min-width:1040px){ .navbtn .kbd{display:inline-block} .navbtn{padding:0 8px 0 14px} }
+.brandmark{display:flex; align-items:center; gap:12px; min-width:0; flex:none}
+.brandmark .logo{height:32px; width:auto; border-radius:4px; display:block}
+@media(min-width:1000px){ .brandmark .logo{height:36px} }
+.brandmark .rule{width:1px; height:26px; background:rgba(255,255,255,.18); flex:none; display:none}
+.brandmark .sub{display:none; font-size:11.5px; line-height:1.25; font-weight:600;
+  color:var(--dark-ink-2); letter-spacing:-.01em; white-space:nowrap}
+@media(min-width:1000px){ .brandmark .rule,.brandmark .sub{display:block} }
+
+.nav-links{display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none;
+  margin:0 -20px; padding:0 20px; flex:1; min-width:0}
+.nav-links::-webkit-scrollbar{display:none}
+@media(min-width:1000px){ .nav-links{margin:0 0 0 6px; padding:0; flex:none; overflow:visible} }
+.nav-links a{flex:none; display:inline-flex; align-items:center; height:34px; padding:0 13px;
+  border-radius:999px; font-size:14px; font-weight:650; color:var(--dark-ink-2);
+  white-space:nowrap; transition:.16s var(--ease)}
+.nav-links a:hover{background:rgba(255,255,255,.1); color:#fff}
+.nav-links a.on{background:rgba(255,255,255,.14); color:#fff}
+.nav-sp{flex:1; display:none}
+@media(min-width:1000px){ .nav-sp{display:block} }
+
+.navtel{display:none; align-items:center; gap:7px; font-size:13.5px; color:var(--dark-ink-2);
+  font-weight:600; padding:6px 10px; border-radius:999px; transition:.15s}
+.navtel b{font-weight:750; color:#fff; letter-spacing:-.01em}
+.navtel:hover{background:rgba(255,255,255,.08)}
+@media(min-width:900px){ .navtel{display:inline-flex} }
+
+.navbtn{flex:none; display:inline-flex; align-items:center; gap:7px; height:38px; padding:0 13px;
+  border-radius:999px; border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.07);
+  color:var(--dark-ink); font-size:13.5px; font-weight:650; transition:.16s var(--ease)}
+.navbtn:hover{background:rgba(255,255,255,.15); border-color:rgba(255,255,255,.32); color:#fff}
+.navbtn .kbd{display:none; font-size:10.5px; font-weight:700; color:rgba(255,255,255,.5);
+  border:1px solid rgba(255,255,255,.22); border-radius:5px; padding:1px 5px}
+@media(min-width:1000px){ .navbtn .kbd{display:inline-block} }
+@media(max-width:999px){ .navbtn span:not(.kbd){display:none} .navbtn{padding:0 11px} }
 .navbtn.kko{background:var(--kakao); color:var(--kakao-ink); border-color:transparent; font-weight:750}
-.navbtn.kko:hover{filter:brightness(.95)}
-@media(max-width:700px){ .navbtn.kko span{display:none} .navbtn.kko{padding:0 12px} }
+.navbtn.kko:hover{background:#F5DC00; color:var(--kakao-ink)}
 
 /* ── 버튼 ─────────────────────────────────────────────────────────────── */
 .btn{display:inline-flex; align-items:center; justify-content:center; gap:9px;
@@ -666,3 +669,39 @@ body.has-callbar{padding-bottom:86px}
   body.printing-chart .section{padding:0}
   body.printing-chart .container{padding:0; max-width:none}
 }
+
+/* ── 출력할 5장 미리보기 ──────────────────────────────────────────────── */
+.pages{display:grid; gap:14px; grid-template-columns:1fr 1fr}
+@media(min-width:760px){ .pages{grid-template-columns:repeat(3,1fr); gap:18px} }
+@media(min-width:1100px){ .pages{grid-template-columns:repeat(5,1fr)} }
+.pagecard{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  overflow:hidden; box-shadow:var(--sh-2); display:flex; flex-direction:column; transition:.2s var(--ease)}
+.pagecard:hover{transform:translateY(-4px); box-shadow:var(--sh-3)}
+.pagecard .pv{aspect-ratio:210/297; background:var(--surface-2); border-bottom:1px solid var(--line-2);
+  display:grid; place-items:center; overflow:hidden}
+.pagecard .pv svg{width:100%; height:100%; display:block}
+.pagecard .pv.chart{background:#fff}
+.pinfo{padding:14px 15px 15px; display:flex; flex-direction:column; gap:5px; flex:1}
+.pinfo b{font-size:15px; font-weight:800; letter-spacing:-.03em}
+.pinfo p{margin:0 0 10px; font-size:12.5px; color:var(--ink-3); line-height:1.5; flex:1}
+
+/* 인쇄 전용 영역 — 화면에서는 감춤 */
+#printArea{display:none}
+
+@media print{
+  body.printing-chart > *{display:none !important}
+  body.printing-chart #app{display:block !important}
+  body.printing-chart #app > .container > *{display:none !important}
+  body.printing-chart #printArea{display:block !important}
+  body.printing-chart .ppage{display:none; page-break-after:always; break-after:page}
+  body.printing-chart[data-print="all"] .ppage{display:block}
+  body.printing-chart[data-print="K"] .ppage[data-page="K"],
+  body.printing-chart[data-print="C"] .ppage[data-page="C"],
+  body.printing-chart[data-print="M"] .ppage[data-page="M"],
+  body.printing-chart[data-print="Y"] .ppage[data-page="Y"],
+  body.printing-chart[data-print="chart"] .ppage[data-page="chart"]{display:block}
+  body.printing-chart .ppage:last-child{page-break-after:auto; break-after:auto}
+  body.printing-chart .ppage svg{width:100%; height:auto; display:block}
+  body.printing-chart{background:#fff; padding:0 !important}
+}
+@page{ size:A4; margin:0 }

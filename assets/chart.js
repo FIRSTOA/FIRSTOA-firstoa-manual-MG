@@ -22,6 +22,24 @@
     `<text x="${x}" y="${y}" font-size="${size}" fill="${fill}" text-anchor="${anchor}"
       font-family="Pretendard, 'Noto Sans KR', sans-serif" font-weight="${weight}">${s}</text>`;
 
+  /* 전면 꽉 찬 한 색 페이지.
+     드럼·정착기·롤러 결함은 색이 넓게 깔려야 드러납니다. 세로줄·가로 띠·반복 자국·
+     농도 얼룩을 보는 가장 확실한 방법이라 기사들이 실제로 이 장을 뽑습니다. */
+  function fullSVG(ink, company = "퍼스트전산") {
+    const c = INK[ink];
+    // 종이 끝까지 색이 가야 하므로 여백 없이 채우고, 아래쪽에만 아주 작은 확인용 표기를 남깁니다
+    const light = ink === "Y";                       // 노랑 위에는 검정 글씨라야 읽힙니다
+    const fg = light ? "#000000" : "#FFFFFF";
+    return `<svg class="fullpage" data-ink="${ink}" xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 210 297" width="100%" role="img" aria-label="${NAME[ink]} 전면 출력">
+      <rect width="210" height="297" fill="${c}"/>
+      <g opacity="${light ? .5 : .38}">
+        ${txt(8, 291, `${company} · ${NAME[ink]} 전면 점검  ·  기종 __________  출력일 __________`, 3, fg)}
+        ${txt(202, 291, ink, 3.6, fg, "end", 700)}
+      </g>
+    </svg>`;
+  }
+
   function chartSVG(company = "퍼스트전산") {
     const M = 12, W = 210 - M * 2;   // 여백 12mm, 안쪽 폭 186mm
     let o = "";
@@ -134,5 +152,5 @@
       <rect width="210" height="297" fill="#ffffff"/>${o}</svg>`;
   }
 
-  window.CHART = { chartSVG };
+  window.CHART = { chartSVG, fullSVG, INKS: ["K", "C", "M", "Y"], NAME };
 })();
