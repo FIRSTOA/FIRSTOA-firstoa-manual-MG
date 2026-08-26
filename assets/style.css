@@ -582,3 +582,34 @@ body.has-callbar{padding-bottom:86px}
   .work{display:block}
   .steps li{break-inside:avoid; cursor:default}
 }
+
+/* ── 두 갈래 입구 (고객이 오는 이유는 결국 두 가지다) ─────────────────── */
+.doors{display:grid; gap:14px; grid-template-columns:1fr}
+@media(min-width:760px){ .doors{grid-template-columns:1fr 1fr; gap:20px} }
+.door{position:relative; display:flex; flex-direction:column; gap:10px; padding:28px 26px 24px;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-2xl);
+  box-shadow:var(--sh-2); overflow:hidden; transition:.22s var(--ease)}
+.door::before{content:""; position:absolute; right:-60px; top:-60px; width:200px; height:200px;
+  border-radius:50%; opacity:.1; transition:.35s var(--ease)}
+.door.d1::before{background:var(--gold)}
+.door.d2::before{background:var(--blue)}
+.door:hover{transform:translateY(-5px); box-shadow:var(--sh-3)}
+.door:hover::before{transform:scale(1.35); opacity:.16}
+.door > *{position:relative; z-index:1}
+.dbox{width:62px; height:62px; border-radius:19px; display:grid; place-items:center; margin-bottom:4px}
+.door.d1 .dbox{background:var(--gold-soft); color:var(--gold-2)}
+.door.d2 .dbox{background:var(--accent-soft); color:var(--blue)}
+.door b{font-size:clamp(19px,2.2vw,23px); font-weight:850; letter-spacing:-.035em}
+.door p{margin:0; font-size:14.5px; color:var(--ink-2); line-height:1.6; max-width:34ch}
+.dgo{display:inline-flex; align-items:center; gap:7px; margin-top:8px; font-size:14.5px; font-weight:750;
+  color:var(--blue); transition:gap .2s var(--ease)}
+.door.d1 .dgo{color:var(--gold-2)}
+.door:hover .dgo{gap:12px}
+
+.chipbar{display:flex; flex-wrap:wrap; gap:8px; margin-top:18px}
+.chip2{display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border-radius:999px;
+  background:var(--surface); border:1px solid var(--line); font-size:14px; font-weight:650;
+  color:var(--ink-2); box-shadow:var(--sh-1); transition:.16s var(--ease)}
+.chip2:hover{border-color:var(--blue); color:var(--blue); transform:translateY(-1px)}
+.chip2 .ic{color:var(--ink-4)}
+.chip2:hover .ic{color:var(--blue)}

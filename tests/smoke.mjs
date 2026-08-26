@@ -28,6 +28,8 @@ const junk = s => /undefined|\[object Object\]|NaN|&lt;svg/.test(s);
 /* 1. 모든 주소가 그려지는가 */
 console.log('\n[1] 화면 그리기');
 const routes = ['#/', '#/m/samsung-3220', '#/m/samsung-3220/toner', '#/m/hp-8710/toner',
+  '#/fixes', '#/f/jam', '#/f/acr-ctd', '#/m/samsung-3220/f/jam', '#/m/samsung-3220/f/acr-ctd',
+  '#/m/xerox-c2263/f/line-copy',
   '#/t/toner', '#/t/meter', '#/s/3220', '#/s/줄', '#/s/zzz없음', '#/m/없음', '#/헛주소'];
 for (const r of routes) {
   try {
@@ -152,6 +154,26 @@ const foot = doc.getElementById('footer').innerHTML;
 foot.includes(D.meta.bizNo) && foot.includes('유튜브') ? ok('바닥글: 사업자번호·유튜브 채널 포함') : bad('바닥글 내용 누락');
 nav('#/m/samsung-3220');
 doc.querySelector('#app .mcard .real, #app .phead .art img.photo') ? ok('기종 화면에 실제 제품 사진') : bad('기종 사진 안 붙음');
+
+/* 11. 간단 AS 적용 범위 */
+console.log('\n[11] 간단 AS(브랜드 공통) 적용 범위');
+nav('#/m/samsung-3220');
+const sTx = doc.getElementById('app').textContent;
+sTx.includes('ACR') ? ok('삼성 기종에 삼성 전용 처리 표시') : bad('삼성 전용 처리 안 보임');
+nav('#/m/xerox-c2263');
+const xTx = doc.getElementById('app').textContent;
+!xTx.includes('ACR') ? ok('제록스 기종엔 삼성 전용 처리 숨김') : bad('삼성 전용 처리가 제록스에 샜다');
+xTx.includes('용지 걸림') ? ok('전 기종 공통 처리는 어디서나 표시') : bad('공통 처리 누락');
+nav('#/m/samsung-3220/f/acr-ctd');
+doc.getElementById('app').textContent.includes('준비') ? ok('내용 없는 항목은 "준비 중"으로 안내') : bad('빈 항목 처리 없음');
+// 드럼은 브라더만
+const drumModels = D.MODELS.filter(m => 'drum' in m.videos).map(m => m.id);
+drumModels.length === 1 && drumModels[0] === 'brother-5700'
+  ? ok('드럼 교체는 브라더 5700에만 노출') : bad('드럼 노출 기종: ' + drumModels.join(','));
+// 카카오는 채팅 직행이 아니라 채널 홈
+nav('#/');
+const chatLinks = [...doc.querySelectorAll('#app a[href*="/chat"]')];
+chatLinks.length === 0 ? ok('카카오는 채널 홈으로만 연결(로그인 벽 회피)') : bad('채팅 직행 링크 남음 ' + chatLinks.length);
 
 console.log(fails ? `\n실패 ${fails}건` : '\n전 항목 통과');
 process.exit(fails ? 1 : 0);

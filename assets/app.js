@@ -13,6 +13,12 @@
   const CAT   = Object.fromEntries(D.CATEGORIES.map(c => [c.id, c]));
   const BRAND = Object.fromEntries(D.BRANDS.map(b => [b.id, b]));
   const MODEL = Object.fromEntries(D.MODELS.map(m => [m.id, m]));
+  const FIX   = Object.fromEntries((D.FIXES || []).map(f => [f.id, f]));
+
+  // 간단 AS 는 기종마다 따로 쓰지 않고 적용 범위(scope)로 붙인다 — 삼성 6기종에 같은 내용을 여섯 번 쓰지 않는다
+  const inScope = (f, m) => !!(f.scope.all || f.scope.brand === m.brand || (f.scope.models || []).includes(m.id));
+  const fixesOf = m => (D.FIXES || []).filter(f => inScope(f, m));
+  const modelsForFix = f => D.MODELS.filter(m => inScope(f, m));
 
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -75,6 +81,25 @@
       </div></a>`;
   };
 
+  // 간단 AS 카드 — 기종마다 복제하지 않고 적용 범위로 붙인다
+  const fixCard = (m, f) => {
+    const ready = (f.steps || []).length > 0;
+    return `<a class="tcard ${ready ? "" : "soon"}" href="#/m/${m.id}/f/${f.id}" data-rv>
+      <div class="thumb">
+        ${f.video ? `<img src="${thumb(f.video)}" onerror="${fallback(f.video)}" alt="" loading="lazy">
+                     <span class="playdot"><i>${ic("play", 20)}</i></span>`
+                  : `<span class="ph">${ic(f.icon, 38)}</span>`}
+        <span class="pin">${ic("clock", 13)}${f.minutes}분</span>
+      </div>
+      <div class="body">
+        <div class="row1">${ic(f.icon, 19)}<b>${esc(f.title)}</b></div>
+        <p>${esc(f.summary)}</p>
+        <div class="meta">${ready ? `<span class="badge b-gold">직접 해보기</span>`
+                                  : `<span class="badge b-soon">내용 준비 중</span>`}
+          <span>${f.scope.all ? "전 기종 공통" : esc(BRAND[m.brand]?.name || "") + " 공통"}</span></div>
+      </div></a>`;
+  };
+
   const tel = () => (D.meta.phone || "").replace(/[^0-9+]/g, "");
 
   const band = () => `<section class="section"><div class="band" data-rv>
@@ -82,7 +107,7 @@
       <p>${esc(D.meta.company)} 기사가 바로 도와드립니다. ${esc(D.meta.hours)}</p>
       <div class="row">
         ${tel() ? `<a class="btn light" href="tel:${tel()}">${ic("phone", 19)}전화 ${esc(D.meta.phone)}</a>` : ""}
-        ${D.meta.kakaoChat ? `<a class="btn kko" href="${esc(D.meta.kakaoChat)}" target="_blank" rel="noopener">
+        ${D.meta.kakao ? `<a class="btn kko" href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">
           ${ic("kakao", 19)}카카오톡 상담</a>` : ""}
       </div></div></section>`;
 
@@ -107,15 +132,19 @@
       <div class="kko-side">
         <a class="btn kko wide" href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">
           ${ic("kakao", 19)}채널 추가하기</a>
-        <a class="btn ghost wide sm" href="${esc(D.meta.kakaoChat)}" target="_blank" rel="noopener">
-          바로 채팅 상담</a>
-        <span class="hint">카카오톡에서 <b>퍼스트전산</b> 검색해도 됩니다</span>
+        <span class="hint">카카오톡 앱에서 <b>퍼스트전산</b> 을 검색해도 됩니다</span>
       </div>
     </div>`;
 
   /* ── 화면: 첫 화면 ─────────────────────────────────────────────────── */
   function viewHome() {
-    const popular = ["toner", "waste", "jam", "meter"].map(id => TASK[id]).filter(Boolean);
+    const quick = [
+      { to: "#/t/toner", icon: "toner", label: "토너 교체" },
+      { to: "#/t/waste", icon: "waste", label: "폐토너통 교체" },
+      { to: "#/f/jam",   icon: "jam",   label: "용지 걸림" },
+      { to: "#/f/line-copy", icon: "quality", label: "복사 줄 나옴" },
+      { to: "#/t/meter", icon: "meter", label: "검침 카운터" },
+    ];
 
     return `
     <section class="hero">
@@ -129,8 +158,8 @@
             <input id="q" placeholder="기종명 또는 증상 (예: 3220, 토너, 줄)" autocomplete="off" aria-label="검색">
             <button type="submit">검색</button>
           </form>
-          <div class="quick">${popular.map(t =>
-            `<a href="#/t/${t.id}">${ic(t.icon, 17)}${esc(t.title)}</a>`).join("")}</div>
+          <div class="quick">${quick.map(q =>
+            `<a href="${q.to}">${ic(q.icon, 17)}${esc(q.label)}</a>`).join("")}</div>
         </div>
         <div class="hero-art">
           <div class="hero-shot">
@@ -153,16 +182,26 @@
     <div class="container">
       <section class="section">
         <div class="sec-head" data-rv>
-          <div><span class="eyebrow">자주 찾는 작업</span>
-            <h2 class="h2" style="margin-top:10px">이 네 가지가 가장 많습니다</h2>
-            <p class="lead">기종을 몰라도 됩니다. 작업을 고르면 기종을 골라 드립니다.</p></div>
+          <div><span class="eyebrow">시작하기</span>
+            <h2 class="h2" style="margin-top:10px">무엇 때문에 오셨나요?</h2>
+            <p class="lead">둘 중 하나만 고르시면 됩니다. 기종을 몰라도 찾아 드립니다.</p></div>
         </div>
-        <div class="tiles">${popular.map(t => `
-          <a class="tile" href="#/t/${t.id}" data-rv>
-            <span class="box">${ic(t.icon, 24)}</span>
-            <b>${esc(t.title)}</b><p>${esc(t.summary)}</p>
-            <span class="foot">${ic("video", 14)}영상 ${modelsWith(t.id).length}종</span>
-          </a>`).join("")}</div>
+        <div class="doors">
+          <a class="door d1" href="#/t/toner" data-rv>
+            <span class="dbox">${ic("toner", 30)}</span>
+            <b>소모품이 떨어졌어요</b>
+            <p>토너 · 폐토너통 교체. 기사가 직접 촬영한 영상을 보며 3분이면 끝납니다.</p>
+            <span class="dgo">기종 고르기 ${ic("arrow", 18)}</span>
+          </a>
+          <a class="door d2" href="#/fixes" data-rv>
+            <span class="dbox">${ic("error", 30)}</span>
+            <b>문제가 생겼어요</b>
+            <p>복사할 때 줄이 나오거나, 용지가 걸리거나, 화면에 오류가 뜰 때.</p>
+            <span class="dgo">증상 고르기 ${ic("arrow", 18)}</span>
+          </a>
+        </div>
+        <div class="chipbar">${quick.map(q =>
+          `<a class="chip2" href="${q.to}">${ic(q.icon, 16)}${esc(q.label)}</a>`).join("")}</div>
       </section>
 
       <section class="section" id="models" style="padding-top:0">
@@ -219,8 +258,13 @@
   function viewModel(id) {
     const m = MODEL[id];
     if (!m) return view404();
-    const b = BRAND[m.brand], list = tasksOf(m), n = vidCount(m);
-    const cats = D.CATEGORIES.filter(c => list.some(t => t.cat === c.id));
+    const b = BRAND[m.brand], list = tasksOf(m), fixes = fixesOf(m), n = vidCount(m);
+    const sup = list.filter(t => t.cat === "consumable");
+    const mng = list.filter(t => t.cat === "manage");
+    const secs = [];
+    if (sup.length)   secs.push({ id: "sec-consumable", cat: CAT.consumable, html: sup.map(t => taskCard(m, t)).join("") });
+    if (fixes.length) secs.push({ id: "sec-fix",        cat: CAT.fix,        html: fixes.map(f => fixCard(m, f)).join("") });
+    if (mng.length)   secs.push({ id: "sec-manage",     cat: CAT.manage,     html: mng.map(t => taskCard(m, t)).join("") });
 
     return `<div class="container">
       <div class="phead">
@@ -230,32 +274,130 @@
             <span class="eyebrow">${esc(b?.name || "")}</span>
             <h1 class="h1" style="margin-top:10px">${esc(m.name)}</h1>
             ${m.full ? `<p class="lead" style="margin-top:8px">${esc(m.full)}</p>` : ""}
-            <p class="lead" style="margin-top:6px">필요한 작업을 고르면 영상과 순서를 함께 보여드립니다.</p>
+            <p class="lead" style="margin-top:6px">필요한 것을 고르면 영상과 순서를 함께 보여드립니다.</p>
             <div class="statrow">
               ${n ? `<span class="stat">${ic("video", 16)}영상 ${n}편</span>`
                   : `<span class="stat">${ic("video", 16)}영상 준비 중</span>`}
-              <span class="stat">${ic("book", 16)}작업 ${list.length}가지</span>
-              <span class="stat">${ic("grid", 16)}${esc(b?.name || "")}</span>
+              <span class="stat">${ic("toner", 16)}소모품 ${sup.length}가지</span>
+              <span class="stat">${ic("error", 16)}간단 처리 ${fixes.length}가지</span>
             </div>
           </div>
           <div class="art">${artOf(m)}</div>
         </div>
       </div>
 
-      <div class="jump" id="jump">${cats.map((c, i) =>
-        `<a href="#sec-${c.id}" data-sec="sec-${c.id}" class="${i ? "" : "on"}">${ic(c.icon, 16)}${esc(c.name)}</a>`).join("")}</div>
+      <div class="jump" id="jump">${secs.map((x, i) =>
+        `<a href="#${x.id}" data-sec="${x.id}" class="${i ? "" : "on"}">${ic(x.cat.icon, 16)}${esc(x.cat.name)}</a>`).join("")}</div>
 
-      ${n ? "" : `<div class="section tight"><div class="callout info" data-rv>
-        ${ic("spark", 18)}<p style="margin-top:8px">이 기종은 영상을 준비하고 있습니다.
-        아래 순서만으로도 대부분 해결되며, 어려우시면 언제든 전화 주세요.</p></div></div>`}
-
-      ${cats.map(c => `<section class="section tight" id="sec-${c.id}">
+      ${secs.map(x => `<section class="section tight" id="${x.id}">
         <div class="sec-head" data-rv><div>
-          <span class="eyebrow">${esc(c.desc)}</span>
-          <h2 class="h2" style="margin-top:8px">${esc(c.name)}</h2></div></div>
-        <div class="cards">${list.filter(t => t.cat === c.id).map(t => taskCard(m, t)).join("")}</div>
+          <span class="eyebrow">${esc(x.cat.desc)}</span>
+          <h2 class="h2" style="margin-top:8px">${esc(x.cat.name)}</h2></div></div>
+        <div class="cards">${x.html}</div>
       </section>`).join("")}
 
+      ${band()}
+    </div>`;
+  }
+
+  /* ── 화면: 간단 AS 처리 ────────────────────────────────────────────── */
+  function viewFix(mid, fid) {
+    const m = MODEL[mid], f = FIX[fid];
+    if (!m || !f || !inScope(f, m)) return view404();
+    const b = BRAND[m.brand], ready = (f.steps || []).length > 0;
+    const others = fixesOf(m).filter(x => x.id !== fid);
+    const myTel = tel();
+
+    return `<div class="container">
+      <div class="phead">
+        ${crumbs([{ label: "처음", to: "/" }, { label: m.name, to: "/m/" + m.id }, { label: f.title }])}
+        <h1 class="h1" style="margin-top:14px; display:flex; align-items:center; gap:12px">
+          ${ic(f.icon, 30)}${esc(f.title)}</h1>
+        <p class="lead">${esc(f.summary)}</p>
+        <div class="statrow">
+          <span class="stat">${ic("clock", 16)}약 ${f.minutes}분</span>
+          <span class="stat">${ic("grid", 16)}${f.scope.all ? "전 기종 같은 방법" : esc(b?.name || "") + " 공통"}</span>
+        </div>
+      </div>
+
+      <div class="work" style="margin-top:22px">
+        <div>
+          ${f.video ? `<div class="player" id="player" data-v="${esc(f.video)}">
+                 <img src="${thumb(f.video, true)}" onerror="${fallback(f.video)}" alt="">
+                 <span class="veil"></span>
+                 <button class="go" onclick="FIRSTOA.play()" aria-label="영상 재생"><i>${ic("play", 26)}</i></button>
+               </div>` : ""}
+
+          ${ready ? `<div class="panel">
+              <div class="panel-h">${ic("book", 19)}<b>따라 하는 순서</b>
+                <button class="rst" onclick="FIRSTOA.reset()">처음부터</button></div>
+              <div class="progress"><i id="bar"></i></div>
+              <div class="pmeta"><span id="pnum" class="num">0 / ${f.steps.length}</span> 단계 · 누르면 체크됩니다</div>
+              <ol class="steps" id="steps" data-key="${esc(mid + ".f." + fid)}">
+                ${f.steps.map((t, k) => `<li data-k="${k}" tabindex="0" role="button" aria-pressed="false">
+                  <span class="mark"><span class="num">${k + 1}</span>${ic("check", 16)}</span>
+                  <span class="tx">${esc(t)}</span></li>`).join("")}
+              </ol></div>`
+            : `<div class="callout info">
+                 <b>${ic("spark", 17)}내용을 준비하고 있습니다</b>
+                 <p>이 항목은 기사가 처리 방법을 정리하는 중입니다.
+                    지금은 전화나 카카오톡으로 연락 주시면 바로 안내해 드립니다.</p></div>`}
+
+          ${f.cautions?.length ? `<div class="callout warn" style="margin-top:16px">
+            <b>${ic("error", 17)}주의하세요</b>
+            <ul>${f.cautions.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>` : ""}
+        </div>
+
+        <aside class="aside">
+          ${others.length ? `<div class="box">
+            <b>${esc(m.name)}의 다른 간단 처리</b>
+            <div class="links">${others.slice(0, 7).map(x =>
+              `<a href="#/m/${m.id}/f/${x.id}">${ic(x.icon, 18)}${esc(x.title)}
+                 ${(x.steps || []).length ? "" : `<span class="badge b-soon">준비 중</span>`}
+                 <span class="arw">${ic("chev", 16)}</span></a>`).join("")}</div>
+          </div>` : ""}
+          <div class="box">
+            <b>해결이 안 되시면</b>
+            <p class="muted" style="margin:-6px 0 14px">${esc(D.meta.company)} · ${esc(D.meta.hours)}</p>
+            ${myTel ? `<a class="btn wide sm" href="tel:${myTel}">${ic("phone", 17)}전화 ${esc(D.meta.phone)}</a>` : ""}
+            ${D.meta.kakao ? `<a class="btn kko wide sm" style="margin-top:8px"
+              href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">${ic("kakao", 17)}카카오톡 상담</a>` : ""}
+          </div>
+        </aside>
+      </div>
+
+      <div class="pagenav">
+        <a href="#/m/${m.id}">${ic("grid", 18)}<span><span class="lbl">목록</span><b>${esc(m.name)}</b></span></a>
+        <a class="next" href="#/f/${f.id}"><span><span class="lbl">다른 기종</span>
+          <b>${esc(f.title)} · ${modelsForFix(f).length}종</b></span>${ic("chev", 18)}</a>
+      </div>
+      ${band()}
+    </div>`;
+  }
+
+  /* ── 화면: 간단 AS → 기종 고르기 ──────────────────────────────────── */
+  function viewFixPick(fid) {
+    const f = FIX[fid];
+    if (!f) return view404();
+    const list = modelsForFix(f);
+    return `<div class="container">
+      <div class="phead">
+        ${crumbs([{ label: "처음", to: "/" }, { label: f.title }])}
+        <h1 class="h1" style="margin-top:14px; display:flex; align-items:center; gap:12px">
+          ${ic(f.icon, 30)}${esc(f.title)}</h1>
+        <p class="lead">${esc(f.summary)} — 쓰시는 기종을 골라 주세요.</p>
+      </div>
+      <section class="section tight">
+        <div class="models">${list.map(m => {
+          const b = BRAND[m.brand];
+          return `<a class="mcard" href="#/m/${m.id}/f/${f.id}" data-rv>
+            <div class="art">${artOf(m)}
+              <span class="bdot"><i style="background:${esc(b?.accent || "#888")}"></i>${esc(b?.name || "")}</span></div>
+            <div class="info"><b>${esc(m.name)}</b>
+              ${m.full ? `<span class="sub">${esc(m.full)}</span>` : ""}
+              <div class="meta"><span class="go">${ic("arrow", 18)}</span></div></div></a>`;
+        }).join("")}</div>
+      </section>
       ${band()}
     </div>`;
   }
@@ -332,8 +474,8 @@
             <b>도움이 필요하세요?</b>
             <p class="muted" style="margin:-6px 0 14px">${esc(D.meta.company)} · ${esc(D.meta.hours)}</p>
             ${myTel ? `<a class="btn wide sm" href="tel:${myTel}">${ic("phone", 17)}전화 ${esc(D.meta.phone)}</a>` : ""}
-            ${D.meta.kakaoChat ? `<a class="btn kko wide sm" style="margin-top:8px"
-              href="${esc(D.meta.kakaoChat)}" target="_blank" rel="noopener">${ic("kakao", 17)}카카오톡 상담</a>` : ""}
+            ${D.meta.kakao ? `<a class="btn kko wide sm" style="margin-top:8px"
+              href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">${ic("kakao", 17)}카카오톡 상담</a>` : ""}
             <button class="btn ghost wide sm" style="margin-top:8px" onclick="window.print()">${ic("printer", 17)}순서 인쇄</button>
           </div>
         </aside>
@@ -390,22 +532,54 @@
     </div>`;
   }
 
+  /* ── 화면: 증상 목록 (문제가 생겼어요) ───────────────────────────── */
+  function viewFixes() {
+    const common = (D.FIXES || []).filter(f => f.scope.all);
+    const byBrand = D.BRANDS.map(b => ({ b, list: (D.FIXES || []).filter(f => f.scope.brand === b.id) }))
+      .filter(x => x.list.length);
+    const tile = f => `<a class="tile" href="#/f/${f.id}" data-rv>
+        <span class="box">${ic(f.icon, 24)}</span>
+        <b>${esc(f.title)}</b><p>${esc(f.summary)}</p>
+        <span class="foot">${ic("clock", 14)}약 ${f.minutes}분 · ${modelsForFix(f).length}종</span></a>`;
+
+    return `<div class="container">
+      <div class="phead">
+        ${crumbs([{ label: "처음", to: "/" }, { label: "문제 해결" }])}
+        <h1 class="h1" style="margin-top:14px">어떤 증상인가요?</h1>
+        <p class="lead">고르면 처리 순서를 보여드립니다. 기사 방문 없이 해결되는 것이 많습니다.</p>
+      </div>
+      <section class="section tight">
+        <div class="sec-head" data-rv><div><span class="eyebrow">전 기종 공통</span>
+          <h2 class="h2" style="margin-top:8px">어느 복합기든 방법이 같습니다</h2></div></div>
+        <div class="tiles">${common.map(tile).join("")}</div>
+      </section>
+      ${byBrand.map(({ b, list }) => `<section class="section tight">
+        <div class="sec-head" data-rv><div><span class="eyebrow">${esc(b.name)} 전용</span>
+          <h2 class="h2" style="margin-top:8px">${esc(b.name)} 기종에서 생기는 증상</h2></div></div>
+        <div class="tiles">${list.map(tile).join("")}</div>
+      </section>`).join("")}
+      ${band()}
+    </div>`;
+  }
+
   /* ── 검색 ──────────────────────────────────────────────────────────── */
   function find(q) {
     const k = q.trim().toLowerCase();
-    if (!k) return { models: [], tasks: [] };
+    if (!k) return { models: [], tasks: [], fixes: [] };
     const hit = s => String(s).toLowerCase().includes(k);
     return {
       models: D.MODELS.filter(m => hit(m.name) || (m.aka || []).some(hit) ||
         hit(BRAND[m.brand]?.name || "") || hit(BRAND[m.brand]?.full || "")),
       tasks: D.TASKS.filter(t => hit(t.title) || hit(t.summary) || hit(CAT[t.cat]?.name || "") ||
         (t.steps || []).some(hit) || (t.cautions || []).some(hit)),
+      fixes: (D.FIXES || []).filter(f => hit(f.title) || hit(f.summary) ||
+        (f.steps || []).some(hit) || (f.cautions || []).some(hit)),
     };
   }
 
   function viewSearch(q) {
-    const { models, tasks } = find(q);
-    if (!models.length && !tasks.length) return `<div class="container"><div class="empty">
+    const { models, tasks, fixes } = find(q);
+    if (!models.length && !tasks.length && !fixes.length) return `<div class="container"><div class="empty">
       ${ic("search", 44)}<b>“${esc(q)}” 결과가 없습니다</b>
       <p>모델명 숫자 몇 자리(예: 3220)나 증상(예: 줄, 걸림)으로 다시 찾아보세요.</p>
       <a class="btn ghost" href="#/">처음으로</a></div>${band()}</div>`;
@@ -413,13 +587,19 @@
     return `<div class="container">
       <div class="phead">${crumbs([{ label: "처음", to: "/" }, { label: "검색" }])}
         <h1 class="h1" style="margin-top:14px">“${esc(q)}” 검색 결과</h1>
-        <p class="lead">기종 ${models.length}종 · 작업 ${tasks.length}가지</p></div>
+        <p class="lead">기종 ${models.length}종 · 소모품 ${tasks.length}가지 · 증상 ${fixes.length}가지</p></div>
       ${models.length ? `<section class="section tight">
         <div class="sec-head" data-rv><div><span class="eyebrow">기종</span>
           <h2 class="h2" style="margin-top:8px">${models.length}종</h2></div></div>
         <div class="models">${models.map(modelCard).join("")}</div></section>` : ""}
+      ${fixes.length ? `<section class="section tight">
+        <div class="sec-head" data-rv><div><span class="eyebrow">증상</span>
+          <h2 class="h2" style="margin-top:8px">${fixes.length}가지</h2></div></div>
+        <div class="tiles">${fixes.map(f => `<a class="tile" href="#/f/${f.id}" data-rv>
+          <span class="box">${ic(f.icon, 24)}</span><b>${esc(f.title)}</b><p>${esc(f.summary)}</p>
+          <span class="foot">${ic("clock", 14)}약 ${f.minutes}분</span></a>`).join("")}</div></section>` : ""}
       ${tasks.length ? `<section class="section tight">
-        <div class="sec-head" data-rv><div><span class="eyebrow">작업</span>
+        <div class="sec-head" data-rv><div><span class="eyebrow">소모품</span>
           <h2 class="h2" style="margin-top:8px">${tasks.length}가지</h2></div></div>
         <div class="tiles">${tasks.map(t => `<a class="tile" href="#/t/${t.id}" data-rv>
           <span class="box">${ic(t.icon, 24)}</span><b>${esc(t.title)}</b><p>${esc(t.summary)}</p>
@@ -519,8 +699,8 @@
              <span class="arw">${ic("chev", 16)}</span></a>`).join("");
       return;
     }
-    const { models, tasks } = find(q);
-    hits = [...models.map(m => "#/m/" + m.id), ...tasks.map(t => "#/t/" + t.id)];
+    const { models, tasks, fixes } = find(q);
+    hits = [...models.map(m => "#/m/" + m.id), ...fixes.map(f => "#/f/" + f.id), ...tasks.map(t => "#/t/" + t.id)];
     sel = 0;
     box.innerHTML =
       (models.length ? `<div class="grp">기종 ${models.length}</div>` + models.map(m =>
@@ -528,7 +708,11 @@
           ? `<img src="${esc(m.photo)}" alt="" style="width:100%;height:100%;object-fit:cover">` : U.device(m.device)}</span>
           <span class="tx"><b>${esc(m.name)}</b><span>${esc(m.full || BRAND[m.brand]?.name || "")} · 영상 ${vidCount(m)}편</span></span>
           <span class="arw">${ic("chev", 16)}</span></a>`).join("") : "") +
-      (tasks.length ? `<div class="grp">작업 ${tasks.length}</div>` + tasks.map(t =>
+      (fixes.length ? `<div class="grp">증상 ${fixes.length}</div>` + fixes.map(f =>
+        `<a class="hit" href="#/f/${f.id}"><span class="thumb">${ic(f.icon, 18)}</span>
+          <span class="tx"><b>${esc(f.title)}</b><span>${esc(f.summary)}</span></span>
+          <span class="arw">${ic("chev", 16)}</span></a>`).join("") : "") +
+      (tasks.length ? `<div class="grp">소모품 ${tasks.length}</div>` + tasks.map(t =>
         `<a class="hit" href="#/t/${t.id}"><span class="thumb">${ic(t.icon, 18)}</span>
           <span class="tx"><b>${esc(t.title)}</b><span>${esc(t.summary)}</span></span>
           <span class="arw">${ic("chev", 16)}</span></a>`).join("") : "") ||
@@ -549,9 +733,12 @@
     let html, title = `${D.meta.company} ${D.meta.title}`;
 
     if (!p.length) html = viewHome();
+    else if (p[0] === "m" && p[2] === "f" && p[3]) { html = viewFix(p[1], p[3]); title = `${FIX[p[3]]?.title || ""} · ${MODEL[p[1]]?.name || ""} | ${D.meta.company}`; }
     else if (p[0] === "m" && p[2]) { html = viewTask(p[1], p[2]); title = `${TASK[p[2]]?.title || ""} · ${MODEL[p[1]]?.name || ""} | ${D.meta.company}`; }
     else if (p[0] === "m") { html = viewModel(p[1]); title = `${MODEL[p[1]]?.name || "기종"} | ${D.meta.company}`; }
     else if (p[0] === "t") { html = viewPick(p[1]); title = `${TASK[p[1]]?.title || "작업"} | ${D.meta.company}`; }
+    else if (p[0] === "fixes") { html = viewFixes(); title = `문제 해결 | ${D.meta.company}`; }
+    else if (p[0] === "f") { html = viewFixPick(p[1]); title = `${FIX[p[1]]?.title || "증상"} | ${D.meta.company}`; }
     else if (p[0] === "s") { html = viewSearch(p.slice(1).join("/")); title = `검색 | ${D.meta.company}`; }
     else html = view404();
 
