@@ -660,48 +660,6 @@ body.has-callbar{padding-bottom:86px}
 .ntip .ic{flex:none; margin-top:2px}
 
 /* ── 차트만 인쇄 ──────────────────────────────────────────────────────── */
-@page{ size:A4; margin:8mm }
-@media print{
-  body.printing-chart .nav,body.printing-chart .topbar,body.printing-chart .footer,
-  body.printing-chart .callbar,body.printing-chart .phead,body.printing-chart .band,
-  body.printing-chart .callout,body.printing-chart .sec-head,body.printing-chart .overlay{display:none !important}
-  body.printing-chart .chartbox{border:0; box-shadow:none; padding:0}
-  body.printing-chart .section{padding:0}
-  body.printing-chart .container{padding:0; max-width:none}
-}
-
-/* ── 출력할 5장 미리보기 ──────────────────────────────────────────────── */
-.pages{display:grid; gap:14px; grid-template-columns:1fr 1fr}
-@media(min-width:760px){ .pages{grid-template-columns:repeat(3,1fr); gap:18px} }
-@media(min-width:1100px){ .pages{grid-template-columns:repeat(5,1fr)} }
-.pagecard{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
-  overflow:hidden; box-shadow:var(--sh-2); display:flex; flex-direction:column; transition:.2s var(--ease)}
-.pagecard:hover{transform:translateY(-4px); box-shadow:var(--sh-3)}
-.pagecard .pv{aspect-ratio:210/297; background:var(--surface-2); border-bottom:1px solid var(--line-2);
-  display:grid; place-items:center; overflow:hidden}
-.pagecard .pv svg{width:100%; height:100%; display:block}
-.pagecard .pv.chart{background:#fff}
-.pinfo{padding:14px 15px 15px; display:flex; flex-direction:column; gap:5px; flex:1}
-.pinfo b{font-size:15px; font-weight:800; letter-spacing:-.03em}
-.pinfo p{margin:0 0 10px; font-size:12.5px; color:var(--ink-3); line-height:1.5; flex:1}
-
-/* 인쇄 전용 영역 — 화면에서는 감춤 */
-#printArea{display:none}
-
-@media print{
-  body.printing-chart > *{display:none !important}
-  body.printing-chart #app{display:block !important}
-  body.printing-chart #app > .container > *{display:none !important}
-  body.printing-chart #printArea{display:block !important}
-  body.printing-chart .ppage{display:none; page-break-after:always; break-after:page}
-  body.printing-chart[data-print="all"] .ppage{display:block}
-  body.printing-chart[data-print="K"] .ppage[data-page="K"],
-  body.printing-chart[data-print="C"] .ppage[data-page="C"],
-  body.printing-chart[data-print="M"] .ppage[data-page="M"],
-  body.printing-chart[data-print="Y"] .ppage[data-page="Y"],
-  body.printing-chart[data-print="chart"] .ppage[data-page="chart"]{display:block}
-  body.printing-chart .ppage:last-child{page-break-after:auto; break-after:auto}
-  body.printing-chart .ppage svg{width:100%; height:auto; display:block}
-  body.printing-chart{background:#fff; padding:0 !important}
-}
-@page{ size:A4; margin:0 }
+/* 4색 패턴은 화면 CSS 를 타지 않는 별도 문서로 인쇄합니다(assets/app.js 의 printChart).
+   화면을 @media print 로 걷어내던 방식은 브라우저마다 결과가 달라 빈 종이가 나왔습니다. */
+@page{ size:A4; margin:12mm }

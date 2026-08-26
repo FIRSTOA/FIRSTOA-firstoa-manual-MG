@@ -628,11 +628,6 @@
         </div>
       </section>
 
-      <!-- 인쇄 전용 영역 (화면에는 보이지 않습니다) -->
-      <div id="printArea" aria-hidden="true">
-        ${CHART.INKS.map(k => `<div class="ppage" data-page="${k}">${CHART.fullSVG(k, D.meta.company)}</div>`).join("")}
-        <div class="ppage" data-page="chart">${CHART.chartSVG(D.meta.company)}</div>
-      </div>
       ${band()}
     </div>`;
   }
@@ -1089,22 +1084,45 @@
     },
     close() { ov().classList.remove("open"); document.body.style.overflow = ""; },
     // 차트는 SVG 라서 배경 인쇄 설정과 무관하게 색이 그대로 나옵니다
-    // 인쇄할 장을 골라 body 에 표시하면 인쇄 CSS 가 그 장만 남깁니다
+    /* 인쇄는 화면 CSS 를 전혀 타지 않도록 별도 문서를 만들어 그것만 인쇄합니다.
+       화면용 스타일을 @media print 로 걷어내는 방식은 브라우저마다 결과가 달라
+       빈 종이가 나오는 일이 있었습니다. 숨은 iframe 이라 팝업 차단에도 걸리지 않습니다. */
     printChart(which = "all") {
-      const b = document.body;
-      b.classList.add("printing-chart");
-      b.dataset.print = which;
-      window.print();
-      setTimeout(() => { b.classList.remove("printing-chart"); delete b.dataset.print; }, 600);
-    },
-    downloadChart() {
-      const svg = document.getElementById("chartSvg");
-      if (!svg) return;
-      const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "퍼스트전산_4색점검차트.svg";
-      a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      const inks = CHART.INKS;
+      const list = which === "all" ? [...inks, "chart"] : [which];
+      const svgs = list.map(id => `<div class="p">${
+        id === "chart" ? CHART.chartSVG(D.meta.company) : CHART.fullSVG(id, D.meta.company)
+      }</div>`).join("");
+
+      const doc = `<!doctype html><html lang="ko"><head><meta charset="utf-8">
+        <title>${esc(D.meta.company)} 4색 점검 차트</title>
+        <style>
+          @page{ size:A4; margin:0 }
+          html,body{ margin:0; padding:0; background:#fff }
+          .p{ width:210mm; height:297mm; overflow:hidden; page-break-after:always; break-after:page }
+          .p:last-child{ page-break-after:auto; break-after:auto }
+          svg{ display:block; width:210mm; height:297mm;
+               -webkit-print-color-adjust:exact; print-color-adjust:exact }
+        </style></head><body>${svgs}</body></html>`;
+
+      const frame = document.createElement("iframe");
+      frame.setAttribute("aria-hidden", "true");
+      frame.style.cssText = "position:fixed; right:0; bottom:0; width:0; height:0; border:0; opacity:0";
+      document.body.appendChild(frame);
+      const fd = frame.contentDocument || frame.contentWindow.document;
+      fd.open(); fd.write(doc); fd.close();
+
+      const go = () => {
+        try { frame.contentWindow.focus(); frame.contentWindow.print(); }
+        catch (e) { /* 인쇄 대화상자를 못 열면 새 창으로 대체 */
+          const w = window.open("", "_blank");
+          if (w) { w.document.write(doc); w.document.close(); w.focus(); w.print(); }
+        }
+        setTimeout(() => frame.remove(), 60000);
+      };
+      // 글꼴·도형이 다 자리 잡은 뒤에 인쇄 대화상자를 연다
+      if (fd.readyState === "complete") setTimeout(go, 120);
+      else frame.onload = () => setTimeout(go, 120);
     },
     reset() {},
   };

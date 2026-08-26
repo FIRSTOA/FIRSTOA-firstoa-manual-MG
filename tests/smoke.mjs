@@ -224,15 +224,36 @@ const xTiles = [...doc.querySelectorAll('#app .tile')].map(t => t.querySelector(
 !xTiles.some(t => t.includes('ACR')) ? ok('제록스 목록엔 삼성 전용 없음') : bad('삼성 전용이 제록스로 샘');
 xTiles.some(t => t.includes('용지 걸림')) ? ok('공통 증상은 모든 브랜드에 표시') : bad('공통 증상 누락');
 nav('#/pattern');
-const ppages = doc.querySelectorAll('#printArea .ppage');
-ppages.length === 5 ? ok('인쇄 대상 5장 준비됨') : bad('인쇄 장수 ' + ppages.length);
-const inks = [...doc.querySelectorAll('#printArea .ppage svg.fullpage')].map(s => s.getAttribute('data-ink'));
-inks.join('') === 'KCMY' ? ok('전면 페이지 K·C·M·Y 순서') : bad('전면 페이지 구성: ' + inks.join(','));
-const full = doc.querySelector('#printArea .ppage[data-page="K"] svg rect');
-full && full.getAttribute('width') === '210' && full.getAttribute('height') === '297'
-  ? ok('전면 페이지가 A4를 꽉 채움') : bad('전면이 A4를 채우지 않음');
 const cards = doc.querySelectorAll('#app .pagecard');
 cards.length === 5 ? ok('미리보기 카드 5장, 한 장씩 출력 가능') : bad('미리보기 ' + cards.length);
+
+/* 인쇄: 화면 CSS 를 타지 않는 별도 문서를 만든다 */
+const before = doc.querySelectorAll('iframe').length;
+win.FIRSTOA.printChart('all');
+const frames = [...doc.querySelectorAll('iframe')];
+frames.length === before + 1 ? ok('인쇄용 문서(iframe) 생성됨') : bad('인쇄 문서가 안 만들어짐');
+const fd = frames[frames.length - 1].contentDocument;
+if (!fd) bad('인쇄 문서를 읽을 수 없음');
+else {
+  const ph = fd.documentElement.innerHTML;
+  const pcount = (ph.match(/class="p"/g) || []).length;
+  pcount === 5 ? ok('인쇄 문서에 5장 (K·C·M·Y·종합)') : bad('인쇄 문서 장수 ' + pcount);
+  const inks = ['#000000', '#00AEEF', '#EC008C', '#FFF200'].filter(c => ph.includes(c));
+  inks.length === 4 ? ok('네 색 전면이 모두 들어감') : bad('빠진 색 ' + (4 - inks.length));
+  /margin:0/.test(ph) ? ok('인쇄 문서는 여백 0 (종이 끝까지)') : bad('여백 0 아님');
+  /print-color-adjust:exact/.test(ph) ? ok('색 보정 없이 그대로 인쇄') : bad('색 보정 지정 없음');
+  ph.includes('210mm') && ph.includes('297mm') ? ok('각 장이 A4 크기로 고정') : bad('A4 크기 지정 없음');
+}
+// 한 장만 뽑기
+win.FIRSTOA.printChart('K');
+const last = [...doc.querySelectorAll('iframe')].pop().contentDocument;
+last && (last.documentElement.innerHTML.match(/class="p"/g) || []).length === 1
+  ? ok('한 장만 고르면 그 장만 인쇄') : bad('한 장 인쇄가 안 걸러짐');
+// 화면 CSS 에는 인쇄용 잔재가 없어야 한다
+const css = read('assets/style.css');
+!css.includes('printing-chart') && !css.includes('#printArea')
+  ? ok('화면 CSS 에 인쇄 잔재 없음') : bad('옛 인쇄 규칙이 남아 있음');
+(css.match(/@page\{/g) || []).length === 1 ? ok('@page 기본 규칙 하나만') : bad('@page 중복');
 
 console.log(fails ? `\n실패 ${fails}건` : '\n전 항목 통과');
 process.exit(fails ? 1 : 0);
