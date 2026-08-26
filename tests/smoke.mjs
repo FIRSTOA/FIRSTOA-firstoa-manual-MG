@@ -27,7 +27,7 @@ const junk = s => /undefined|\[object Object\]|NaN|&lt;svg/.test(s);
 
 /* 1. 모든 주소가 그려지는가 */
 console.log('\n[1] 화면 그리기');
-const routes = ['#/', '#/m/samsung-x3220', '#/m/samsung-x3220/toner', '#/m/hp-8710/toner',
+const routes = ['#/', '#/m/samsung-3220', '#/m/samsung-3220/toner', '#/m/hp-8710/toner',
   '#/t/toner', '#/t/meter', '#/s/3220', '#/s/줄', '#/s/zzz없음', '#/m/없음', '#/헛주소'];
 for (const r of routes) {
   try {
@@ -54,7 +54,7 @@ broken.length ? bad('덜 그려진 일러스트: ' + broken.join(', ')) : ok(`${
 
 /* 4. 단계 체크리스트 */
 console.log('\n[4] 단계 체크');
-nav('#/m/samsung-x3220/toner');
+nav('#/m/samsung-3220/toner');
 const items = [...doc.querySelectorAll('#steps li')];
 const want = D.TASKS.find(t => t.id === 'toner').steps.length;
 items.length === want ? ok(`단계 ${items.length}개 표시`) : bad(`단계 수 불일치 ${items.length} ≠ ${want}`);
@@ -62,9 +62,9 @@ items[0].dispatchEvent(new win.Event('click', { bubbles: true }));
 items[2].dispatchEvent(new win.Event('click', { bubbles: true }));
 const done = doc.querySelectorAll('#steps li.done').length;
 done === 2 ? ok('두 단계 체크됨, 진행률 ' + doc.getElementById('bar').style.width) : bad('체크 안 됨(' + done + ')');
-const saved = win.localStorage.getItem('firstoa.steps.samsung-x3220.toner');
+const saved = win.localStorage.getItem('firstoa.steps.samsung-3220.toner');
 saved === '[0,2]' ? ok('브라우저에 기억됨 ' + saved) : bad('기억 실패: ' + saved);
-nav('#/'); nav('#/m/samsung-x3220/toner');
+nav('#/'); nav('#/m/samsung-3220/toner');
 doc.querySelectorAll('#steps li.done').length === 2 ? ok('돌아와도 체크 유지') : bad('체크 유실');
 win.FIRSTOA.reset();
 doc.querySelectorAll('#steps li.done').length === 0 ? ok('처음부터 버튼 동작') : bad('초기화 실패');
@@ -122,9 +122,13 @@ const wired = new Set(); D.MODELS.forEach(m => Object.values(m.videos).forEach(v
 const idRe = /^[\w-]{11}$/;
 const badId = [...wired].filter(v => !idRe.test(v));
 badId.length ? bad('형식이 틀린 영상 ID: ' + badId.join(', ')) : ok(`영상 ${wired.size}편 연결, ID 형식 정상`);
-const shobu = ['Gc_NI3IdhuI', 'P6-hVPSTV8Q'].filter(v => wired.has(v));
-shobu.length ? bad('확인 안 된 "쇼부" 영상이 붙어 있음') : ok('미확인 영상은 붙이지 않음');
-nav('#/m/samsung-x3220');
+const ref = JSON.parse(read('data/channel-videos.json'));
+const unwired = ref.videos.filter(v => !wired.has(v.id));
+unwired.length ? bad(`채널 영상 ${unwired.length}편이 아직 연결 안 됨: ` + unwired.map(v => v.title).join(', '))
+               : ok(`채널 ${ref.videos.length}편 전부 연결됨`);
+const ghost = [...wired].filter(id => !ref.videos.some(v => v.id === id));
+ghost.length ? bad('채널에 없는 영상 ID: ' + ghost.join(', ')) : ok('엉뚱한 영상 ID 없음');
+nav('#/m/samsung-3220');
 const vbadges = doc.querySelectorAll('#app .b-vid').length;
 vbadges >= 2 ? ok(`삼성 3220 화면에 영상 배지 ${vbadges}개`) : bad('영상 배지 없음');
 

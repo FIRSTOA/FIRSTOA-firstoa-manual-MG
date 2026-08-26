@@ -6,30 +6,33 @@
 
 /* ── 토큰 ─────────────────────────────────────────────────────────────── */
 :root{
-  /* 브랜드 색 — 이 한 줄만 바꾸면 사이트 전체 인상이 바뀝니다 */
-  --accent:#1F5EFF;
-  /* 아래 셋은 --accent 하나에서 파생됩니다 — 브랜드 색으로 바꿔도 전부 따라옵니다 */
-  --accent-2:color-mix(in srgb, var(--accent) 78%, #04122F);
-  --accent-soft:color-mix(in srgb, var(--accent) 10%, var(--surface));
-  --accent-ink:color-mix(in srgb, var(--accent) 72%, var(--ink));
+  /* 퍼스트전산 브랜드색 — 유튜브 썸네일에서 뽑은 실제 값(네이비 판 + 골드 제목) */
+  --navy:#03183F;  --navy-2:#0A2B62;  --navy-3:#12407F;
+  --gold:#F8B93E;  --gold-2:#DE9714;  --gold-soft:#FCF1DA;
 
-  --ink:#0A1020;  --ink-2:#3D4759;  --ink-3:#6B7688;  --ink-4:#98A1B2;
-  --bg:#F4F5F7;   --surface:#FFFFFF; --surface-2:#EDEFF3; --surface-3:#F9FAFB;
-  --line:rgba(10,16,32,.09); --line-2:rgba(10,16,32,.055);
-  --dark:#0A1120; --dark-2:#141C2E; --dark-ink:#E8ECF4; --dark-ink-2:#9AA6BC;
+  /* 강조(링크·아이콘)는 네이비 계열, 행동(버튼·진행률)은 골드 */
+  --accent:#0A2B62;
+  --accent-2:color-mix(in srgb, var(--accent) 76%, #000814);
+  --accent-soft:color-mix(in srgb, var(--accent) 8%, var(--surface));
+  --accent-ink:color-mix(in srgb, var(--accent) 82%, var(--ink));
 
-  --amber:#B45309; --amber-bg:#FEF7E8; --amber-line:#F5D9A0;
-  --green:#0A7A52; --green-bg:#E8F6F0;
+  --ink:#0B1626;  --ink-2:#43536B;  --ink-3:#6D7C93;  --ink-4:#9AA6B8;
+  --bg:#F2F4F7;   --surface:#FFFFFF; --surface-2:#E8ECF2; --surface-3:#F8FAFC;
+  --line:rgba(3,24,63,.10); --line-2:rgba(3,24,63,.055);
+  --dark:var(--navy); --dark-2:#0A2450; --dark-ink:#E7EDF8; --dark-ink-2:#9FB2D0;
+
+  --amber:#9A6206; --amber-bg:#FDF4E3; --amber-line:#F0D19B;
+  --green:#0B6E4F; --green-bg:#E4F4ED;
 
   /* 기기 일러스트 */
-  --dev-hi:#FFFFFF; --dev-body:#E4E8EF; --dev-shade:#CBD2DE; --dev-tray:#EDF0F5;
-  --dev-line:#B9C2D2; --dev-dark:#2A3345; --dev-paper:#FFFFFF; --dev-shadow:rgba(10,16,32,.09);
+  --dev-hi:#FFFFFF; --dev-body:#E3E8F0; --dev-shade:#C7D0DE; --dev-tray:#EDF1F6;
+  --dev-line:#B4BFD1; --dev-dark:#1B2A43; --dev-paper:#FFFFFF; --dev-shadow:rgba(3,24,63,.10);
 
   --r-sm:10px; --r:14px; --r-md:18px; --r-lg:24px; --r-xl:30px;
-  --sh-1:0 1px 2px rgba(10,16,32,.05);
-  --sh-2:0 2px 6px rgba(10,16,32,.06), 0 1px 2px rgba(10,16,32,.04);
-  --sh-3:0 12px 32px -12px rgba(10,16,32,.18), 0 4px 10px -4px rgba(10,16,32,.08);
-  --sh-4:0 32px 64px -24px rgba(10,16,32,.30);
+  --sh-1:0 1px 2px rgba(3,24,63,.06);
+  --sh-2:0 2px 6px rgba(3,24,63,.07), 0 1px 2px rgba(3,24,63,.04);
+  --sh-3:0 12px 32px -12px rgba(3,24,63,.20), 0 4px 10px -4px rgba(3,24,63,.09);
+  --sh-4:0 32px 64px -24px rgba(3,24,63,.34);
 
   --ease:cubic-bezier(.22,.61,.36,1);
   --wrap:1200px;
@@ -38,20 +41,22 @@
 
 @media (prefers-color-scheme: dark){
   :root{
-    --accent:#5B8BFF;
-    --accent-2:color-mix(in srgb, var(--accent) 62%, #FFFFFF);
-    --accent-soft:color-mix(in srgb, var(--accent) 16%, var(--surface));
-    --accent-ink:color-mix(in srgb, var(--accent) 62%, var(--ink));
-    --ink:#EAEEF6; --ink-2:#AEB8CA; --ink-3:#8792A6; --ink-4:#69748A;
-    --bg:#080C15; --surface:#111827; --surface-2:#182135; --surface-3:#0D1421;
-    --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.055);
-    --dark:#050912; --dark-2:#101828;
-    --amber:#F0B858; --amber-bg:#2A1F0B; --amber-line:#6B4A12;
-    --green:#4ADFAA; --green-bg:#0A2A20;
-    --dev-hi:#2A3446; --dev-body:#212B3C; --dev-shade:#161E2C; --dev-tray:#2E394D;
-    --dev-line:#3E4B62; --dev-dark:#05090F; --dev-paper:#C9D2E2; --dev-shadow:rgba(0,0,0,.5);
-    --sh-2:0 2px 8px rgba(0,0,0,.4); --sh-3:0 16px 40px -16px rgba(0,0,0,.7);
-    --sh-4:0 32px 64px -24px rgba(0,0,0,.8);
+    --accent:#8FB4F5;
+    --accent-2:color-mix(in srgb, var(--accent) 66%, #FFFFFF);
+    --accent-soft:color-mix(in srgb, var(--accent) 14%, var(--surface));
+    --accent-ink:color-mix(in srgb, var(--accent) 66%, var(--ink));
+    --gold:#F8BF4E; --gold-2:#FFD37A; --gold-soft:#2C2109;
+
+    --ink:#E9EEF7; --ink-2:#A9B6CA; --ink-3:#8492A8; --ink-4:#68758B;
+    --bg:#070C15; --surface:#101927; --surface-2:#1A2539; --surface-3:#0C1420;
+    --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.05);
+    --dark:#040D22; --dark-2:#0A1B3A;
+    --amber:#F3C173; --amber-bg:#2B1F09; --amber-line:#6A4C10;
+    --green:#5FDCAC; --green-bg:#0A2A20;
+    --dev-hi:#28344A; --dev-body:#1F2A3D; --dev-shade:#151E2D; --dev-tray:#2C384E;
+    --dev-line:#3B4964; --dev-dark:#040910; --dev-paper:#C6D1E4; --dev-shadow:rgba(0,0,0,.55);
+    --sh-2:0 2px 8px rgba(0,0,0,.44); --sh-3:0 16px 40px -16px rgba(0,0,0,.72);
+    --sh-4:0 32px 64px -24px rgba(0,0,0,.82);
   }
 }
 
@@ -82,7 +87,7 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; line-height:1.24; font-weight:800}
 .h3{font-size:17px; font-weight:700; letter-spacing:-.02em}
 .eyebrow{display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:700;
   letter-spacing:.09em; text-transform:uppercase; color:var(--accent)}
-.eyebrow.on-dark{color:var(--accent-2)}
+.eyebrow.on-dark{color:var(--gold)}
 .lead{color:var(--ink-2); font-size:clamp(15px,1.6vw,18px); line-height:1.65; margin:12px 0 0}
 .muted{color:var(--ink-3); font-size:14px}
 .num{font-variant-numeric:tabular-nums; font-feature-settings:"tnum"}
@@ -117,14 +122,16 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; line-height:1.24; font-weight:800}
 
 /* ── 버튼 ─────────────────────────────────────────────────────────────── */
 .btn{display:inline-flex; align-items:center; justify-content:center; gap:9px;
-  height:52px; padding:0 26px; border-radius:999px; font-size:16px; font-weight:700;
-  background:var(--accent); color:#fff; box-shadow:0 8px 20px -8px color-mix(in srgb, var(--accent) 70%, transparent);
+  height:52px; padding:0 26px; border-radius:999px; font-size:16px; font-weight:750;
+  background:var(--gold); color:var(--navy); box-shadow:0 8px 20px -8px rgba(248,185,62,.6);
   transition:.18s var(--ease)}
-.btn:hover{transform:translateY(-2px); box-shadow:0 14px 28px -10px color-mix(in srgb, var(--accent) 75%, transparent)}
+.btn:hover{transform:translateY(-2px); background:var(--gold-2); box-shadow:0 14px 28px -10px rgba(248,185,62,.7)}
 .btn:active{transform:translateY(0)}
 .btn.ghost{background:var(--surface); color:var(--ink); border:1px solid var(--line); box-shadow:var(--sh-1)}
 .btn.ghost:hover{border-color:var(--ink-4); box-shadow:var(--sh-2)}
-.btn.light{background:#fff; color:var(--dark); box-shadow:0 10px 26px -10px rgba(0,0,0,.5)}
+.band .btn.ghost{background:rgba(255,255,255,.1); color:#fff; border-color:rgba(255,255,255,.24)}
+.band .btn.ghost:hover{background:rgba(255,255,255,.18); border-color:rgba(255,255,255,.4)}
+.btn.light{background:#fff; color:var(--navy); box-shadow:0 10px 26px -10px rgba(0,0,0,.55)}
 .btn.sm{height:42px; padding:0 18px; font-size:14.5px}
 .btn.wide{width:100%}
 
@@ -132,8 +139,8 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; line-height:1.24; font-weight:800}
 .hero{position:relative; overflow:hidden; background:var(--dark); color:var(--dark-ink);
   border-radius:0 0 var(--r-xl) var(--r-xl); margin-bottom:8px}
 .hero::before{content:""; position:absolute; inset:0;
-  background:radial-gradient(720px 460px at 78% -8%, color-mix(in srgb, var(--accent) 42%, transparent), transparent 62%),
-             radial-gradient(520px 400px at 8% 108%, rgba(120,180,255,.14), transparent 60%)}
+  background:radial-gradient(760px 480px at 76% -10%, rgba(18,64,127,.85), transparent 64%),
+             radial-gradient(520px 420px at 6% 106%, rgba(248,185,62,.13), transparent 62%)}
 .hero::after{content:""; position:absolute; inset:0; opacity:.5;
   background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.14) 1px, transparent 0);
   background-size:26px 26px;
@@ -141,6 +148,7 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; line-height:1.24; font-weight:800}
 .hero-in{position:relative; z-index:1; max-width:var(--wrap); margin:0 auto; padding:44px 20px 40px}
 @media(min-width:900px){ .hero-in{padding:76px 32px 68px; display:grid; grid-template-columns:1.12fr .88fr; gap:40px; align-items:center} }
 .hero h1{color:#fff; margin:14px 0 0}
+.hero h1 em{font-style:normal; color:var(--gold)}
 .hero .lead{color:var(--dark-ink-2); max-width:36ch}
 .hero-art{display:none; position:relative}
 @media(min-width:900px){ .hero-art{display:block} }
@@ -158,9 +166,9 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; line-height:1.24; font-weight:800}
 .searchbar input{flex:1; min-width:0; border:0; outline:0; background:transparent; color:#0A1020;
   font-size:16px; font-weight:500; padding:12px 0; font-family:inherit}
 .searchbar input::placeholder{color:#9AA5B8}
-.searchbar button{flex:none; height:46px; padding:0 22px; border-radius:999px; background:var(--accent);
-  color:#fff; font-weight:700; font-size:15px; transition:.16s var(--ease)}
-.searchbar button:hover{background:var(--accent-2)}
+.searchbar button{flex:none; height:46px; padding:0 22px; border-radius:999px; background:var(--gold);
+  color:var(--navy); font-weight:750; font-size:15px; transition:.16s var(--ease)}
+.searchbar button:hover{background:var(--gold-2)}
 @media(max-width:520px){ .searchbar button{padding:0 16px} }
 
 .quick{display:flex; flex-wrap:wrap; gap:8px; margin-top:18px}
@@ -186,7 +194,7 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; line-height:1.24; font-weight:800}
 .tile{position:relative; display:flex; flex-direction:column; gap:12px; padding:20px 18px 18px;
   background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md);
   box-shadow:var(--sh-2); overflow:hidden; transition:.2s var(--ease)}
-.tile::after{content:""; position:absolute; left:0; right:0; top:0; height:3px; background:var(--accent);
+.tile::after{content:""; position:absolute; left:0; right:0; top:0; height:3px; background:var(--gold);
   transform:scaleX(0); transform-origin:left; transition:transform .28s var(--ease)}
 .tile:hover{transform:translateY(-4px); box-shadow:var(--sh-3); border-color:var(--line-2)}
 .tile:hover::after{transform:scaleX(1)}
@@ -230,6 +238,7 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; line-height:1.24; font-weight:800}
 .mcard .art .bdot i{width:7px; height:7px; border-radius:50%; background:var(--accent)}
 .mcard .info{padding:16px 18px 18px; display:flex; flex-direction:column; gap:4px; flex:1}
 .mcard .info b{font-size:16.5px; font-weight:750; letter-spacing:-.025em; line-height:1.35}
+.mcard .info .sub{font-size:13px; color:var(--ink-3); line-height:1.5}
 .mcard .info .meta{margin-top:auto; padding-top:12px; display:flex; align-items:center; gap:10px;
   font-size:12.5px; color:var(--ink-3); font-weight:600}
 .mcard .go{margin-left:auto; color:var(--accent); display:inline-flex; transition:.2s var(--ease)}
@@ -257,7 +266,8 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; line-height:1.24; font-weight:800}
 .band{position:relative; overflow:hidden; background:var(--dark); color:#fff; border-radius:var(--r-xl);
   padding:40px 26px; text-align:center}
 .band::before{content:""; position:absolute; inset:0;
-  background:radial-gradient(600px 300px at 50% 0%, color-mix(in srgb, var(--accent) 34%, transparent), transparent 65%)}
+  background:radial-gradient(620px 320px at 50% 0%, rgba(18,64,127,.8), transparent 66%),
+             radial-gradient(400px 220px at 50% 100%, rgba(248,185,62,.14), transparent 70%)}
 .band > *{position:relative; z-index:1}
 .band h3{font-size:clamp(21px,3vw,28px); color:#fff; margin-bottom:10px}
 .band p{margin:0 auto 22px; color:var(--dark-ink-2); max-width:46ch; font-size:15.5px}
@@ -357,7 +367,7 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; line-height:1.24; font-weight:800}
 .panel-h .rst:hover{color:var(--ink); border-color:var(--ink-4)}
 
 .progress{height:5px; background:var(--surface-2); border-radius:999px; overflow:hidden; margin:0 20px}
-.progress i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--accent),var(--accent-2));
+.progress i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--gold),var(--gold-2));
   border-radius:999px; transition:width .4s var(--ease)}
 .pmeta{padding:9px 20px 4px; font-size:12.5px; font-weight:650; color:var(--ink-4)}
 

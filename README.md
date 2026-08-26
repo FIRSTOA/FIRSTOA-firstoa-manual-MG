@@ -6,13 +6,38 @@
 빌드 도구도, 서버도 필요 없습니다. HTML·CSS·JS 파일 세 개가 전부입니다.
 
 ```
-index.html            화면 뼈대
-assets/style.css      디자인
-assets/app.js         화면 전환·검색 (건드릴 일 거의 없음)
+index.html              화면 뼈대
+assets/style.css        디자인 (색·간격·그림자를 맨 위 토큰에서 관리)
+assets/ui.js            아이콘 24종 + 기기 일러스트 4종 (직접 그린 SVG)
+assets/app.js           화면 전환·검색·체크리스트 (건드릴 일 거의 없음)
 data/manuals.js       ← 내용은 전부 여기 있습니다
+data/channel-videos.json  유튜브 채널 영상 기준표 (연결 누락 점검용)
+scripts/fetch-channel.mjs 채널에서 새 영상 찾아오기
+tests/smoke.mjs           화면이 깨지지 않는지 자동 점검
 ```
 
+## 색
+
+퍼스트전산 유튜브 썸네일에서 뽑은 실제 브랜드색을 씁니다.
+
+| | |
+|---|---|
+| 네이비 `#03183F` | 헤더·히어로·로고판 |
+| 골드 `#F8B93E` | 버튼·진행률·강조 |
+
+`assets/style.css` 맨 위 `--navy` / `--gold` 두 줄만 바꾸면 사이트 전체가 따라옵니다.
+
 ---
+
+## 0. 새 영상이 올라왔을 때
+
+```bash
+node scripts/fetch-channel.mjs          # 아직 연결 안 된 영상을 알려줍니다
+node scripts/fetch-channel.mjs --save   # 채널 기준표까지 갱신
+```
+
+유튜브 채널을 훑어서 **사이트에 아직 안 걸린 영상**을 짚어 줍니다.
+그 영상 ID를 아래 방법으로 해당 기종에 넣으면 끝입니다.
 
 ## 1. 영상 넣기 (제일 자주 하는 일)
 
@@ -45,7 +70,8 @@ data/manuals.js       ← 내용은 전부 여기 있습니다
 
 - `id` — 겹치면 안 됩니다. 영문·숫자·하이픈만.
 - `brand` — `BRANDS` 에 있는 id 중 하나 (`samsung` `sindoh` `xerox` `kyocera` `brother` `hp` `etc`)
-- `name` — **고객 화면에 보이는 이름.** 기기 스티커에 적힌 실제 모델명을 씁니다.
+- `name` — **고객 화면에 크게 보이는 이름.** 기기에 붙은 번호 그대로 (예: `삼성 3220`).
+- `full` — 그 아래 작게 보이는 정확한 모델 계열 (예: `SL-X3220 계열 컬러 복합기`).
 - `aka` — **화면에 안 보이는 검색용 별칭.** 사내 코드명(키슈·세이토·마블 등)은 여기에만 넣습니다.
 - `videos` — 그 기종에서 안내할 작업만 적으면 됩니다. 없는 작업은 빼면 목록에 안 나옵니다.
 

@@ -6,7 +6,6 @@
 (() => {
   const D = window.FIRSTOA_MANUAL, U = window.UI;
   const app  = document.getElementById("app");
-  const root = document.documentElement;
   const ic = (n, s = 24, c = "") => U.icon(n, s, c);
 
   /* ── 색인 ──────────────────────────────────────────────────────────── */
@@ -34,13 +33,6 @@
     ? `<img class="photo" src="${esc(m.photo)}" alt="${esc(m.name)}" loading="lazy">`
     : U.device(m.device);
 
-  // 브랜드 색을 화면 전체 강조색으로
-  const setAccent = bid => {
-    const c = BRAND[bid]?.accent;
-    if (c) root.style.setProperty("--accent", c);
-    else root.style.removeProperty("--accent");
-  };
-
   /* ── 부품 ──────────────────────────────────────────────────────────── */
   const crumbs = parts => `<nav class="crumbs" aria-label="위치">${parts.map((p, i) =>
     (i ? '<span class="sep">/</span>' : "") +
@@ -53,6 +45,7 @@
         <span class="bdot"><i style="background:${esc(b?.accent || "#888")}"></i>${esc(b?.name || "")}</span></div>
       <div class="info">
         <b>${esc(m.name)}</b>
+        ${m.full ? `<span class="sub">${esc(m.full)}</span>` : ""}
         <div class="meta">
           ${n ? `<span class="badge b-vid">${ic("video", 13)}영상 ${n}편</span>`
               : `<span class="badge b-soon">영상 준비 중</span>`}
@@ -94,7 +87,6 @@
 
   /* ── 화면: 첫 화면 ─────────────────────────────────────────────────── */
   function viewHome() {
-    setAccent(null);
     const popular = ["toner", "waste", "jam", "meter"].map(id => TASK[id]).filter(Boolean);
     const firstBrand = D.BRANDS.find(b => modelsOf(b.id).length)?.id;
 
@@ -103,7 +95,7 @@
       <div class="hero-in">
         <div>
           <span class="eyebrow on-dark">${esc(D.meta.company)} 고객지원</span>
-          <h1 class="display">복합기,<br>직접 해결하세요.</h1>
+          <h1 class="display">복합기,<br><em>직접</em> 해결하세요.</h1>
           <p class="lead">${esc(D.meta.tagline)}</p>
           <form class="searchbar" onsubmit="return FIRSTOA.go(event)">
             ${ic("search", 21)}
@@ -176,7 +168,6 @@
   function viewModel(id) {
     const m = MODEL[id];
     if (!m) return view404();
-    setAccent(m.brand);
     const b = BRAND[m.brand], list = tasksOf(m), n = vidCount(m);
     const cats = D.CATEGORIES.filter(c => list.some(t => t.cat === c.id));
 
@@ -185,9 +176,10 @@
         ${crumbs([{ label: "처음", to: "/" }, { label: b?.name || "기종", to: "/#models" }, { label: m.name }])}
         <div class="phead-grid" style="margin-top:16px">
           <div>
-            <span class="eyebrow">${esc(b?.full || "")}</span>
+            <span class="eyebrow">${esc(b?.name || "")}</span>
             <h1 class="h1" style="margin-top:10px">${esc(m.name)}</h1>
-            <p class="lead">필요한 작업을 고르면 영상과 순서를 함께 보여드립니다.</p>
+            ${m.full ? `<p class="lead" style="margin-top:8px">${esc(m.full)}</p>` : ""}
+            <p class="lead" style="margin-top:6px">필요한 작업을 고르면 영상과 순서를 함께 보여드립니다.</p>
             <div class="statrow">
               ${n ? `<span class="stat">${ic("video", 16)}영상 ${n}편</span>`
                   : `<span class="stat">${ic("video", 16)}영상 준비 중</span>`}
@@ -221,7 +213,6 @@
   function viewTask(mid, tid) {
     const m = MODEL[mid], t = TASK[tid];
     if (!m || !t) return view404();
-    setAccent(m.brand);
     const b = BRAND[m.brand], v = vidOf(m, tid), note = (m.notes || {})[tid], steps = stepsOf(m, t);
     const siblings = tasksOf(m);
     const i = siblings.findIndex(x => x.id === tid);
@@ -233,7 +224,7 @@
         ${crumbs([{ label: "처음", to: "/" }, { label: m.name, to: "/m/" + m.id }, { label: t.title }])}
         <h1 class="h1" style="margin-top:14px; display:flex; align-items:center; gap:12px">
           ${ic(t.icon, 30)}${esc(t.title)}</h1>
-        <p class="lead">${esc(m.name)} · ${esc(t.summary)}</p>
+        <p class="lead">${esc(m.full || m.name)} · ${esc(t.summary)}</p>
       </div>
 
       <div class="work" style="margin-top:22px">
@@ -313,7 +304,6 @@
   function viewPick(tid) {
     const t = TASK[tid];
     if (!t) return view404();
-    setAccent(null);
     const has = modelsWith(tid);
     const soon = D.MODELS.filter(m => (tid in (m.videos || {})) && !vidOf(m, tid));
     const grid = list => `<div class="models">${list.map(m => {
@@ -324,6 +314,7 @@
           : artOf(m)}
           <span class="bdot"><i style="background:${esc(b?.accent || "#888")}"></i>${esc(b?.name || "")}</span></div>
         <div class="info"><b>${esc(m.name)}</b>
+          ${m.full ? `<span class="sub">${esc(m.full)}</span>` : ""}
           <div class="meta">${vidOf(m, tid) ? `<span class="badge b-vid">${ic("video", 13)}영상</span>`
                                             : `<span class="badge b-soon">순서 안내</span>`}
             <span class="go">${ic("arrow", 18)}</span></div></div></a>`;
@@ -360,7 +351,6 @@
   }
 
   function viewSearch(q) {
-    setAccent(null);
     const { models, tasks } = find(q);
     if (!models.length && !tasks.length) return `<div class="container"><div class="empty">
       ${ic("search", 44)}<b>“${esc(q)}” 결과가 없습니다</b>
@@ -384,7 +374,7 @@
       ${band()}</div>`;
   }
 
-  const view404 = () => { setAccent(null); return `<div class="container"><div class="empty">
+  const view404 = () => { return `<div class="container"><div class="empty">
     ${ic("search", 44)}<b>찾는 쪽이 없습니다</b><p>주소가 바뀌었을 수 있습니다.</p>
     <a class="btn" href="#/">처음으로</a></div></div>`; };
 
@@ -483,7 +473,7 @@
       (models.length ? `<div class="grp">기종 ${models.length}</div>` + models.map(m =>
         `<a class="hit" href="#/m/${m.id}"><span class="thumb">${m.photo
           ? `<img src="${esc(m.photo)}" alt="" style="width:100%;height:100%;object-fit:cover">` : U.device(m.device)}</span>
-          <span class="tx"><b>${esc(m.name)}</b><span>${esc(BRAND[m.brand]?.name || "")} · 영상 ${vidCount(m)}편</span></span>
+          <span class="tx"><b>${esc(m.name)}</b><span>${esc(m.full || BRAND[m.brand]?.name || "")} · 영상 ${vidCount(m)}편</span></span>
           <span class="arw">${ic("chev", 16)}</span></a>`).join("") : "") +
       (tasks.length ? `<div class="grp">작업 ${tasks.length}</div>` + tasks.map(t =>
         `<a class="hit" href="#/t/${t.id}"><span class="thumb">${ic(t.icon, 18)}</span>

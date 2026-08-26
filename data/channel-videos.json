@@ -1,0 +1,115 @@
+{
+  "channel": "https://www.youtube.com/channel/UCiXGLLxY8xwpcP1_-PQrlJw",
+  "fetchedAt": "2026-08-27",
+  "note": "scripts/fetch-channel.mjs 로 갱신합니다. 사이트가 읽는 파일은 아니고, 연결 누락을 점검하는 기준표입니다.",
+  "videos": [
+    {
+      "id": "4D9fZRltgMQ",
+      "title": "k7500 폐통 교체방법"
+    },
+    {
+      "id": "LIhB66g5V6s",
+      "title": "키슈,세이토 토너 회수통R5 교체 방법"
+    },
+    {
+      "id": "DFJcuPt5yZk",
+      "title": "키슈,세이토 토너 교체 방법"
+    },
+    {
+      "id": "P6-hVPSTV8Q",
+      "title": "쇼부 토너 회수통R5 교체 방법"
+    },
+    {
+      "id": "Gc_NI3IdhuI",
+      "title": "쇼부 토너 교체 방법"
+    },
+    {
+      "id": "WsK67N5FjC4",
+      "title": "베니 토너 회수통R5 교체 방법"
+    },
+    {
+      "id": "yBCH8_ouEmM",
+      "title": "마블 토너 회수통R5 교체 방법"
+    },
+    {
+      "id": "Vok3STCstrQ",
+      "title": "브라더 드럼 교체 방법"
+    },
+    {
+      "id": "BvbcfG8QZYM",
+      "title": "오키 토너 교체 방법"
+    },
+    {
+      "id": "3XZ7PJaull4",
+      "title": "마블 토너 교체 방법"
+    },
+    {
+      "id": "OG7jeQmpsbs",
+      "title": "베니 토너 교체 방법"
+    },
+    {
+      "id": "3GypB534uSs",
+      "title": "브라더 토너 교체 방법"
+    },
+    {
+      "id": "pRqyQJ5Lqns",
+      "title": "교세라 토너 교체 방법"
+    },
+    {
+      "id": "6Stqgvl5Rf8",
+      "title": "N501 폐통 교체 방법"
+    },
+    {
+      "id": "WYMZ-5k4prs",
+      "title": "N501 토너 교체 방법"
+    },
+    {
+      "id": "JvlmiOwwRo4",
+      "title": "450 토너 교체 방법"
+    },
+    {
+      "id": "R1iJHkdYDes",
+      "title": "450 폐통 교체 방법"
+    },
+    {
+      "id": "e_iTXoxXwM8",
+      "title": "320,410,420 폐통 교체 방법"
+    },
+    {
+      "id": "us13Br3-aBM",
+      "title": "320,410,420 토너 교체 방법"
+    },
+    {
+      "id": "2JuxnMC19p8",
+      "title": "x7500 폐통 교체 방법"
+    },
+    {
+      "id": "moTYQ3usG9c",
+      "title": "x7500 토너 교체 방법"
+    },
+    {
+      "id": "cythI1d3bwU",
+      "title": "k7500 토너 교체 방법"
+    },
+    {
+      "id": "OzhlvZ4f0E8",
+      "title": "K4250 폐통 교체 방법"
+    },
+    {
+      "id": "Swn0LRQpoi8",
+      "title": "K4250 토너 교체 방법"
+    },
+    {
+      "id": "0ZQ_yvoX85c",
+      "title": "4220 토너 교체 방법"
+    },
+    {
+      "id": "bBUR7V6VRYs",
+      "title": "3220,4220 폐통 교체 방법"
+    },
+    {
+      "id": "RODkrd6bfeY",
+      "title": "3220 토너 교체 방법"
+    }
+  ]
+}

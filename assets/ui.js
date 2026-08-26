@@ -38,10 +38,10 @@
 
   /* ── 로고 ──────────────────────────────────────────────────── */
   const logo = (size = 34) => `<svg width="${size}" height="${size}" viewBox="0 0 36 36" aria-hidden="true">
-    <rect width="36" height="36" rx="10.5" fill="var(--accent)"/>
-    <rect x="11" y="7" width="14" height="6.4" rx="2" fill="#fff" opacity=".55"/>
-    <rect x="7" y="15" width="22" height="8.6" rx="3" fill="#fff"/>
-    <rect x="13.5" y="25.4" width="9" height="4" rx="2" fill="#fff" opacity=".75"/>
+    <rect width="36" height="36" rx="10.5" fill="var(--navy)"/>
+    <rect x="11" y="7" width="14" height="6.4" rx="2" fill="#fff" opacity=".5"/>
+    <rect x="7" y="15" width="22" height="8.6" rx="3" fill="var(--gold)"/>
+    <rect x="13.5" y="25.4" width="9" height="4" rx="2" fill="#fff" opacity=".7"/>
   </svg>`;
 
   /* ── 기기 일러스트 ──────────────────────────────────────────
