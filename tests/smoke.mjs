@@ -224,8 +224,12 @@ const xTiles = [...doc.querySelectorAll('#app .tile')].map(t => t.querySelector(
 !xTiles.some(t => t.includes('ACR')) ? ok('제록스 목록엔 삼성 전용 없음') : bad('삼성 전용이 제록스로 샘');
 xTiles.some(t => t.includes('용지 걸림')) ? ok('공통 증상은 모든 브랜드에 표시') : bad('공통 증상 누락');
 nav('#/pattern');
-const cards = doc.querySelectorAll('#app .pagecard');
-cards.length === 5 ? ok('미리보기 카드 5장, 한 장씩 출력 가능') : bad('미리보기 ' + cards.length);
+const rows = doc.querySelectorAll('#app .inkrow');
+rows.length === 5 ? ok('한 장씩 뽑기 목록 5줄') : bad('출력 목록 ' + rows.length);
+const sw = [...doc.querySelectorAll('#app .swatch')].map(e => e.getAttribute('style') || '');
+['#000000', '#00AEEF', '#EC008C', '#FFF200'].every(c => sw.some(s2 => s2.includes(c)))
+  ? ok('색 견본 네 가지 표시') : bad('색 견본 누락');
+doc.querySelector('#app details.peek') ? ok('종합 차트 미리보기는 접어 둠') : bad('미리보기 접기 없음');
 
 /* 인쇄: 화면 CSS 를 타지 않는 별도 문서를 만든다 */
 const before = doc.querySelectorAll('iframe').length;

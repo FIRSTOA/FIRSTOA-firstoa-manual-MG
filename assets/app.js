@@ -570,6 +570,8 @@
   }
 
   /* ── 화면: 4색 패턴 출력 ──────────────────────────────────────────── */
+  const INKHEX = { K: "#000000", C: "#00AEEF", M: "#EC008C", Y: "#FFF200" };
+
   function viewPattern() {
     const pages = [
       ...CHART.INKS.map(k => ({ id: k, kind: "full", title: CHART.NAME[k] + " 전면",
@@ -606,16 +608,23 @@
       </section>
 
       <section class="section tight">
-        <div class="sec-head" data-rv><div><span class="eyebrow">출력할 5장</span>
-          <h2 class="h2" style="margin-top:8px">한 장씩 따로 뽑을 수도 있습니다</h2></div></div>
-        <div class="pages">${pages.map(p => `<div class="pagecard" data-rv>
-          <div class="pv ${p.kind}">${p.kind === "full" ? CHART.fullSVG(p.id, D.meta.company)
-                                                        : CHART.chartSVG(D.meta.company)}</div>
-          <div class="pinfo">
-            <b>${esc(p.title)}</b><p>${esc(p.desc)}</p>
-            <button class="btn ghost sm wide" onclick="FIRSTOA.printChart('${p.id}')">
-              ${ic("printer", 16)}이 장만 출력</button>
-          </div></div>`).join("")}</div>
+        <div class="sec-head" data-rv><div><span class="eyebrow">한 장씩 뽑기</span>
+          <h2 class="h2" style="margin-top:8px">필요한 장만 골라 출력</h2></div></div>
+        <div class="inklist" data-rv>${pages.map(p => `
+          <button class="inkrow" onclick="FIRSTOA.printChart('${p.id}')">
+            <span class="swatch ${p.kind}" ${p.kind === "full"
+              ? `style="background:${INKHEX[p.id]}"` : ""}>${p.kind === "chart" ? ic("palette", 15) : ""}</span>
+            <span class="itx"><b>${esc(p.title)}</b><span>${esc(p.desc)}</span></span>
+            <span class="ibtn">${ic("printer", 17)}<span>출력</span></span>
+          </button>`).join("")}
+        </div>
+      </section>
+
+      <section class="section tight">
+        <details class="peek" data-rv>
+          <summary>${ic("book", 17)}종합 차트 미리 보기</summary>
+          <div class="peekbox">${CHART.chartSVG(D.meta.company)}</div>
+        </details>
       </section>
 
       <section class="section tight">
