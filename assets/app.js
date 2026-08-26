@@ -42,7 +42,8 @@
     const b = BRAND[m.brand], n = vidCount(m);
     return `<a class="mcard" href="#/m/${m.id}" data-rv>
       <div class="art">${artOf(m)}
-        <span class="bdot"><i style="background:${esc(b?.accent || "#888")}"></i>${esc(b?.name || "")}</span></div>
+        <span class="bdot"><i style="background:${esc(b?.accent || "#888")}"></i>${esc(b?.name || "")}</span>
+        ${m.photo ? `<span class="real">실제 제품 사진</span>` : ""}</div>
       <div class="info">
         <b>${esc(m.name)}</b>
         ${m.full ? `<span class="sub">${esc(m.full)}</span>` : ""}
@@ -74,21 +75,47 @@
       </div></a>`;
   };
 
-  const band = () => {
-    const tel = (D.meta.phone || "").replace(/[^0-9+]/g, "");
-    return `<section class="section"><div class="band" data-rv>
+  const tel = () => (D.meta.phone || "").replace(/[^0-9+]/g, "");
+
+  const band = () => `<section class="section"><div class="band" data-rv>
       <h3>그래도 해결이 안 되시나요?</h3>
       <p>${esc(D.meta.company)} 기사가 바로 도와드립니다. ${esc(D.meta.hours)}</p>
       <div class="row">
-        ${tel ? `<a class="btn light" href="tel:${tel}">${ic("phone", 19)}전화 ${esc(D.meta.phone)}</a>` : ""}
-        ${D.meta.kakao ? `<a class="btn ghost" href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">카카오톡 문의</a>` : ""}
+        ${tel() ? `<a class="btn light" href="tel:${tel()}">${ic("phone", 19)}전화 ${esc(D.meta.phone)}</a>` : ""}
+        ${D.meta.kakaoChat ? `<a class="btn kko" href="${esc(D.meta.kakaoChat)}" target="_blank" rel="noopener">
+          ${ic("kakao", 19)}카카오톡 상담</a>` : ""}
       </div></div></section>`;
-  };
+
+  // 취급 품목 카드 (홍보) — 사진은 본사 쇼핑몰의 실제 제품 사진
+  const productCard = p => `<a class="pcard" href="${esc(p.link)}" target="_blank" rel="noopener" data-rv>
+      <span class="shot"><img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy"></span>
+      <span class="tx"><b>${esc(p.name)}${ic("ext", 15)}</b><p>${esc(p.desc)}</p></span></a>`;
+
+  // 카카오톡 채널 안내
+  const kakaoCard = () => `<div class="kko-card" data-rv>
+      <div>
+        <span class="kko-badge">${ic("kakao", 16)}카카오톡 채널</span>
+        <h3>채널 추가하면 <span style="color:var(--blue)">2배 빠른</span> 상담을 받습니다</h3>
+        <p>전화가 어려우실 때, 카카오톡으로 사진 한 장만 보내주셔도 됩니다.
+           증상을 미리 보면 기사가 부품을 챙겨 한 번에 해결합니다.</p>
+        <div class="why">
+          <div>${ic("check", 17)}<span>화면의 오류 코드나 인쇄물을 사진으로 바로 전송</span></div>
+          <div>${ic("check", 17)}<span>토너·폐토너통 등 소모품 신청도 채팅으로</span></div>
+          <div>${ic("check", 17)}<span>방문 일정 조율과 처리 결과를 기록으로 확인</span></div>
+        </div>
+      </div>
+      <div class="kko-side">
+        <a class="btn kko wide" href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">
+          ${ic("kakao", 19)}채널 추가하기</a>
+        <a class="btn ghost wide sm" href="${esc(D.meta.kakaoChat)}" target="_blank" rel="noopener">
+          바로 채팅 상담</a>
+        <span class="hint">카카오톡에서 <b>퍼스트전산</b> 검색해도 됩니다</span>
+      </div>
+    </div>`;
 
   /* ── 화면: 첫 화면 ─────────────────────────────────────────────────── */
   function viewHome() {
     const popular = ["toner", "waste", "jam", "meter"].map(id => TASK[id]).filter(Boolean);
-    const firstBrand = D.BRANDS.find(b => modelsOf(b.id).length)?.id;
 
     return `
     <section class="hero">
@@ -106,11 +133,21 @@
             `<a href="#/t/${t.id}">${ic(t.icon, 17)}${esc(t.title)}</a>`).join("")}</div>
         </div>
         <div class="hero-art">
-          ${U.device("floor-color")}
-          <span class="float f1"><span class="dot"></span>영상 ${totalVideos}편</span>
-          <span class="float f2">${ic("grid", 16)} 기종 ${D.MODELS.length}종</span>
+          <div class="hero-shot">
+            <span class="tagchip"><i></i>기사가 직접 촬영</span>
+            <img src="assets/img/copier.jpg" alt="복합기" loading="eager">
+          </div>
+          <span class="hero-float f1">${ic("video", 22)}
+            <span><b class="num">${totalVideos}</b><span>편의 작업 영상</span></span></span>
+          <span class="hero-float f2">${ic("grid", 22)}
+            <span><b class="num">${D.MODELS.length}</b><span>종의 기종 안내</span></span></span>
         </div>
       </div>
+    </section>
+
+    <section class="trust">
+      <div class="trust-in">${(D.STATS || []).map(st => `<div class="cell">
+        <b class="num">${esc(st.n)}<em>${esc(st.unit)}</em></b><span>${esc(st.label)}</span></div>`).join("")}</div>
     </section>
 
     <div class="container">
@@ -118,7 +155,7 @@
         <div class="sec-head" data-rv>
           <div><span class="eyebrow">자주 찾는 작업</span>
             <h2 class="h2" style="margin-top:10px">이 네 가지가 가장 많습니다</h2>
-            <p class="lead">기종을 몰라도 됩니다. 작업을 고르면 기종을 골라드립니다.</p></div>
+            <p class="lead">기종을 몰라도 됩니다. 작업을 고르면 기종을 골라 드립니다.</p></div>
         </div>
         <div class="tiles">${popular.map(t => `
           <a class="tile" href="#/t/${t.id}" data-rv>
@@ -128,11 +165,11 @@
           </a>`).join("")}</div>
       </section>
 
-      <section class="section" id="models">
+      <section class="section" id="models" style="padding-top:0">
         <div class="sec-head" data-rv>
           <div><span class="eyebrow">기종으로 찾기</span>
             <h2 class="h2" style="margin-top:10px">쓰시는 복합기를 고르세요</h2>
-            <p class="lead">기기 앞면 스티커의 모델명을 확인하세요. 숫자 몇 자리만 검색해도 찾아집니다.</p></div>
+            <p class="lead">기기 앞면 스티커의 번호를 확인하세요. 숫자 몇 자리만 검색해도 찾아집니다.</p></div>
           <button class="more" onclick="FIRSTOA.open()">전체 검색 ${ic("arrow", 17)}</button>
         </div>
         <div class="tabs" role="tablist">
@@ -144,20 +181,34 @@
         <div class="models" id="modelGrid">${D.MODELS.map(modelCard).join("")}</div>
       </section>
 
-      <section class="section">
+      <section class="section" style="padding-top:0">${kakaoCard()}</section>
+
+      <section class="section" style="padding-top:0">
         <div class="sec-head" data-rv>
           <div><span class="eyebrow">이용 방법</span>
             <h2 class="h2" style="margin-top:10px">세 단계면 끝납니다</h2></div>
         </div>
         <div class="flow">
           <div class="step" data-rv><b>기종을 찾습니다</b>
-            <p>기기 앞면·옆면 스티커의 모델명을 확인하세요. 예: <b>SL-X3220NR</b>, <b>DocuCentre-V C2263</b>.
+            <p>기기 앞면·옆면에 붙은 번호를 확인하세요. 예: <b>3220</b>, <b>C2263</b>.
                숫자 몇 자리만 검색창에 넣어도 됩니다.</p></div>
           <div class="step" data-rv><b>작업을 고릅니다</b>
-            <p>토너 교체, 폐토너통, 용지 걸림, 검침 카운터까지. 소요 시간이 표시돼 있어 미리 가늠할 수 있습니다.</p></div>
+            <p>토너 교체, 폐토너통, 용지 걸림, 검침 카운터까지. 걸리는 시간이 적혀 있어 미리 가늠할 수 있습니다.</p></div>
           <div class="step" data-rv><b>영상을 따라 합니다</b>
             <p>기사가 직접 촬영한 영상과 순서를 보며 하나씩 눌러 체크하세요. 어디까지 했는지 남습니다.</p></div>
         </div>
+      </section>
+
+      <section class="section" id="products" style="padding-top:0">
+        <div class="sec-head" data-rv>
+          <div><span class="eyebrow gold">${esc(D.meta.legal || D.meta.company)}</span>
+            <h2 class="h2" style="margin-top:10px">복합기만 하는 게 아닙니다</h2>
+            <p class="lead">${esc(D.meta.oneStop)} — 사무실에 필요한 것은 한 곳에서 해결합니다.
+               20년 노하우와 전국 200개 유지보수 지점이 뒤를 받칩니다.</p></div>
+          <a class="more" href="${esc(D.meta.homepage)}" target="_blank" rel="noopener">
+            전체 품목 보기 ${ic("ext", 16)}</a>
+        </div>
+        <div class="promo">${(D.PRODUCTS || []).map(productCard).join("")}</div>
       </section>
 
       ${band()}
@@ -217,7 +268,7 @@
     const siblings = tasksOf(m);
     const i = siblings.findIndex(x => x.id === tid);
     const prev = siblings[i - 1], next = siblings[i + 1];
-    const tel = (D.meta.phone || "").replace(/[^0-9+]/g, "");
+    const myTel = tel();
 
     return `<div class="container">
       <div class="phead">
@@ -280,7 +331,9 @@
           <div class="box">
             <b>도움이 필요하세요?</b>
             <p class="muted" style="margin:-6px 0 14px">${esc(D.meta.company)} · ${esc(D.meta.hours)}</p>
-            ${tel ? `<a class="btn wide sm" href="tel:${tel}">${ic("phone", 17)}전화 ${esc(D.meta.phone)}</a>` : ""}
+            ${myTel ? `<a class="btn wide sm" href="tel:${myTel}">${ic("phone", 17)}전화 ${esc(D.meta.phone)}</a>` : ""}
+            ${D.meta.kakaoChat ? `<a class="btn kko wide sm" style="margin-top:8px"
+              href="${esc(D.meta.kakaoChat)}" target="_blank" rel="noopener">${ic("kakao", 17)}카카오톡 상담</a>` : ""}
             <button class="btn ghost wide sm" style="margin-top:8px" onclick="window.print()">${ic("printer", 17)}순서 인쇄</button>
           </div>
         </aside>
@@ -536,31 +589,78 @@
 
   /* ── 붙이기 ────────────────────────────────────────────────────────── */
   function chrome() {
-    const tel = (D.meta.phone || "").replace(/[^0-9+]/g, "");
+    const t = tel(), k = D.meta.kakaoChat || D.meta.kakao;
+
+    // 맨 위 안내 띠
+    document.getElementById("topbar").innerHTML = `
+      <span class="brandline"><i></i>${esc(D.meta.legal || D.meta.company)}</span>
+      <span class="only-wide">${esc(D.meta.oneStop)}</span>
+      <span class="sp"></span>
+      ${t ? `<a href="tel:${t}">${ic("phone", 14)}${esc(D.meta.phone)}</a>` : ""}
+      ${D.meta.homepage ? `<a class="only-wide" href="${esc(D.meta.homepage)}" target="_blank" rel="noopener">
+        ${ic("home", 14)}본사 홈페이지</a>` : ""}`;
+
+    // 상단 바
     document.getElementById("logo").innerHTML = U.logo(34);
     document.getElementById("bName").textContent = D.meta.company;
     document.getElementById("bSub").textContent = D.meta.title;
     document.getElementById("navSearch").innerHTML = `${ic("search", 18)}<span>검색</span><span class="kbd">/</span>`;
-    document.getElementById("sIcon").innerHTML = ic("search", 20);
+    const navK = document.getElementById("navKakao");
+    if (k) { navK.href = k; navK.innerHTML = `${ic("kakao", 17)}<span>카카오 상담</span>`; }
+    else navK.remove();
 
-    const navCall = document.getElementById("navCall");
-    if (tel) { navCall.href = "tel:" + tel; navCall.innerHTML = `${ic("phone", 17)}<span>${esc(D.meta.phone)}</span>`; }
-    else navCall.remove();
-
+    // 하단 고정 막대
     const bar = document.getElementById("callbar");
-    if (tel) {
-      document.getElementById("barTx").innerHTML = `<b>도움이 필요하세요?</b>${esc(D.meta.company)} · ${esc(D.meta.hours)}`;
-      const a = document.getElementById("barCall");
-      a.href = "tel:" + tel; a.innerHTML = `${ic("phone", 17)}전화`;
+    if (t || k) {
+      document.getElementById("barTx").innerHTML =
+        `<b>도움이 필요하세요?</b>${esc(D.meta.company)} · ${esc(D.meta.hours)}`;
+      const bt = document.getElementById("barTel"), bk = document.getElementById("barKakao");
+      if (t) { bt.href = "tel:" + t; bt.innerHTML = `${ic("phone", 16)}전화`; } else bt.remove();
+      if (k) { bk.href = k; bk.innerHTML = ic("kakao", 16); } else bk.remove();
       document.body.classList.add("has-callbar");
     } else bar.remove();
 
-    document.getElementById("footBrand").innerHTML =
-      `${U.logo(30)}<span class="txt"><b>${esc(D.meta.company)}</b><span>${esc(D.meta.title)}</span></span>`;
-    document.getElementById("footLinks").innerHTML =
-      `<a href="#/">처음</a><a href="#/#models">기종 전체</a><a href="#/t/meter">검침 카운터</a>` +
-      (D.meta.channel ? `<a href="${esc(D.meta.channel)}" target="_blank" rel="noopener">유튜브 채널</a>` : "") +
-      (tel ? `<a href="tel:${tel}">${esc(D.meta.phone)}</a>` : "");
+    // 바닥
+    document.getElementById("footer").innerHTML = `
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="fbrand">${U.logo(38)}
+              <span><b>${esc(D.meta.legal || D.meta.company)}</b><span>${esc(D.meta.title)}</span></span></div>
+            <p class="fdesc">${esc(D.meta.oneStop)}<br>
+              20여 년의 노하우와 40명 이상의 전문 인력, 전국 200개 유지보수 지점.</p>
+            <div style="display:flex; gap:8px; flex-wrap:wrap">
+              ${k ? `<a class="btn kko sm" href="${esc(k)}" target="_blank" rel="noopener">
+                ${ic("kakao", 16)}카카오톡 상담</a>` : ""}
+              ${D.meta.channel ? `<a class="btn on-dark sm" href="${esc(D.meta.channel)}" target="_blank" rel="noopener">
+                ${ic("youtube", 16)}유튜브 채널</a>` : ""}
+            </div>
+          </div>
+          <div class="fcol">
+            <h4>사용설명서</h4>
+            <a href="#/#models">${ic("grid", 15)}기종 전체</a>
+            <a href="#/t/toner">${ic("toner", 15)}토너 교체</a>
+            <a href="#/t/waste">${ic("waste", 15)}폐토너통 교체</a>
+            <a href="#/t/jam">${ic("jam", 15)}용지 걸림</a>
+            <a href="#/t/meter">${ic("meter", 15)}검침 카운터</a>
+          </div>
+          <div class="fcol">
+            <h4>문의</h4>
+            ${t ? `<a href="tel:${t}">${ic("phone", 15)}${esc(D.meta.phone)}</a>` : ""}
+            ${D.meta.phone2 ? `<a href="tel:${esc(D.meta.phone2.replace(/[^0-9+]/g, ""))}">
+              ${ic("phone", 15)}${esc(D.meta.phone2)}</a>` : ""}
+            <div>${ic("clock", 15)}${esc(D.meta.hours)}</div>
+            ${D.meta.homepage ? `<a href="${esc(D.meta.homepage)}" target="_blank" rel="noopener">
+              ${ic("home", 15)}본사 홈페이지</a>` : ""}
+            <a href="#/#products">${ic("star", 15)}취급 품목</a>
+          </div>
+        </div>
+        <div class="fbot">
+          <span>${esc(D.meta.legal || D.meta.company)}</span>
+          ${D.meta.bizNo ? `<span>사업자등록번호 ${esc(D.meta.bizNo)}</span>` : ""}
+          <span>이 사이트는 고객 안내용입니다. 제조사 상표는 각 사에 있습니다.</span>
+        </div>
+      </div>`;
   }
 
   function bindGlobal() {

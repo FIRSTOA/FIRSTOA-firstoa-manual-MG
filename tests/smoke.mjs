@@ -132,5 +132,26 @@ nav('#/m/samsung-3220');
 const vbadges = doc.querySelectorAll('#app .b-vid').length;
 vbadges >= 2 ? ok(`삼성 3220 화면에 영상 배지 ${vbadges}개`) : bad('영상 배지 없음');
 
+/* 10. 회사 정보·카카오·홍보 */
+console.log('\n[10] 회사 정보 · 카카오 · 취급 품목');
+nav('#/');
+const home = doc.getElementById('app').innerHTML;
+const kko = [...doc.querySelectorAll('#app a[href*="pf.kakao.com"]')];
+kko.length ? ok(`카카오 채널 링크 ${kko.length}곳 (${kko[0].getAttribute('href')})`) : bad('카카오 링크 없음');
+const prods = doc.querySelectorAll('#app .pcard');
+prods.length === D.PRODUCTS.length ? ok(`취급 품목 ${prods.length}개 표시`) : bad(`취급 품목 ${prods.length} ≠ ${D.PRODUCTS.length}`);
+const stats = doc.querySelectorAll('#app .trust .cell');
+stats.length === D.STATS.length ? ok(`실적 ${stats.length}개 표시`) : bad('실적 띠 없음');
+// 사진 파일이 실제로 있는지
+const imgs = [...doc.querySelectorAll('#app img')].map(i => i.getAttribute('src')).filter(s => s && s.startsWith('assets/'));
+const missing = [...new Set(imgs)].filter(p => !fs.existsSync(HOME + '/' + p));
+missing.length ? bad('없는 이미지 파일: ' + missing.join(', ')) : ok(`이미지 ${new Set(imgs).size}장 모두 존재`);
+// 머리말·꼬리말
+doc.getElementById('topbar').innerHTML.includes('퍼스트전산') ? ok('상단 안내 띠 채워짐') : bad('상단 띠 비어 있음');
+const foot = doc.getElementById('footer').innerHTML;
+foot.includes(D.meta.bizNo) && foot.includes('유튜브') ? ok('바닥글: 사업자번호·유튜브 채널 포함') : bad('바닥글 내용 누락');
+nav('#/m/samsung-3220');
+doc.querySelector('#app .mcard .real, #app .phead .art img.photo') ? ok('기종 화면에 실제 제품 사진') : bad('기종 사진 안 붙음');
+
 console.log(fails ? `\n실패 ${fails}건` : '\n전 항목 통과');
 process.exit(fails ? 1 : 0);

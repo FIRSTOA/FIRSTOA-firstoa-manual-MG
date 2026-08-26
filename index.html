@@ -4,24 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>퍼스트전산 복합기 사용설명서</title>
-<meta name="description" content="퍼스트전산 복합기 사용설명서 — 기종별 토너 교체, 폐토너통 교체, 용지 걸림, 검침 카운터 확인 방법을 영상으로 안내합니다.">
+<meta name="description" content="(주)퍼스트전산 고객 지원 — 복합기 기종별 토너 교체, 폐토너통 교체, 용지 걸림, 검침 카운터 확인 방법을 기사가 직접 촬영한 영상으로 안내합니다.">
 <meta name="theme-color" content="#03183F">
 <meta name="color-scheme" content="light dark">
 <meta property="og:type" content="website">
 <meta property="og:title" content="퍼스트전산 복합기 사용설명서">
-<meta property="og:description" content="토너 교체부터 검침까지, 영상 보고 그대로 따라 하세요.">
+<meta property="og:description" content="토너 교체부터 검침까지, 기사가 찍은 영상 보고 그대로 따라 하세요.">
 <meta property="og:locale" content="ko_KR">
 
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><rect width='36' height='36' rx='10.5' fill='%2303183F'/><rect x='11' y='7' width='14' height='6.4' rx='2' fill='white' opacity='.55'/><rect x='7' y='15' width='22' height='8.6' rx='3' fill='%23F8B93E'/><rect x='13.5' y='25.4' width='9' height='4' rx='2' fill='white' opacity='.75'/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><rect width='36' height='36' rx='10.5' fill='%2303183F'/><rect x='11' y='7' width='14' height='6.4' rx='2' fill='white' opacity='.5'/><rect x='7' y='15' width='22' height='8.6' rx='3' fill='%23F8B93E'/><rect x='13.5' y='25.4' width='9' height='4' rx='2' fill='white' opacity='.7'/></svg>">
 
-<!-- 한글 본문용 Pretendard, 숫자·영문용 Manrope. 못 받아오면 기기 기본 글꼴로 내려앉습니다. -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- 본사 홈페이지와 같은 Pretendard. 못 받아오면 기기 기본 글꼴로 내려앉습니다. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
+
+<div class="topbar"><div class="topbar-in" id="topbar"></div></div>
 
 <header class="nav" id="nav">
   <div class="nav-in">
@@ -34,25 +36,22 @@
       <a href="#/t/toner">토너 교체</a>
       <a href="#/t/jam">용지 걸림</a>
       <a href="#/t/meter">검침 카운터</a>
+      <a href="#/#products">취급 품목</a>
     </nav>
     <span class="nav-sp"></span>
     <button class="navbtn" id="navSearch" aria-label="검색 열기"></button>
-    <a class="navbtn solid" id="navCall" href="#"></a>
+    <a class="navbtn kko" id="navKakao" href="#" target="_blank" rel="noopener"></a>
   </div>
 </header>
 
 <main id="app"></main>
 
-<footer class="footer">
-  <div class="container footer-in">
-    <div class="fl" id="footBrand"></div>
-    <div class="fr" id="footLinks"></div>
-  </div>
-</footer>
+<footer class="footer" id="footer"></footer>
 
 <div class="callbar" id="callbar">
   <span class="t" id="barTx"></span>
-  <a id="barCall" href="#"></a>
+  <a class="kko" id="barKakao" href="#" target="_blank" rel="noopener" aria-label="카카오톡 상담"></a>
+  <a class="tel" id="barTel" href="#"></a>
 </div>
 
 <!-- 검색 창 -->

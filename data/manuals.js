@@ -23,13 +23,52 @@ window.FIRSTOA_MANUAL = {
   /* ── 회사 정보 ─────────────────────────────────────────────── */
   meta: {
     company: "퍼스트전산",
+    legal: "(주)퍼스트전산",
     title: "복합기 사용설명서",
-    tagline: "토너 교체부터 검침까지, 영상 보고 그대로 따라 하세요",
+    tagline: "토너 교체부터 검침까지, 기사가 찍은 영상 보고 그대로 따라 하세요.",
     phone: "1522-1093",
+    phone2: "02-464-1095",
     hours: "평일 09:00 – 18:00",
-    kakao: "",                        // 카카오톡 채널 주소(있으면)
+    kakao: "https://pf.kakao.com/_yCBAj",
+    kakaoChat: "https://pf.kakao.com/_yCBAj/chat",
+    homepage: "https://firstoa.co.kr",
     channel: "https://www.youtube.com/channel/UCiXGLLxY8xwpcP1_-PQrlJw",
+    bizNo: "206-86-78075",
+    oneStop: "복합기 · PC · 솔루션 · 가전 · 가구 · 네트워크 One-Stop",
   },
+
+  /* ── 회사 실적 (본사 홈페이지 기준) ────────────────────────── */
+  STATS: [
+    { n: "20", unit: "년+", label: "업력" },
+    { n: "11,000", unit: "대", label: "렌탈 대수" },
+    { n: "40", unit: "명+", label: "전문 인력" },
+    { n: "200", unit: "곳", label: "전국 유지보수 지점" },
+  ],
+
+  /* ── 취급 품목 (홍보) ──────────────────────────────────────
+   * 사진은 본사 쇼핑몰에서 가져온 실제 제품 사진입니다.
+   * link 는 본사 홈페이지의 해당 분류로 이어집니다.
+   * ------------------------------------------------------------ */
+  PRODUCTS: [
+    { id: "copier", name: "복합기", img: "assets/img/copier.jpg",
+      desc: "삼성 · 신도리코 · 후지필름 · 교세라 A3 컬러/흑백",
+      link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=6" },
+    { id: "pc", name: "PC · 노트북", img: "assets/img/pc.jpg",
+      desc: "일반 사무용부터 워크스테이션까지",
+      link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=5" },
+    { id: "mac", name: "애플 (Mac)", img: "assets/img/mac.jpg",
+      desc: "맥북 · 맥 미니 · 맥 스튜디오 · 스튜디오 디스플레이",
+      link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=99" },
+    { id: "air", name: "공기청정기 · 에어컨", img: "assets/img/air.jpg",
+      desc: "LG 퓨리케어 · 삼성 블루스카이 · 사무실 냉난방",
+      link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=7" },
+    { id: "shredder", name: "문서세단기", img: "assets/img/shredder.jpg",
+      desc: "신도테크노 · 대진코스탈 · 대형 세단기",
+      link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=9" },
+    { id: "board", name: "스마트보드 · 플로터", img: "assets/img/board.jpg",
+      desc: "삼성 플립2 전자칠판 · HP 대형 플로터",
+      link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=8" },
+  ],
 
   /* ── 작업 분류 ─────────────────────────────────────────────── */
   CATEGORIES: [
@@ -224,7 +263,7 @@ window.FIRSTOA_MANUAL = {
       full: "SL-X3220 계열 컬러 복합기",
       aka: ["3220", "3250", "3255", "3280", "MX3", "X3220", "엑스3"],
       device: "floor-color",
-      photo: "",            // 직접 찍은 사진: assets/models/samsung-3220.jpg
+      photo: "assets/img/m-samsung-3220.jpg",            // 직접 찍은 사진: assets/models/samsung-3220.jpg
       videos: {
         toner: "RODkrd6bfeY", // 3220 토너 교체 방법
         waste: "bBUR7V6VRYs", // 3220,4220 폐통 교체 방법
@@ -366,7 +405,7 @@ window.FIRSTOA_MANUAL = {
       full: "D320 · D410 · D420 공통",
       aka: ["320", "321", "410", "411", "420", "422", "D420", "D410", "D320"],
       device: "floor-color",
-      photo: "",            // 직접 찍은 사진: assets/models/sindoh-d420.jpg
+      photo: "assets/img/m-sindoh-d420.jpg",            // 직접 찍은 사진: assets/models/sindoh-d420.jpg
       videos: {
         toner: "us13Br3-aBM", // 320,410,420 토너 교체 방법
         waste: "e_iTXoxXwM8", // 320,410,420 폐통 교체 방법
@@ -460,7 +499,7 @@ window.FIRSTOA_MANUAL = {
       full: "ApeosPort-IV / DocuCentre-V 계열",
       aka: ["키슈", "세이토", "2270", "2275", "2276", "3370", "3375", "C2270", "C2276"],
       device: "floor-color",
-      photo: "",            // 직접 찍은 사진: assets/models/xerox-c2270.jpg
+      photo: "assets/img/m-xerox-c2270.jpg",            // 직접 찍은 사진: assets/models/xerox-c2270.jpg
       videos: {
         toner: "DFJcuPt5yZk", // 키슈,세이토 토너 교체 방법
         waste: "LIhB66g5V6s", // 키슈,세이토 토너 회수통R5 교체 방법
@@ -485,7 +524,7 @@ window.FIRSTOA_MANUAL = {
       full: "DocuCentre-V · ApeosPort 계열",
       aka: ["마블", "2263", "2265", "2060", "C2263", "C2265", "C2060"],
       device: "floor-color",
-      photo: "",            // 직접 찍은 사진: assets/models/xerox-c2263.jpg
+      photo: "assets/img/m-xerox-c2263.jpg",            // 직접 찍은 사진: assets/models/xerox-c2263.jpg
       videos: {
         toner: "3XZ7PJaull4", // 마블 토너 교체 방법
         waste: "yBCH8_ouEmM", // 마블 토너 회수통R5 교체 방법
@@ -560,7 +599,7 @@ window.FIRSTOA_MANUAL = {
       full: "DocuCentre-V 대형기",
       aka: ["헤라", "5580", "5585", "6680", "C5585"],
       device: "floor-color",
-      photo: "",            // 직접 찍은 사진: assets/models/xerox-c5585.jpg
+      photo: "assets/img/m-xerox-c5585.jpg",            // 직접 찍은 사진: assets/models/xerox-c5585.jpg
       videos: {
         toner: "",
         waste: "",
@@ -606,7 +645,7 @@ window.FIRSTOA_MANUAL = {
       full: "TASKalfa 5521ci · 5526ci · 2100",
       aka: ["5521", "5526", "2100", "2101", "교세라", "TASKalfa"],
       device: "floor-color",
-      photo: "",            // 직접 찍은 사진: assets/models/kyocera.jpg
+      photo: "assets/img/m-kyocera.jpg",            // 직접 찍은 사진: assets/models/kyocera.jpg
       videos: {
         toner: "pRqyQJ5Lqns", // 교세라 토너 교체 방법
         waste: "",
