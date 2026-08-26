@@ -140,8 +140,10 @@ nav('#/');
 const home = doc.getElementById('app').innerHTML;
 const kko = [...doc.querySelectorAll('#app a[href*="pf.kakao.com"]')];
 kko.length ? ok(`카카오 채널 링크 ${kko.length}곳 (${kko[0].getAttribute('href')})`) : bad('카카오 링크 없음');
-const prods = doc.querySelectorAll('#app .pcard');
+const prods = doc.querySelectorAll('#app .pcard:not(.pack)');
 prods.length === D.PRODUCTS.length ? ok(`취급 품목 ${prods.length}개 표시`) : bad(`취급 품목 ${prods.length} ≠ ${D.PRODUCTS.length}`);
+const packs = doc.querySelectorAll('#app .pcard.pack');
+packs.length === D.PACKAGES.length ? ok(`렌탈 패키지 ${packs.length}개 표시`) : bad(`패키지 ${packs.length} ≠ ${D.PACKAGES.length}`);
 const stats = doc.querySelectorAll('#app .trust .cell');
 stats.length === D.STATS.length ? ok(`실적 ${stats.length}개 표시`) : bad('실적 띠 없음');
 // 사진 파일이 실제로 있는지

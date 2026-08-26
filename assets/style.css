@@ -613,3 +613,12 @@ body.has-callbar{padding-bottom:86px}
 .chip2:hover{border-color:var(--blue); color:var(--blue); transform:translateY(-1px)}
 .chip2 .ic{color:var(--ink-4)}
 .chip2:hover .ic{color:var(--blue)}
+
+/* ── 렌탈 패키지 ──────────────────────────────────────────────────────── */
+.promo.packs{grid-template-columns:1fr}
+@media(min-width:760px){ .promo.packs{grid-template-columns:repeat(3,1fr)} }
+.pcard.pack .shot{position:relative; aspect-ratio:16/10}
+.pkbadge{position:absolute; left:12px; top:12px; background:var(--gold); color:var(--navy);
+  border-radius:999px; padding:4px 11px; font-size:11px; font-weight:800; letter-spacing:-.01em}
+.pcard.pack .tx p{font-size:13.5px; line-height:1.58; color:var(--ink-2)}
+@media(min-width:760px){ .promo{grid-template-columns:repeat(3,1fr)} }

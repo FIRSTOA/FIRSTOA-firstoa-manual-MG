@@ -116,6 +116,11 @@
       <span class="shot"><img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy"></span>
       <span class="tx"><b>${esc(p.name)}${ic("ext", 15)}</b><p>${esc(p.desc)}</p></span></a>`;
 
+  const packCard = p => `<a class="pcard pack" href="${esc(p.link)}" target="_blank" rel="noopener" data-rv>
+      <span class="shot"><img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy">
+        <span class="pkbadge">묶음 렌탈</span></span>
+      <span class="tx"><b>${esc(p.name)}${ic("ext", 15)}</b><p>${esc(p.desc)}</p></span></a>`;
+
   // 카카오톡 채널 안내
   const kakaoCard = () => `<div class="kko-card" data-rv>
       <div>
@@ -248,6 +253,18 @@
             전체 품목 보기 ${ic("ext", 16)}</a>
         </div>
         <div class="promo">${(D.PRODUCTS || []).map(productCard).join("")}</div>
+      </section>
+
+      <section class="section" id="packages" style="padding-top:0">
+        <div class="sec-head" data-rv>
+          <div><span class="eyebrow gold">묶어서 빌리면 더 쌉니다</span>
+            <h2 class="h2" style="margin-top:10px">가장 많이 나가는 조합</h2>
+            <p class="lead">복합기 하나만 놓고 쓰는 사무실은 드뭅니다.
+               함께 쓰는 것을 묶으면 계약도 관리도 한 번에 끝납니다.</p></div>
+          <a class="more" href="${esc(D.meta.homepage)}/shop.php?goPage=GoodList&cat_no=3"
+             target="_blank" rel="noopener">패키지 전체 ${ic("ext", 16)}</a>
+        </div>
+        <div class="promo packs">${(D.PACKAGES || []).map(packCard).join("")}</div>
       </section>
 
       ${band()}
