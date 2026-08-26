@@ -18,6 +18,7 @@ win.addEventListener('error', e => bad('창 오류: ' + e.message));
 try {
   win.eval(read('data/manuals.js'));
   win.eval(read('assets/ui.js'));
+  win.eval(read('assets/chart.js'));
   win.eval(read('assets/app.js'));
 } catch (e) { bad('스크립트 실행 실패: ' + e.message); console.log(e.stack); process.exit(1); }
 
@@ -28,7 +29,7 @@ const junk = s => /undefined|\[object Object\]|NaN|&lt;svg/.test(s);
 /* 1. 모든 주소가 그려지는가 */
 console.log('\n[1] 화면 그리기');
 const routes = ['#/', '#/m/samsung-3220', '#/m/samsung-3220/toner', '#/m/hp-8710/toner',
-  '#/fixes', '#/f/jam', '#/f/acr-ctd', '#/m/samsung-3220/f/jam', '#/m/samsung-3220/f/acr-ctd',
+  '#/fixes', '#/pattern', '#/meter', '#/notices', '#/f/jam', '#/f/acr-ctd', '#/m/samsung-3220/f/jam', '#/m/samsung-3220/f/acr-ctd',
   '#/m/xerox-c2263/f/line-copy',
   '#/t/toner', '#/t/meter', '#/s/3220', '#/s/줄', '#/s/zzz없음', '#/m/없음', '#/헛주소'];
 for (const r of routes) {
@@ -176,6 +177,37 @@ drumModels.length === 1 && drumModels[0] === 'brother-5700'
 nav('#/');
 const chatLinks = [...doc.querySelectorAll('#app a[href*="/chat"]')];
 chatLinks.length === 0 ? ok('카카오는 채널 홈으로만 연결(로그인 벽 회피)') : bad('채팅 직행 링크 남음 ' + chatLinks.length);
+
+/* 12. 4색 차트 · 카운터 · 이용 안내 */
+console.log('\n[12] 새 화면');
+nav('#/pattern');
+const svg = doc.getElementById('chartSvg');
+if (!svg) bad('차트 SVG 없음');
+else {
+  const h = svg.outerHTML;
+  const inks = ['#000000', '#00AEEF', '#EC008C', '#FFF200'].filter(c => h.includes(c));
+  inks.length === 4 ? ok('차트에 KCMY 원색 모두 포함') : bad('빠진 원색: ' + (4 - inks.length) + '개');
+  h.includes('viewBox="0 0 210 297"') ? ok('A4 비율(210×297mm)로 그려짐') : bad('A4 규격 아님');
+  const rects = (h.match(/<rect/g) || []).length;
+  rects > 60 ? ok(`차트 도형 ${rects}개 (색 블록·농도 단계·전면)`) : bad('차트가 너무 단순함 ' + rects);
+  h.includes('background') ? bad('CSS 배경 사용 — 인쇄에서 빠질 수 있음') : ok('배경색 대신 도형으로만 그려 인쇄 안전');
+}
+nav('#/meter');
+const mBrands = doc.querySelectorAll('#app .ministeps');
+mBrands.length === D.METER.brands.length ? ok(`카운터 안내 ${mBrands.length}개 브랜드`) : bad('카운터 안내 누락');
+nav('#/notices');
+const nCards = doc.querySelectorAll('#app .notice');
+nCards.length === D.NOTICES.length ? ok(`이용 안내 ${nCards.length}가지`) : bad('이용 안내 누락');
+const nTx = doc.getElementById('app').textContent;
+['장마', '정전기', '당일 방문'].every(k => nTx.includes(k))
+  ? ok('장마철·정전기·방문 원칙 안내 포함') : bad('요청한 안내문 누락');
+// 헤더 5개
+const navLinks = [...doc.querySelectorAll('.nav-links a')].map(a => a.textContent.trim());
+navLinks.join('/') === '기종 전체/자주 생기는 문제/4색 패턴 출력/사용량 카운터/취급 품목'
+  ? ok('헤더: ' + navLinks.join(' · ')) : bad('헤더 구성 다름: ' + navLinks.join(','));
+// 용지는 브랜드 사진을 쓰지 않는다
+const paper = D.PRODUCTS.find(p => p.id === 'paper');
+paper && !paper.img ? ok('복사용지는 상표 없는 일러스트') : bad('용지에 특정 상품 사진이 붙어 있음');
 
 console.log(fails ? `\n실패 ${fails}건` : '\n전 항목 통과');
 process.exit(fails ? 1 : 0);

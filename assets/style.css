@@ -622,3 +622,47 @@ body.has-callbar{padding-bottom:86px}
   border-radius:999px; padding:4px 11px; font-size:11px; font-weight:800; letter-spacing:-.01em}
 .pcard.pack .tx p{font-size:13.5px; line-height:1.58; color:var(--ink-2)}
 @media(min-width:760px){ .promo{grid-template-columns:repeat(3,1fr)} }
+
+/* ── 4색 점검 차트 ────────────────────────────────────────────────────── */
+.chartbox{background:#fff; border:1px solid var(--line); border-radius:var(--r-lg);
+  padding:10px; box-shadow:var(--sh-2); overflow:hidden}
+.chartbox svg{display:block; width:100%; height:auto; border-radius:calc(var(--r-lg) - 12px)}
+
+/* 카운터 안내 안의 작은 순서 */
+.ministeps{list-style:none; counter-reset:ms; margin:0; padding:0}
+.ministeps li{counter-increment:ms; position:relative; padding:7px 0 7px 30px; font-size:14.5px;
+  line-height:1.55; color:var(--ink-2)}
+.ministeps li + li{box-shadow:inset 0 1px 0 var(--line-2)}
+.ministeps li::before{content:counter(ms); position:absolute; left:0; top:8px; width:21px; height:21px;
+  border-radius:50%; background:var(--accent-soft); color:var(--blue); display:grid; place-items:center;
+  font-size:11.5px; font-weight:800}
+
+/* ── 이용 안내 ────────────────────────────────────────────────────────── */
+.notices{display:grid; gap:14px; grid-template-columns:1fr}
+@media(min-width:900px){ .notices{grid-template-columns:1fr 1fr; gap:18px} }
+.notice{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-xl);
+  padding:22px 24px; box-shadow:var(--sh-2)}
+.nhead{display:flex; gap:14px; align-items:flex-start; margin-bottom:14px}
+.nbox{width:46px; height:46px; border-radius:14px; flex:none; display:grid; place-items:center;
+  background:var(--gold-soft); color:var(--gold-2)}
+.ntag{display:inline-block; font-size:11px; font-weight:800; letter-spacing:.06em; color:var(--blue);
+  background:var(--accent-soft); border-radius:999px; padding:2px 9px; margin-bottom:6px}
+.nhead b{display:block; font-size:18px; font-weight:800; letter-spacing:-.032em; line-height:1.32}
+.nlead{display:block; font-size:14px; color:var(--ink-3); margin-top:4px; font-weight:600}
+.nbody{margin:0; padding-left:19px; display:flex; flex-direction:column; gap:8px}
+.nbody li{font-size:14.5px; line-height:1.66; color:var(--ink-2)}
+.ntip{display:flex; gap:8px; align-items:flex-start; margin:14px 0 0; padding:12px 14px;
+  background:var(--accent-soft); border-radius:var(--r); font-size:13.5px; font-weight:600;
+  color:var(--accent-ink); line-height:1.55}
+.ntip .ic{flex:none; margin-top:2px}
+
+/* ── 차트만 인쇄 ──────────────────────────────────────────────────────── */
+@page{ size:A4; margin:8mm }
+@media print{
+  body.printing-chart .nav,body.printing-chart .topbar,body.printing-chart .footer,
+  body.printing-chart .callbar,body.printing-chart .phead,body.printing-chart .band,
+  body.printing-chart .callout,body.printing-chart .sec-head,body.printing-chart .overlay{display:none !important}
+  body.printing-chart .chartbox{border:0; box-shadow:none; padding:0}
+  body.printing-chart .section{padding:0}
+  body.printing-chart .container{padding:0; max-width:none}
+}

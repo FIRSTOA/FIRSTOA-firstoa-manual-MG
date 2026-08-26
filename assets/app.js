@@ -112,8 +112,10 @@
       </div></div></section>`;
 
   // 취급 품목 카드 (홍보) — 사진은 본사 쇼핑몰의 실제 제품 사진
+  // 사진이 있으면 사진, 없으면 상표 없는 일러스트(용지처럼 브랜드를 특정하면 안 되는 품목)
   const productCard = p => `<a class="pcard" href="${esc(p.link)}" target="_blank" rel="noopener" data-rv>
-      <span class="shot"><img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy"></span>
+      <span class="shot">${p.img ? `<img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy">`
+                                  : U.device(p.art)}</span>
       <span class="tx"><b>${esc(p.name)}${ic("ext", 15)}</b><p>${esc(p.desc)}</p></span></a>`;
 
   const packCard = p => `<a class="pcard pack" href="${esc(p.link)}" target="_blank" rel="noopener" data-rv>
@@ -148,7 +150,8 @@
       { to: "#/t/waste", icon: "waste", label: "폐토너통 교체" },
       { to: "#/f/jam",   icon: "jam",   label: "용지 걸림" },
       { to: "#/f/line-copy", icon: "quality", label: "복사 줄 나옴" },
-      { to: "#/t/meter", icon: "meter", label: "검침 카운터" },
+      { to: "#/pattern", icon: "palette", label: "4색 패턴 출력" },
+      { to: "#/meter", icon: "meter", label: "사용량 카운터" },
     ];
 
     return `
@@ -281,7 +284,19 @@
     const secs = [];
     if (sup.length)   secs.push({ id: "sec-consumable", cat: CAT.consumable, html: sup.map(t => taskCard(m, t)).join("") });
     if (fixes.length) secs.push({ id: "sec-fix",        cat: CAT.fix,        html: fixes.map(f => fixCard(m, f)).join("") });
-    if (mng.length)   secs.push({ id: "sec-manage",     cat: CAT.manage,     html: mng.map(t => taskCard(m, t)).join("") });
+    if (mng.length)   secs.push({ id: "sec-manage", cat: CAT.manage,
+      html: mng.map(t => taskCard(m, t)).join("") + `
+        <a class="tcard" href="#/pattern" data-rv>
+          <div class="thumb"><span class="ph">${ic("palette", 38)}</span>
+            <span class="pin">${ic("clock", 13)}1분</span></div>
+          <div class="body"><div class="row1">${ic("palette", 19)}<b>4색 패턴 출력</b></div>
+            <p>인쇄 상태를 한 장으로 점검하는 차트</p>
+            <div class="meta"><span class="badge b-gold">바로 출력</span><span>전 기종 공통</span></div></div></a>
+        <a class="tcard" href="#/notices" data-rv>
+          <div class="thumb"><span class="ph">${ic("book", 38)}</span></div>
+          <div class="body"><div class="row1">${ic("book", 19)}<b>이용 안내</b></div>
+            <p>장마철·겨울철 용지, 방문 원칙, 소모품 신청 시점</p>
+            <div class="meta"><span class="badge b-soon">읽을거리</span><span>${(D.NOTICES || []).length}가지</span></div></div></a>` });
 
     return `<div class="container">
       <div class="phead">
@@ -549,6 +564,131 @@
     </div>`;
   }
 
+  /* ── 화면: 4색 패턴 출력 ──────────────────────────────────────────── */
+  function viewPattern() {
+    return `<div class="container">
+      <div class="phead">
+        ${crumbs([{ label: "처음", to: "/" }, { label: "4색 패턴 출력" }])}
+        <h1 class="h1" style="margin-top:14px; display:flex; align-items:center; gap:12px">
+          ${ic("palette", 30)}4색 패턴 출력</h1>
+        <p class="lead">인쇄 상태를 한 장으로 확인하는 점검 차트입니다.
+           아래 버튼을 누르면 A4 한 장으로 바로 출력됩니다.</p>
+        <div class="statrow">
+          <button class="btn" onclick="FIRSTOA.printChart()">${ic("printer", 19)}A4로 출력하기</button>
+          <button class="btn ghost sm" onclick="FIRSTOA.downloadChart()">${ic("book", 17)}그림 파일로 저장</button>
+        </div>
+      </div>
+
+      <section class="section tight">
+        <div class="cards" style="grid-template-columns:1fr">
+          <div class="callout info" data-rv>
+            <b>${ic("spark", 17)}이 차트로 무엇을 알 수 있나요</b>
+            <p><b>색이 빠졌는지</b> — 네 가지 원색 중 흐리거나 안 나오는 색이 있으면 그 색 토너·드럼 문제입니다.<br>
+               <b>줄이 생기는지</b> — 가는 선 구간에서 세로줄·가로줄이 보이면 유리면이나 드럼 쪽입니다.<br>
+               <b>얼룩·띠가 있는지</b> — 전면 구간에 가로 띠가 반복되면 정착기나 롤러 쪽일 수 있습니다.<br>
+               <b>색이 치우쳤는지</b> — 회색 두 줄의 색이 다르면 색 균형이 틀어진 것입니다.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section tight">
+        <div class="sec-head" data-rv><div><span class="eyebrow">미리 보기</span>
+          <h2 class="h2" style="margin-top:8px">출력되는 모습</h2>
+          <p class="lead">화면에 보이는 그대로 A4 한 장에 나옵니다.
+             컬러 복합기에서 <b>컬러</b>로 출력해 주세요.</p></div></div>
+        <div class="chartbox" id="chartBox">${CHART.chartSVG(D.meta.company)}</div>
+      </section>
+
+      <section class="section tight">
+        <div class="callout warn" data-rv>
+          <b>${ic("error", 17)}출력한 뒤에</b>
+          <ul>
+            <li>이상이 보이면 <b>그 종이를 사진으로 찍어</b> 카카오톡이나 문자로 보내주세요.</li>
+            <li>사진 한 장이면 방문 전에 원인을 좁혀 부품을 챙겨갈 수 있습니다.</li>
+            <li>흑백 기종은 검정 칸만 확인하시면 됩니다.</li>
+          </ul>
+        </div>
+      </section>
+      ${band()}
+    </div>`;
+  }
+
+  /* ── 화면: 사용량 카운터 ──────────────────────────────────────────── */
+  function viewMeter() {
+    const M = D.META_ = D.METER;
+    return `<div class="container">
+      <div class="phead">
+        ${crumbs([{ label: "처음", to: "/" }, { label: "사용량 카운터" }])}
+        <h1 class="h1" style="margin-top:14px; display:flex; align-items:center; gap:12px">
+          ${ic("meter", 30)}사용량 카운터 확인</h1>
+        <p class="lead">${esc(M.why)}</p>
+      </div>
+
+      <section class="section tight">
+        <div class="kko-card" data-rv>
+          <div>
+            <span class="kko-badge">${ic("kakao", 16)}가장 쉬운 방법</span>
+            <h3>화면을 사진으로 찍어 보내주세요</h3>
+            <p>${esc(M.best)}</p>
+          </div>
+          <div class="kko-side">
+            ${D.meta.kakao ? `<a class="btn kko wide" href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">
+              ${ic("kakao", 19)}카카오톡으로 보내기</a>` : ""}
+            <span class="hint">기종과 함께 보내주시면 더 빠릅니다</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section tight">
+        <div class="sec-head" data-rv><div><span class="eyebrow">브랜드별</span>
+          <h2 class="h2" style="margin-top:8px">화면에서 찾는 법</h2>
+          <p class="lead">쓰시는 복합기 제조사를 찾으세요. 같은 브랜드면 기종이 달라도 거의 같습니다.</p></div></div>
+        <div class="cards">${M.brands.map(b => {
+          const br = BRAND[b.brand];
+          return `<div class="mcard" style="cursor:default" data-rv>
+            <div class="info" style="padding:20px">
+              <div style="display:flex; align-items:center; gap:9px; margin-bottom:12px">
+                <i style="width:9px;height:9px;border-radius:50%;background:${esc(br?.accent || "#888")};flex:none"></i>
+                <b style="font-size:17px">${esc(b.label)}</b></div>
+              <ol class="ministeps">${b.steps.map(t => `<li>${esc(t)}</li>`).join("")}</ol>
+              ${b.alt ? `<p class="muted" style="margin:12px 0 0; line-height:1.55">${esc(b.alt)}</p>` : ""}
+            </div></div>`;
+        }).join("")}</div>
+      </section>
+
+      <section class="section tight">
+        <div class="callout warn" data-rv>
+          <b>${ic("error", 17)}알아두세요</b>
+          <ul>${M.cautions.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>
+      </section>
+      ${band()}
+    </div>`;
+  }
+
+  /* ── 화면: 이용 안내 (관리 · 검침) ────────────────────────────────── */
+  function viewNotices() {
+    return `<div class="container">
+      <div class="phead">
+        ${crumbs([{ label: "처음", to: "/" }, { label: "이용 안내" }])}
+        <h1 class="h1" style="margin-top:14px">알아두시면 편한 것들</h1>
+        <p class="lead">고장이 아닌데 고장처럼 보이는 것, 그리고 미리 아시면 서로 편한 것들을 모았습니다.</p>
+      </div>
+      <section class="section tight">
+        <div class="notices">${(D.NOTICES || []).map(n => `<article class="notice" data-rv>
+          <div class="nhead">
+            <span class="nbox">${ic(n.icon, 22)}</span>
+            <div><span class="ntag">${esc(n.tag)}</span>
+              <b>${esc(n.title)}</b>
+              <span class="nlead">${esc(n.lead)}</span></div>
+          </div>
+          <ul class="nbody">${n.body.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
+          ${n.tip ? `<p class="ntip">${ic("spark", 15)}${esc(n.tip)}</p>` : ""}
+        </article>`).join("")}</div>
+      </section>
+      ${band()}
+    </div>`;
+  }
+
   /* ── 화면: 증상 목록 (문제가 생겼어요) ───────────────────────────── */
   function viewFixes() {
     const common = (D.FIXES || []).filter(f => f.scope.all);
@@ -755,6 +895,9 @@
     else if (p[0] === "m") { html = viewModel(p[1]); title = `${MODEL[p[1]]?.name || "기종"} | ${D.meta.company}`; }
     else if (p[0] === "t") { html = viewPick(p[1]); title = `${TASK[p[1]]?.title || "작업"} | ${D.meta.company}`; }
     else if (p[0] === "fixes") { html = viewFixes(); title = `문제 해결 | ${D.meta.company}`; }
+    else if (p[0] === "pattern") { html = viewPattern(); title = `4색 패턴 출력 | ${D.meta.company}`; }
+    else if (p[0] === "meter") { html = viewMeter(); title = `사용량 카운터 | ${D.meta.company}`; }
+    else if (p[0] === "notices") { html = viewNotices(); title = `이용 안내 | ${D.meta.company}`; }
     else if (p[0] === "f") { html = viewFixPick(p[1]); title = `${FIX[p[1]]?.title || "증상"} | ${D.meta.company}`; }
     else if (p[0] === "s") { html = viewSearch(p.slice(1).join("/")); title = `검색 | ${D.meta.company}`; }
     else html = view404();
@@ -788,6 +931,18 @@
       i.value = ""; paintHits(""); setTimeout(() => i.focus(), 30);
     },
     close() { ov().classList.remove("open"); document.body.style.overflow = ""; },
+    // 차트는 SVG 라서 배경 인쇄 설정과 무관하게 색이 그대로 나옵니다
+    printChart() { document.body.classList.add("printing-chart"); window.print();
+      setTimeout(() => document.body.classList.remove("printing-chart"), 500); },
+    downloadChart() {
+      const svg = document.getElementById("chartSvg");
+      if (!svg) return;
+      const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "퍼스트전산_4색점검차트.svg";
+      a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    },
     reset() {},
   };
 
@@ -843,10 +998,10 @@
           <div class="fcol">
             <h4>사용설명서</h4>
             <a href="#/#models">${ic("grid", 15)}기종 전체</a>
-            <a href="#/t/toner">${ic("toner", 15)}토너 교체</a>
-            <a href="#/t/waste">${ic("waste", 15)}폐토너통 교체</a>
-            <a href="#/t/jam">${ic("jam", 15)}용지 걸림</a>
-            <a href="#/t/meter">${ic("meter", 15)}검침 카운터</a>
+            <a href="#/fixes">${ic("error", 15)}자주 생기는 문제</a>
+            <a href="#/pattern">${ic("palette", 15)}4색 패턴 출력</a>
+            <a href="#/meter">${ic("meter", 15)}사용량 카운터</a>
+            <a href="#/notices">${ic("book", 15)}이용 안내</a>
           </div>
           <div class="fcol">
             <h4>문의</h4>

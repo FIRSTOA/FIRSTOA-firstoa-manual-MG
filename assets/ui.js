@@ -37,6 +37,12 @@
     users:   '<path d="M16.4 20.4v-1.8a3.6 3.6 0 0 0-3.6-3.6H6.4a3.6 3.6 0 0 0-3.6 3.6v1.8"/><circle cx="9.6" cy="7.6" r="3.6"/><path d="M21.2 20.4v-1.8a3.6 3.6 0 0 0-2.7-3.5"/><path d="M15.6 4.2a3.6 3.6 0 0 1 0 6.9"/>',
     pin:     '<path d="M19.4 10.2c0 5.4-7.4 11-7.4 11s-7.4-5.6-7.4-11a7.4 7.4 0 1 1 14.8 0z"/><circle cx="12" cy="10" r="2.7"/>',
     star:    '<path d="M12 3.2l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.6l6-.8z"/>',
+    drop:    '<path d="M12 3.2c0 0 6 6.4 6 10.2a6 6 0 0 1-12 0c0-3.8 6-10.2 6-10.2z"/>',
+    snow:    '<path d="M12 2.6v18.8M3.9 7.3l16.2 9.4M20.1 7.3 3.9 16.7"/><path d="M9.4 4.6 12 7.2l2.6-2.6M9.4 19.4 12 16.8l2.6 2.6"/>',
+    calendar:'<rect x="3.2" y="4.8" width="17.6" height="16" rx="2.2"/><path d="M3.2 9.6h17.6M8.2 2.8v4M15.8 2.8v4"/>',
+    box:     '<path d="M20.6 8.4v7.2a1.8 1.8 0 0 1-.9 1.55l-6.8 3.9a1.8 1.8 0 0 1-1.8 0l-6.8-3.9a1.8 1.8 0 0 1-.9-1.55V8.4"/><path d="M3.4 8.4 12 3.4l8.6 5L12 13.4z"/><path d="M12 13.4V21"/>',
+    power:   '<path d="M12 3.4v8.4"/><path d="M6.8 6.2a8.4 8.4 0 1 0 10.4 0"/>',
+    palette: '<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/>',
     printer: '<path d="M6.4 9V3.6h11.2V9"/><rect x="2.6" y="9" width="18.8" height="7.6" rx="2"/><rect x="6.4" y="14" width="11.2" height="6.4" rx="1.4"/>',
   };
   const icon = (name, size = 24, cls = "") =>
@@ -119,6 +125,22 @@
       ${tray(64, 120, 118, 28)}
       <rect x="70" y="169" width="18" height="8" rx="3" fill="var(--dev-shade)"/>
       <rect x="164" y="169" width="18" height="8" rx="3" fill="var(--dev-shade)"/>`),
+
+    // 복사용지 묶음 — 상표 없는 그림입니다.
+    // 특정 브랜드 용지 사진을 쓰면 "우리가 받는 것과 다르다"는 항의가 생깁니다.
+    "paper-ream": () => shell("0 0 260 200", `
+      <ellipse cx="130" cy="182" rx="86" ry="9" fill="var(--dev-shadow)"/>
+      <rect x="46" y="112" width="168" height="56" rx="7" fill="var(--dev-shade)"/>
+      <rect x="46" y="112" width="168" height="12" rx="6" fill="var(--dev-line)" opacity=".55"/>
+      <rect x="40" y="64" width="168" height="56" rx="7" fill="url(#gBody)"/>
+      <rect x="40" y="64" width="168" height="12" rx="6" fill="var(--dev-shade)" opacity=".7"/>
+      <rect x="62" y="86" width="76" height="5" rx="2.5" fill="var(--accent)" opacity=".75"/>
+      <rect x="62" y="97" width="48" height="4" rx="2" fill="var(--dev-line)"/>
+      <rect x="86" y="22" width="94" height="42" rx="3" fill="var(--dev-paper)"/>
+      <rect x="86" y="22" width="94" height="42" rx="3" fill="none" stroke="var(--dev-line)" stroke-width="1.4"/>
+      <rect x="98" y="34" width="58" height="3.4" rx="1.7" fill="var(--dev-line)" opacity=".8"/>
+      <rect x="98" y="43" width="70" height="3.4" rx="1.7" fill="var(--dev-line)" opacity=".6"/>
+      <rect x="98" y="52" width="44" height="3.4" rx="1.7" fill="var(--dev-line)" opacity=".45"/>`),
 
     // 잉크젯 복합기
     "inkjet": () => shell("0 0 260 200", `
