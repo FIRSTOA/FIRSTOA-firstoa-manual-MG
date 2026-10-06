@@ -755,12 +755,19 @@
            쓰시는 복합기 제조사를 먼저 골라 주세요.</p>
       </div>
       <section class="section tight">
-        <div class="brandtiles">${brands.map(b => {
-          const all = fixesForBrand(b.id).length;
-          return `<a class="btile" href="#/fixes/${b.id}" data-rv style="--bdot:${esc(b.accent)}">
-            <i class="dot"></i>
-            <span class="tx"><b>${esc(b.name)}</b><span>${esc(b.full)}</span></span>
-            <span class="cnt">증상 ${all} · 기종 ${modelsOf(b.id).length}</span>${ic("chev", 18)}</a>`;
+        <div class="models">${brands.map(b => {
+          const own = brandOwn(b.id).length, all = fixesForBrand(b.id).length;
+          const rep = D.MODELS.find(m => m.brand === b.id && m.photo);
+          return `<a class="mcard" href="#/fixes/${b.id}" data-rv>
+            <div class="art">${rep ? `<img class="photo" src="${esc(rep.photo)}" alt="" loading="lazy">`
+                                   : U.device("floor-color")}
+              <span class="bdot"><i style="background:${esc(b.accent)}"></i>${esc(b.name)}</span></div>
+            <div class="info"><b>${esc(b.name)}</b>
+              <span class="sub">${esc(b.full)}</span>
+              <div class="meta">
+                <span class="badge b-gold">증상 ${all}가지</span>
+                <span>기종 ${modelsOf(b.id).length}종</span>
+                <span class="go">${ic("arrow", 18)}</span></div></div></a>`;
         }).join("")}</div>
       </section>
       <section class="section tight">
