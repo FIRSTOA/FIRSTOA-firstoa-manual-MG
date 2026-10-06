@@ -1,7 +1,9 @@
 /* 실제 DOM(happy-dom)에 올려서 화면·상호작용을 점검한다 */
 import fs from 'fs';
 import { Window } from 'happy-dom';
-const HOME = process.env.HOME + '/firstoa-manual';
+import path from 'path';
+import { fileURLToPath } from 'url';
+const HOME = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = f => fs.readFileSync(HOME + '/' + f, 'utf8');
 
 let html = read('index.html')
@@ -158,7 +160,7 @@ doc.getElementById('navTel')?.innerHTML.includes(D.meta.phone) ? ok('헤더에 �
 const foot = doc.getElementById('footer').innerHTML;
 foot.includes(D.meta.bizNo) && foot.includes('유튜브') ? ok('바닥글: 사업자번호·유튜브 채널 포함') : bad('바닥글 내용 누락');
 nav('#/m/samsung-3220');
-doc.querySelector('#app .mcard .real, #app .phead .art img.photo') ? ok('기종 화면에 실제 제품 사진') : bad('기종 사진 안 붙음');
+doc.querySelector('#app .msum-art img.photo, #app .phead .art img.photo') ? ok('기종 화면에 실제 제품 사진') : bad('기종 사진 안 붙음');
 
 /* 11. 간단 AS 적용 범위 */
 console.log('\n[11] 간단 AS(브랜드 공통) 적용 범위');
@@ -214,8 +216,8 @@ paper && !paper.img ? ok('복사용지는 상표 없는 일러스트') : bad('�
 /* 13. 브랜드별 증상 구조 · 5장 출력 */
 console.log('\n[13] 브랜드별 증상 · 출력 5장');
 nav('#/fixes');
-const bCards = doc.querySelectorAll('#app .mcard');
-bCards.length >= 5 ? ok(`브랜드 고르기 ${bCards.length}곳`) : bad('브랜드 카드 부족 ' + bCards.length);
+const bCards = doc.querySelectorAll('#app .btile, #app .mcard');
+bCards.length >= 5 ? ok(`브랜드 고르기 타일 ${bCards.length}곳`) : bad('브랜드 카드 부족 ' + bCards.length);
 nav('#/fixes/samsung');
 const sTiles = [...doc.querySelectorAll('#app .tile')].map(t => t.querySelector('b').textContent);
 sTiles.some(t => t.includes('ACR')) ? ok('삼성 전용 증상이 삼성 목록에 있음') : bad('삼성 전용 누락');
@@ -259,5 +261,23 @@ const css = read('assets/style.css');
   ? ok('화면 CSS 에 인쇄 잔재 없음') : bad('옛 인쇄 규칙이 남아 있음');
 (css.match(/@page\{/g) || []).length === 1 ? ok('@page 기본 규칙 하나만') : bad('@page 중복');
 
-console.log(fails ? `\n실패 ${fails}건` : '\n전 항목 통과');
+/* 14. 폰 하단 탭 · 메뉴판 (2026-10-06) */
+console.log('\n[14] 하단 탭');
+const tabs2 = doc.querySelectorAll('#tabbar [data-tab]');
+tabs2.length === 5 ? ok('하단 탭 5개 (홈·기종·문제 해결·더보기·상담)') : bad('하단 탭 수 ' + tabs2.length);
+nav('#/fixes');
+doc.querySelector('#tabbar [data-tab="fixes"].on') ? ok('문제 해결 탭 활성 표시') : bad('탭 활성 표시 안 됨');
+win.FIRSTOA.sheet('more');
+!doc.getElementById('bsheet').hidden && doc.querySelectorAll('#bsheetBody .row').length >= 4 ? ok('더보기 메뉴판 열림 · 항목 ' + doc.querySelectorAll('#bsheetBody .row').length) : bad('더보기 메뉴판 실패');
+win.FIRSTOA.sheet('help');
+doc.getElementById('bsheetBody').innerHTML.includes('pf.kakao.com/_yCBAj"') && !doc.getElementById('bsheetBody').innerHTML.includes('/chat') ? ok('상담 메뉴판: 카카오 채널 홈으로') : bad('상담 메뉴판 카카오 주소');
+nav('#/');
+doc.getElementById('bsheet').hidden ? ok('화면 이동하면 메뉴판 닫힘') : bad('메뉴판 안 닫힘');
+doc.getElementById('modelGrid').classList.contains('collapsed') && doc.getElementById('showAll') ? ok('기종 목록 접힘 + 모두 보기 단추') : bad('기종 접기 없음');
+win.FIRSTOA.showAll();
+!doc.getElementById('modelGrid').classList.contains('collapsed') && !doc.getElementById('showAll') ? ok('모두 보기 동작') : bad('모두 보기 실패');
+/#callbar/.test(doc.body.innerHTML) ? bad('옛 전화바 잔재') : ok('옛 하단 전화바 제거됨');
+/기사/.test(doc.getElementById('app').innerHTML + doc.getElementById('footer').innerHTML) ? bad("'기사' 표현 남음") : ok("'기사' 대신 엔지니어");
+
+console.log(fails ? `\n실패 ${fails}건` : '\n모두 통과');
 process.exit(fails ? 1 : 0);

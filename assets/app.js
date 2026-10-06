@@ -109,7 +109,7 @@
 
   const band = () => `<section class="section"><div class="band" data-rv>
       <h3>그래도 해결이 안 되시나요?</h3>
-      <p>${esc(D.meta.company)} 기사가 바로 도와드립니다. ${esc(D.meta.hours)}</p>
+      <p>${esc(D.meta.company)} 엔지니어가 바로 도와드립니다. ${esc(D.meta.hours)}</p>
       <div class="row">
         ${tel() ? `<a class="btn light" href="tel:${tel()}">${ic("phone", 19)}전화 ${esc(D.meta.phone)}</a>` : ""}
         ${D.meta.kakao ? `<a class="btn kko" href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">
@@ -134,7 +134,7 @@
         <span class="kko-badge">${ic("kakao", 16)}카카오톡 채널</span>
         <h3>채널 추가하면 <span style="color:var(--blue)">2배 빠른</span> 상담을 받습니다</h3>
         <p>전화가 어려우실 때, 카카오톡으로 사진 한 장만 보내주셔도 됩니다.
-           증상을 미리 보면 기사가 부품을 챙겨 한 번에 해결합니다.</p>
+           증상을 미리 보면 담당 엔지니어가 부품을 챙겨 한 번에 해결합니다.</p>
         <div class="why">
           <div>${ic("check", 17)}<span>화면의 오류 코드나 인쇄물을 사진으로 바로 전송</span></div>
           <div>${ic("check", 17)}<span>토너·폐토너통 등 소모품 신청도 채팅으로</span></div>
@@ -147,6 +147,25 @@
         <span class="hint">카카오톡 앱에서 <b>퍼스트전산</b> 을 검색해도 됩니다</span>
       </div>
     </div>`;
+
+  // 유튜브에 새로 올라왔지만 아직 기종 안내에 연결되지 않은 영상 — scripts/fetch-channel.mjs --auto 가 data/new-videos.js 에 채운다
+  const newVideos = () => {
+    const list = (window.FIRSTOA_NEW_VIDEOS || []).slice(0, 8);
+    if (!list.length) return "";
+    return `<section class="section" style="padding-top:0">
+      <div class="sec-head" data-rv>
+        <div><span class="eyebrow">새로 올라온 영상</span>
+          <h2 class="h2" style="margin-top:10px">유튜브에 방금 올라왔습니다</h2>
+          <p class="lead">기종 안내에 연결되기 전 영상입니다. 지금 바로 보실 수 있습니다.</p></div>
+        ${D.meta.channel ? `<a class="more" href="${esc(D.meta.channel)}" target="_blank" rel="noopener">채널 전체 ${ic("ext", 16)}</a>` : ""}
+      </div>
+      <div class="cards rail">${list.map(v => `<a class="tcard" href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank" rel="noopener" data-rv>
+        <div class="thumb"><img src="${thumb(v.id)}" onerror="${fallback(v.id)}" alt="" loading="lazy">
+          <span class="playdot"><i>${ic("play", 20)}</i></span></div>
+        <div class="body"><b>${esc(v.title)}</b>
+          <div class="meta"><span class="badge b-vid">${ic("video", 13)}새 영상</span><span>${esc((v.published || "").slice(0, 10))}</span></div></div></a>`).join("")}</div>
+    </section>`;
+  };
 
   /* ── 화면: 첫 화면 ─────────────────────────────────────────────────── */
   function viewHome() {
@@ -176,7 +195,7 @@
         </div>
         <div class="hero-art">
           <div class="hero-shot">
-            <span class="tagchip"><i></i>기사가 직접 촬영</span>
+            <span class="tagchip"><i></i>엔지니어 직접 촬영</span>
             <img src="assets/img/copier.jpg" alt="복합기" loading="eager">
           </div>
           <span class="hero-float f1">${ic("video", 22)}
@@ -203,7 +222,7 @@
           <a class="door d1" href="#/t/toner" data-rv>
             <span class="dbox">${ic("toner", 30)}</span>
             <b>소모품이 떨어졌어요</b>
-            <p>토너 · 폐토너통 교체. 기사가 직접 촬영한 영상을 보며 3분이면 끝납니다.</p>
+            <p>토너 · 폐토너통 교체. 엔지니어가 직접 촬영한 영상을 보며 3분이면 끝납니다.</p>
             <span class="dgo">기종 고르기 ${ic("arrow", 18)}</span>
           </a>
           <a class="door d2" href="#/fixes" data-rv>
@@ -213,8 +232,6 @@
             <span class="dgo">증상 고르기 ${ic("arrow", 18)}</span>
           </a>
         </div>
-        <div class="chipbar">${quick.map(q =>
-          `<a class="chip2" href="${q.to}">${ic(q.icon, 16)}${esc(q.label)}</a>`).join("")}</div>
       </section>
 
       <section class="section" id="models" style="padding-top:0">
@@ -230,8 +247,11 @@
             `<button class="tab" role="tab" aria-selected="false" data-brand="${b.id}" style="--bdot:${esc(b.accent)}">
                <i class="dot"></i>${esc(b.name)} <span class="n num">${modelsOf(b.id).length}</span></button>`).join("")}
         </div>
-        <div class="models" id="modelGrid">${D.MODELS.map(modelCard).join("")}</div>
+        <div class="models collapsed" id="modelGrid">${D.MODELS.map(modelCard).join("")}</div>
+        <button class="btn ghost wide sm showall" id="showAll" onclick="FIRSTOA.showAll()">기종 ${D.MODELS.length}종 모두 보기 ${ic("chev", 16)}</button>
       </section>
+
+      ${newVideos()}
 
       <section class="section" style="padding-top:0">${kakaoCard()}</section>
 
@@ -247,7 +267,7 @@
           <div class="step" data-rv><b>작업을 고릅니다</b>
             <p>토너 교체, 폐토너통, 용지 걸림, 검침 카운터까지. 걸리는 시간이 적혀 있어 미리 가늠할 수 있습니다.</p></div>
           <div class="step" data-rv><b>영상을 따라 합니다</b>
-            <p>기사가 직접 촬영한 영상과 순서를 보며 하나씩 눌러 체크하세요. 어디까지 했는지 남습니다.</p></div>
+            <p>엔지니어가 직접 촬영한 영상과 순서를 보며 하나씩 눌러 체크하세요. 어디까지 했는지 남습니다.</p></div>
         </div>
       </section>
 
@@ -260,7 +280,7 @@
           <a class="more" href="${esc(D.meta.homepage)}" target="_blank" rel="noopener">
             전체 품목 보기 ${ic("ext", 16)}</a>
         </div>
-        <div class="promo">${(D.PRODUCTS || []).map(productCard).join("")}</div>
+        <div class="promo rail">${(D.PRODUCTS || []).map(productCard).join("")}</div>
       </section>
 
       <section class="section" id="packages" style="padding-top:0">
@@ -272,7 +292,7 @@
           <a class="more" href="${esc(D.meta.homepage)}/shop.php?goPage=GoodList&cat_no=3"
              target="_blank" rel="noopener">패키지 전체 ${ic("ext", 16)}</a>
         </div>
-        <div class="promo packs">${(D.PACKAGES || []).map(packCard).join("")}</div>
+        <div class="promo packs rail">${(D.PACKAGES || []).map(packCard).join("")}</div>
       </section>
 
       ${band()}
@@ -304,35 +324,42 @@
             <div class="meta"><span class="badge b-soon">읽을거리</span><span>${(D.NOTICES || []).length}가지</span></div></div></a>` });
 
     return `<div class="container">
-      <div class="phead">
+      <div class="phead" style="padding-bottom:0">
         ${crumbs([{ label: "처음", to: "/" }, { label: b?.name || "기종", to: "/#models" }, { label: m.name }])}
-        <div class="phead-grid" style="margin-top:16px">
-          <div>
+      </div>
+      <div class="mpage">
+        <aside class="msum" data-rv>
+          <div class="msum-art">${artOf(m)}</div>
+          <div class="msum-tx">
             <span class="eyebrow">${esc(b?.name || "")}</span>
-            <h1 class="h1" style="margin-top:10px">${esc(m.name)}</h1>
-            ${m.full ? `<p class="lead" style="margin-top:8px">${esc(m.full)}</p>` : ""}
-            <p class="lead" style="margin-top:6px">필요한 것을 고르면 영상과 순서를 함께 보여드립니다.</p>
+            <h1 class="h1">${esc(m.name)}</h1>
+            ${m.full ? `<p class="lead">${esc(m.full)}</p>` : ""}
             <div class="statrow">
               ${n ? `<span class="stat">${ic("video", 16)}영상 ${n}편</span>`
                   : `<span class="stat">${ic("video", 16)}영상 준비 중</span>`}
               <span class="stat">${ic("toner", 16)}소모품 ${sup.length}가지</span>
-              <span class="stat">${ic("error", 16)}간단 처리 ${fixes.length}가지</span>
+              <span class="stat">${ic("error", 16)}문제 해결 ${fixes.length}가지</span>
             </div>
           </div>
-          <div class="art">${artOf(m)}</div>
+          <div class="msum-help">
+            <b>해결이 안 되시면</b>
+            <span class="muted">${esc(D.meta.company)} · ${esc(D.meta.hours)}</span>
+            ${tel() ? `<a class="btn wide sm" href="tel:${tel()}">${ic("phone", 17)}전화 ${esc(D.meta.phone)}</a>` : ""}
+            ${D.meta.kakao ? `<a class="btn kko wide sm" href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">${ic("kakao", 17)}카카오톡 상담</a>` : ""}
+          </div>
+        </aside>
+        <div class="mbody">
+          <p class="lead mintro">필요한 것을 고르면 영상과 순서를 함께 보여드립니다.</p>
+          <div class="jump" id="jump">${secs.map((x, i) =>
+            `<a href="#${x.id}" data-sec="${x.id}" class="${i ? "" : "on"}">${ic(x.cat.icon, 16)}${esc(x.cat.name)}</a>`).join("")}</div>
+          ${secs.map(x => `<section class="section tight" id="${x.id}">
+            <div class="sec-head" data-rv><div>
+              <span class="eyebrow">${esc(x.cat.desc)}</span>
+              <h2 class="h2" style="margin-top:8px">${esc(x.cat.name)}</h2></div></div>
+            <div class="cards">${x.html}</div>
+          </section>`).join("")}
         </div>
       </div>
-
-      <div class="jump" id="jump">${secs.map((x, i) =>
-        `<a href="#${x.id}" data-sec="${x.id}" class="${i ? "" : "on"}">${ic(x.cat.icon, 16)}${esc(x.cat.name)}</a>`).join("")}</div>
-
-      ${secs.map(x => `<section class="section tight" id="${x.id}">
-        <div class="sec-head" data-rv><div>
-          <span class="eyebrow">${esc(x.cat.desc)}</span>
-          <h2 class="h2" style="margin-top:8px">${esc(x.cat.name)}</h2></div></div>
-        <div class="cards">${x.html}</div>
-      </section>`).join("")}
-
       ${band()}
     </div>`;
   }
@@ -377,7 +404,7 @@
               </ol></div>`
             : `<div class="callout info">
                  <b>${ic("spark", 17)}내용을 준비하고 있습니다</b>
-                 <p>이 항목은 기사가 처리 방법을 정리하는 중입니다.
+                 <p>이 항목은 담당 엔지니어가 처리 방법을 정리하는 중입니다.
                     지금은 전화나 카카오톡으로 연락 주시면 바로 안내해 드립니다.</p></div>`}
 
           ${f.cautions?.length ? `<div class="callout warn" style="margin-top:16px">
@@ -728,19 +755,12 @@
            쓰시는 복합기 제조사를 먼저 골라 주세요.</p>
       </div>
       <section class="section tight">
-        <div class="models">${brands.map(b => {
-          const own = brandOwn(b.id).length, all = fixesForBrand(b.id).length;
-          const rep = D.MODELS.find(m => m.brand === b.id && m.photo);
-          return `<a class="mcard" href="#/fixes/${b.id}" data-rv>
-            <div class="art">${rep ? `<img class="photo" src="${esc(rep.photo)}" alt="" loading="lazy">`
-                                   : U.device("floor-color")}
-              <span class="bdot"><i style="background:${esc(b.accent)}"></i>${esc(b.name)}</span></div>
-            <div class="info"><b>${esc(b.name)}</b>
-              <span class="sub">${esc(b.full)}</span>
-              <div class="meta">
-                <span class="badge b-gold">증상 ${all}가지</span>
-                <span>기종 ${modelsOf(b.id).length}종</span>
-                <span class="go">${ic("arrow", 18)}</span></div></div></a>`;
+        <div class="brandtiles">${brands.map(b => {
+          const all = fixesForBrand(b.id).length;
+          return `<a class="btile" href="#/fixes/${b.id}" data-rv style="--bdot:${esc(b.accent)}">
+            <i class="dot"></i>
+            <span class="tx"><b>${esc(b.name)}</b><span>${esc(b.full)}</span></span>
+            <span class="cnt">증상 ${all} · 기종 ${modelsOf(b.id).length}</span>${ic("chev", 18)}</a>`;
         }).join("")}</div>
       </section>
       <section class="section tight">
@@ -784,7 +804,7 @@
       <section class="section tight"><div class="callout info" data-rv>
         <b>${ic("spark", 17)}${esc(b.name)} 전용 항목을 준비하고 있습니다</b>
         <p>지금은 전 기종 공통 항목만 있습니다. ${esc(b.name)} 기종에서 자주 생기는 증상은
-           기사가 정리하는 대로 이 자리에 올라갑니다.</p></div></section>`}
+           엔지니어가 정리하는 대로 이 자리에 올라갑니다.</p></div></section>`}
       ${common.length ? `<section class="section tight">
         <div class="sec-head" data-rv><div><span class="eyebrow">전 기종 공통</span>
           <h2 class="h2" style="margin-top:8px">어느 복합기든 방법이 같습니다</h2></div></div>
@@ -839,7 +859,7 @@
               </ol></div>`
             : `<div class="callout info">
                  <b>${ic("spark", 17)}내용을 준비하고 있습니다</b>
-                 <p>이 항목은 기사가 처리 방법을 정리하는 중입니다.
+                 <p>이 항목은 담당 엔지니어가 처리 방법을 정리하는 중입니다.
                     지금은 전화나 카카오톡으로 연락 주시면 바로 안내해 드립니다.</p></div>`}
           ${f.cautions?.length ? `<div class="callout warn" style="margin-top:16px">
             <b>${ic("error", 17)}주의하세요</b>
@@ -966,6 +986,7 @@
       const b = tab.dataset.brand;
       const list = b ? modelsOf(b) : D.MODELS;
       grid.innerHTML = list.map(modelCard).join("");
+      grid.classList.remove("collapsed"); document.getElementById("showAll")?.remove();
       reveal(grid);
     }));
   }
@@ -1065,6 +1086,11 @@
               : p[0] === "meter" ? "#/meter" : p[0] === "m" || p[0] === "t" ? "#/#models" : "";
     document.querySelectorAll("#navLinks a").forEach(el =>
       el.classList.toggle("on", !!key && el.getAttribute("href") === key));
+    const tabKey = !p.length ? "home" : p[0] === "m" || p[0] === "t" ? "models"
+                 : p[0] === "fixes" || p[0] === "f" ? "fixes"
+                 : (p[0] === "pattern" || p[0] === "meter" || p[0] === "notices") ? "more" : "";
+    document.querySelectorAll("#tabbar [data-tab]").forEach(el => el.classList.toggle("on", el.dataset.tab === tabKey));
+    window.FIRSTOA?.sheetClose?.();
     bindSteps(); bindTabs(); bindJump(); reveal();
     if (anchor) document.getElementById(anchor)?.scrollIntoView({ behavior: "instant", block: "start" });
     else window.scrollTo({ top: 0, behavior: "instant" });
@@ -1134,6 +1160,36 @@
       else frame.onload = () => setTimeout(go, 120);
     },
     reset() {},
+    // 하단 탭 '더보기'·'상담' 메뉴판
+    sheet(kind) {
+      const wrap = document.getElementById("bsheet"), body = document.getElementById("bsheetBody");
+      if (!wrap || !body) return;
+      const t = tel(), k = D.meta.kakao;
+      const row = (href, icon, label, desc, ext) => `<a class="row" href="${esc(href)}" ${ext ? 'target="_blank" rel="noopener"' : ""}>
+        <span class="box">${ic(icon, 20)}</span><span><b>${esc(label)}</b><span>${esc(desc)}</span></span>
+        <span class="arw">${ic(ext ? "ext" : "chev", 16)}</span></a>`;
+      body.innerHTML = kind === "help"
+        ? `<div class="help-h"><b>도움이 필요하세요?</b><span>${esc(D.meta.company)} · ${esc(D.meta.hours)}</span></div>
+           ${t ? `<a class="btn wide" href="tel:${t}">${ic("phone", 19)}전화 ${esc(D.meta.phone)}</a>` : ""}
+           ${k ? `<a class="btn kko wide" href="${esc(k)}" target="_blank" rel="noopener">${ic("kakao", 19)}카카오톡 채널로 상담</a>` : ""}
+           <p class="muted" style="text-align:center; margin:14px 4px 0; line-height:1.55">화면의 오류나 인쇄물을 사진 한 장으로, 기종과 함께 보내주시면 더 빨리 도와드립니다.</p>`
+        : `<h3>더보기</h3>
+           ${row("#/pattern", "palette", "4색 패턴 출력", "인쇄 상태를 한 장으로 점검")}
+           ${row("#/meter", "meter", "사용량 카운터", "검침 숫자 확인하는 법")}
+           ${row("#/notices", "book", "이용 안내", "장마철 용지 · 방문 원칙 · 소모품 신청")}
+           ${row("#/#products", "star", "취급 품목", "복합기 · PC · 가전 · 가구 · 네트워크")}
+           ${D.meta.channel ? row(D.meta.channel, "youtube", "유튜브 채널", "작업 영상 전체 보기", true) : ""}
+           ${D.meta.homepage ? row(D.meta.homepage, "home", "본사 홈페이지", "firstoa.co.kr", true) : ""}`;
+      wrap.hidden = false; document.body.style.overflow = "hidden";
+    },
+    sheetClose() {
+      const wrap = document.getElementById("bsheet");
+      if (wrap && !wrap.hidden) { wrap.hidden = true; document.body.style.overflow = ""; }
+    },
+    showAll() {
+      document.getElementById("modelGrid")?.classList.remove("collapsed");
+      document.getElementById("showAll")?.remove();
+    },
   };
 
   /* ── 붙이기 ────────────────────────────────────────────────────────── */
@@ -1149,16 +1205,17 @@
     if (t) { navT.href = "tel:" + t; navT.innerHTML = `${ic("phone", 15)}<b>${esc(D.meta.phone)}</b>`; }
     else navT.remove();
 
-    // 하단 고정 막대
-    const bar = document.getElementById("callbar");
-    if (t || k) {
-      document.getElementById("barTx").innerHTML =
-        `<b>도움이 필요하세요?</b>${esc(D.meta.company)} · ${esc(D.meta.hours)}`;
-      const bt = document.getElementById("barTel"), bk = document.getElementById("barKakao");
-      if (t) { bt.href = "tel:" + t; bt.innerHTML = `${ic("phone", 16)}전화`; } else bt.remove();
-      if (k) { bk.href = k; bk.innerHTML = ic("kakao", 16); } else bk.remove();
-      document.body.classList.add("has-callbar");
-    } else bar.remove();
+    // 하단 탭(폰·태블릿) — 가로 스크롤 메뉴는 보이지 않아 고르기 어려웠다(2026-10-06)
+    const tb = document.getElementById("tabbar");
+    if (tb) {
+      tb.innerHTML = `
+        <a href="#/" data-tab="home">${ic("home", 22)}<span>홈</span></a>
+        <a href="#/#models" data-tab="models">${ic("grid", 22)}<span>기종</span></a>
+        <a href="#/fixes" data-tab="fixes">${ic("error", 22)}<span>문제 해결</span></a>
+        <button type="button" data-tab="more" onclick="FIRSTOA.sheet('more')">${ic("menu", 22)}<span>더보기</span></button>
+        <button type="button" data-tab="help" class="help" onclick="FIRSTOA.sheet('help')">${ic("kakao", 22)}<span>상담</span></button>`;
+      document.body.classList.add("has-tabbar");
+    }
 
     // 바닥
     document.getElementById("footer").innerHTML = `
@@ -1223,15 +1280,14 @@
     // 검색 결과를 누르면 창이 닫히도록
     document.getElementById("res").addEventListener("click", e => { if (e.target.closest(".hit")) FIRSTOA.close(); });
 
-    // 스크롤에 따른 상단 바·전화바
-    const nav = document.getElementById("nav"), bar = document.getElementById("callbar");
-    let last = 0;
-    addEventListener("scroll", () => {
-      const y = scrollY;
-      nav.classList.toggle("stuck", y > 8);
-      if (bar) bar.classList.toggle("show", y > 420 && y < last + 4);
-      last = y;
-    }, { passive: true });
+    // 메뉴판: 바깥·항목 누르면 닫힘, Esc 도
+    const sheetWrap = document.getElementById("bsheet");
+    sheetWrap?.addEventListener("click", e => { if (e.target === sheetWrap || e.target.closest(".row")) FIRSTOA.sheetClose(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") FIRSTOA.sheetClose(); });
+
+    // 스크롤에 따른 상단 바 그림자
+    const nav = document.getElementById("nav");
+    addEventListener("scroll", () => nav.classList.toggle("stuck", scrollY > 8), { passive: true });
   }
 
   addEventListener("hashchange", render);

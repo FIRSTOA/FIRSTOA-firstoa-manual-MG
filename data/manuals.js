@@ -25,13 +25,13 @@ window.FIRSTOA_MANUAL = {
     company: "퍼스트전산",
     legal: "(주)퍼스트전산",
     title: "복합기 사용설명서",
-    tagline: "토너 교체부터 검침까지, 기사가 찍은 영상 보고 그대로 따라 하세요.",
+    tagline: "토너 교체부터 검침까지, 담당 엔지니어가 직접 찍은 영상을 보고 그대로 따라 하세요.",
     phone: "1522-1093",
     phone2: "02-464-1095",
     hours: "평일 09:00 – 18:00",
     kakao: "https://pf.kakao.com/_yCBAj",
-    // 채팅 직행(/chat)은 카카오 로그인을 먼저 요구해서 쓰지 않습니다. 채널 홈으로 보냅니다.
-    kakaoChat: "https://pf.kakao.com/_yCBAj/chat",
+    // 채팅 직행(/chat)은 카카오 로그인창이 먼저 떠서 쓰지 않습니다(2026-10-06 확인). 모든 상담 단추는 채널 홈으로 갑니다.
+    kakaoChat: "https://pf.kakao.com/_yCBAj",
     homepage: "https://firstoa.co.kr",
     channel: "https://www.youtube.com/channel/UCiXGLLxY8xwpcP1_-PQrlJw",
     bizNo: "206-86-78075",
@@ -171,7 +171,7 @@ window.FIRSTOA_MANUAL = {
 
     { id: "visit", icon: "calendar", tag: "방문 안내", title: "접수하신 날 바로 방문은 어렵습니다",
       lead: "당일 방문이 원칙이 아닙니다. 순서대로 배정됩니다.",
-      body: ["기사 한 명이 하루에 도는 곳이 정해져 있어, 접수 순서와 지역에 따라 일정이 잡힙니다.",
+      body: ["엔지니어 한 명이 하루에 도는 곳이 정해져 있어, 접수 순서와 지역에 따라 일정이 잡힙니다.",
              "업무가 완전히 멈춘 상황(전혀 출력이 안 됨)은 먼저 배정합니다. 접수하실 때 그 점을 꼭 말씀해 주세요.",
              "증상 사진을 미리 보내주시면 부품을 챙겨 한 번에 끝낼 수 있어 방문 횟수가 줄어듭니다."],
       tip: "" },
