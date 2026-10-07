@@ -1,6 +1,6 @@
 {
   "channel": "https://www.youtube.com/channel/UCiXGLLxY8xwpcP1_-PQrlJw",
-  "fetchedAt": "2026-08-27",
+  "fetchedAt": "2026-10-07",
   "note": "scripts/fetch-channel.mjs 로 갱신합니다. 사이트가 읽는 파일은 아니고, 연결 누락을 점검하는 기준표입니다.",
   "videos": [
     {
