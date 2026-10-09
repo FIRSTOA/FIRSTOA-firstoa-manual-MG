@@ -159,8 +159,9 @@ const staff = D.STATS.find(s => s.label === '전문 인력');
 staff && staff.n === '55' ? ok('전문 인력 55명') : bad('전문 인력 수치 ' + (staff && staff.n));
 home.includes('55명') ? ok('홈 문구에 55명') : bad('홈 문구에 55명 없음');
 // 사진 파일이 실제로 있는지
-const imgs = [...doc.querySelectorAll('#app img')].map(i => i.getAttribute('src')).filter(s => s && s.startsWith('assets/'));
-const missing = [...new Set(imgs)].filter(p => !fs.existsSync(HOME + '/' + p));
+const imgs = [...doc.querySelectorAll('#app img')].map(i => i.getAttribute('src')).filter(s => s && /^\/?assets\//.test(s));
+const missing = [...new Set(imgs)].filter(p => !fs.existsSync(HOME + '/' + p.replace(/^\//, '')));
+[...new Set(imgs)].some(p => !p.startsWith('/')) ? bad('상대 경로 이미지(경로 주소에서 깨짐): ' + [...new Set(imgs)].filter(p => !p.startsWith('/')).slice(0,3).join(', ')) : ok('이미지 주소가 모두 절대 경로');
 missing.length ? bad('없는 이미지 파일: ' + missing.join(', ')) : ok(`이미지 ${new Set(imgs).size}장 모두 존재`);
 // 머리말·꼬리말
 const logo = doc.querySelector('.brandmark img.logo');
@@ -272,7 +273,7 @@ navLinks.join('/') === '기종 전체/자주 생기는 문제/4색 패턴 출력
   ? ok('헤더: ' + navLinks.join(' · ')) : bad('헤더 구성 다름: ' + navLinks.join(','));
 // 용지는 브랜드 사진을 쓰지 않는다
 const paper = D.PRODUCTS.find(p => p.id === 'paper');
-paper && paper.img === 'assets/img/paper.webp' ? ok('복사용지는 상표 없는 실제 사진(2026-10-09)') : bad('용지 사진이 지정한 상표 없는 사진이 아님');
+paper && paper.img === '/assets/img/paper.webp' ? ok('복사용지는 상표 없는 실제 사진(2026-10-09)') : bad('용지 사진이 지정한 상표 없는 사진이 아님');
 
 /* 13. 브랜드별 증상 구조 · 5장 출력 */
 console.log('\n[13] 브랜드별 증상 · 출력 5장');

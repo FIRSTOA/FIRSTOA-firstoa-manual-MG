@@ -2,7 +2,7 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/((?!assets/|data/|_vercel/|sw\\.js|robots\\.txt|sitemap\\.xml|favicon).*)",
+      "source": "/((?!assets/|data/|_vercel/|sw\\.js|robots\\.txt|sitemap\\.xml|favicon)(?!.*\\.(?:webp|jpe?g|png|svg|gif|ico|js|css|json|xml|txt|woff2?|map)$).*)",
       "destination": "/"
     }
   ],

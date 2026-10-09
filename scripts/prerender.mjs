@@ -88,7 +88,7 @@ for (const m of D.MODELS) {
       <h2>자주 생기는 문제</h2><ul>${fixes.map(f => `<li>${link(`/m/${m.id}/f/${f.id}`, f.title)}${fixVid(f, m) ? ' (영상)' : ''}</li>`).join('')}</ul>
       <p>${link('/b/' + m.brand, b.name + ' 다른 기종')} · ${link('/', '처음으로')}</p>`,
     jsonld: [crumbLd([['처음', '/'], [b.name, `/b/${m.brand}`], [m.name, `/m/${m.id}`]]),
-      { '@context': 'https://schema.org', '@type': 'Product', name: m.name, description: mdesc, brand: { '@type': 'Brand', name: b.full || b.name }, ...(m.photo ? { image: SITE + '/' + m.photo } : {}) }] });
+      { '@context': 'https://schema.org', '@type': 'Product', name: m.name, description: mdesc, brand: { '@type': 'Brand', name: b.full || b.name }, ...(m.photo ? { image: SITE + (m.photo.startsWith('/') ? '' : '/') + m.photo } : {}) }] });
   for (const t of tasks) {
     const v = (m.videos || {})[t.id], steps = stepsOf(m, t), url = `/m/${m.id}/${t.id}`;
     const title = `${m.name} ${t.title} 방법${v ? ' (영상)' : ''} | ${D.meta.company}`;

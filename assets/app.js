@@ -236,7 +236,7 @@
         <div class="hero-art">
           <div class="hero-shot">
             <span class="tagchip"><i></i>엔지니어 직접 촬영</span>
-            <img src="assets/img/copier.webp" alt="복합기" loading="eager">
+            <img src="/assets/img/copier.webp" alt="복합기" loading="eager">
           </div>
           <span class="hero-float f1">${ic("video", 22)}
             <span><b class="num">${totalVideos}</b><span>편의 작업 영상</span></span></span>
