@@ -143,6 +143,25 @@
       <rect x="98" y="43" width="70" height="3.4" rx="1.7" fill="var(--dev-line)" opacity=".6"/>
       <rect x="98" y="52" width="44" height="3.4" rx="1.7" fill="var(--dev-line)" opacity=".45"/>`),
 
+    // 소프트웨어 — 모니터 속 창 네 칸 + 문서 한 장. 상표 없는 그림(윈도우·오피스 로고를 그대로 쓰지 않는다).
+    "software": () => shell("0 0 260 200", `
+      <ellipse cx="130" cy="184" rx="88" ry="9" fill="var(--dev-shadow)"/>
+      <rect x="40" y="22" width="180" height="120" rx="11" fill="url(#gBody)"/>
+      <rect x="50" y="32" width="160" height="98" rx="6" fill="var(--dev-dark)"/>
+      <rect x="64" y="46" width="34" height="34" rx="5" fill="var(--accent)" opacity=".95"/>
+      <rect x="104" y="46" width="34" height="34" rx="5" fill="var(--accent)" opacity=".7"/>
+      <rect x="64" y="86" width="34" height="34" rx="5" fill="var(--accent)" opacity=".55"/>
+      <rect x="104" y="86" width="34" height="34" rx="5" fill="var(--accent)" opacity=".82"/>
+      <rect x="150" y="54" width="50" height="64" rx="4" fill="var(--dev-paper)"/>
+      <rect x="150" y="54" width="50" height="64" rx="4" fill="none" stroke="var(--dev-line)" stroke-width="1.3"/>
+      <rect x="158" y="66" width="30" height="3.6" rx="1.8" fill="var(--accent)" opacity=".8"/>
+      <rect x="158" y="76" width="34" height="3.2" rx="1.6" fill="var(--dev-line)" opacity=".8"/>
+      <rect x="158" y="85" width="26" height="3.2" rx="1.6" fill="var(--dev-line)" opacity=".6"/>
+      <rect x="158" y="94" width="32" height="3.2" rx="1.6" fill="var(--dev-line)" opacity=".5"/>
+      <rect x="158" y="103" width="20" height="3.2" rx="1.6" fill="var(--dev-line)" opacity=".4"/>
+      <rect x="118" y="142" width="24" height="14" rx="3" fill="var(--dev-shade)"/>
+      <rect x="84" y="156" width="92" height="9" rx="4.5" fill="var(--dev-shade)"/>`),
+
     // 잉크젯 복합기
     "inkjet": () => shell("0 0 260 200", `
       <ellipse cx="130" cy="186" rx="76" ry="9" fill="var(--dev-shadow)"/>

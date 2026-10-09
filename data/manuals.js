@@ -35,14 +35,17 @@ window.FIRSTOA_MANUAL = {
     homepage: "https://firstoa.co.kr",
     channel: "https://www.youtube.com/channel/UCiXGLLxY8xwpcP1_-PQrlJw",
     bizNo: "206-86-78075",
-    oneStop: "복합기 · PC · 솔루션 · 가전 · 가구 · 네트워크 One-Stop",
+    oneStop: "복합기 · PC · 소프트웨어 · 솔루션 · 가전 · 가구 · 네트워크 One-Stop",
+    // 홈 "복합기만 하는 게 아닙니다" 아래 줄과 꼬리말에 같이 쓰입니다. 숫자는 아래 STATS 와 맞춰 주세요.
+    // 출처: 본사 홈페이지 실적 띠(20 Yr+ · 렌탈 11,000+ · 전문인력 60+ · 전국유지보수지점 200+). 전문 인력은 2026-10-09 사용자 확인으로 55명.
+    trust: "20여 년의 노하우와 55명 이상의 전문 인력, 전국 200개 유지보수 지점.",
   },
 
   /* ── 회사 실적 (본사 홈페이지 기준) ────────────────────────── */
   STATS: [
     { n: "20", unit: "년+", label: "업력" },
     { n: "11,000", unit: "대", label: "렌탈 대수" },
-    { n: "40", unit: "명+", label: "전문 인력" },
+    { n: "55", unit: "명+", label: "전문 인력" },
     { n: "200", unit: "곳", label: "전국 유지보수 지점" },
   ],
 
@@ -51,15 +54,23 @@ window.FIRSTOA_MANUAL = {
    * link 는 본사 홈페이지의 해당 분류로 이어집니다.
    * ------------------------------------------------------------ */
   PRODUCTS: [
-    { id: "copier", name: "복합기", img: "assets/img/copier.jpg",
-      desc: "삼성 · 신도리코 · 후지필름 · 교세라 A3 컬러/흑백",
-      link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=6" },
-    { id: "pc", name: "PC · 노트북", img: "assets/img/pc.jpg",
-      desc: "일반 사무용 · 삼성 · HP · LG 노트북",
+    // 순서가 곧 화면 순서입니다. 2026-10-09: 데스크탑 → 노트북 → 맥 → 소프트웨어를 앞에(사용자 요청), 복합기는 이 사이트 자체가 복합기라 뒤로.
+    { id: "desktop", name: "데스크탑 PC", img: "assets/img/desktop.jpg",
+      desc: "삼성 · HP 사무용 데스크탑, 모니터까지 한 번에",
+      link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=5" },
+    { id: "laptop", name: "노트북", img: "assets/img/pc.jpg",
+      desc: "삼성 · LG 그램 · HP 프로북, 오피스 포함 구성",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=5" },
     { id: "mac", name: "애플 (Mac)", img: "assets/img/mac.jpg",
       desc: "맥북 프로 · 맥 미니 · 맥 스튜디오 · 스튜디오 디스플레이",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=99" },
+    // 소프트웨어는 상표 없는 그림입니다 — 윈도우·오피스 로고를 그대로 쓰지 않습니다.
+    { id: "software", name: "소프트웨어", art: "software",
+      desc: "윈도우 · 오피스 · 한글 등 정품 라이선스. PC와 함께 신청하시면 설치까지 해드립니다.",
+      link: "https://firstoa.co.kr" },
+    { id: "copier", name: "복합기", img: "assets/img/copier.jpg",
+      desc: "삼성 · 신도리코 · 후지필름 · 교세라 A3 컬러/흑백",
+      link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=6" },
     { id: "workstation", name: "워크스테이션", img: "assets/img/workstation.jpg",
       desc: "디자인 · 영상 · 설계용 고사양 PC",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=5" },

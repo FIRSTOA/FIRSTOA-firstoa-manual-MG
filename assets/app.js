@@ -276,7 +276,7 @@
           <div><span class="eyebrow gold">${esc(D.meta.legal || D.meta.company)}</span>
             <h2 class="h2" style="margin-top:10px">복합기만 하는 게 아닙니다</h2>
             <p class="lead">${esc(D.meta.oneStop)} — 사무실에 필요한 것은 한 곳에서 해결합니다.
-               20년 노하우와 전국 200개 유지보수 지점이 뒤를 받칩니다.</p></div>
+               ${esc(D.meta.trust || "")}</p></div>
           <a class="more" href="${esc(D.meta.homepage)}" target="_blank" rel="noopener">
             전체 품목 보기 ${ic("ext", 16)}</a>
         </div>
@@ -1232,7 +1232,7 @@
             <div class="fbrand">${U.logo(38)}
               <span><b>${esc(D.meta.legal || D.meta.company)}</b><span>${esc(D.meta.title)}</span></span></div>
             <p class="fdesc">${esc(D.meta.oneStop)}<br>
-              20여 년의 노하우와 40명 이상의 전문 인력, 전국 200개 유지보수 지점.</p>
+              ${esc(D.meta.trust || "")}</p>
             <div style="display:flex; gap:8px; flex-wrap:wrap">
               ${k ? `<a class="btn kko sm" href="${esc(k)}" target="_blank" rel="noopener">
                 ${ic("kakao", 16)}카카오톡 상담</a>` : ""}
