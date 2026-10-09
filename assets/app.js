@@ -1192,7 +1192,12 @@
   };
 
   /* ── 라우터 ────────────────────────────────────────────────────────── */
+  // 오래 열어 둔 화면은 다음 이동 때 새로 받는다 — 탭을 열어 둔 채 몇 시간 지나면 고친 내용(제목·영상)이 안 보여
+  // "준비 중"이 그대로였다(2026-10-09). 해시만 바뀌는 앱이라 새로고침이 없으면 영원히 옛 파일을 쓴다.
+  const LOADED_AT = Date.now();
+  const STALE_MS = 30 * 60 * 1000;
   function render() {
+    if (Date.now() - LOADED_AT > STALE_MS) { location.reload(); return; }
     const raw = decodeURIComponent(location.hash.replace(/^#/, "")) || "/";
     const cut = raw.indexOf("/#");                                 // "/#models", "/m/samsung-3220/#sec-fix" 같은 화면 안 이동
     const anchor = cut >= 0 ? raw.slice(cut + 2) : null;
