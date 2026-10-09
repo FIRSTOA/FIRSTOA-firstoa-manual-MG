@@ -402,3 +402,14 @@ nav('#/m/kyocera');
 appHtml().includes('ECOSYS M5521cdw') ? ok('교세라 카드 실제 모델명') : bad('교세라 모델명');
 const offBadges = (() => { nav('#/m/hp-laser'); return doc.querySelectorAll('#app .badge.b-off').length; })();
 offBadges >= 1 ? ok('공식 영상 배지 표시') : bad('공식 영상 배지 없음');
+
+/* 22. 기종별 공식 영상 순서(자주 생기는 문제) */
+console.log('\n[22] 증상 기종별 순서');
+nav('#/m/sindoh-d450/f/jam');
+doc.querySelector('#app .player[data-v="Um0Y1RETt1Q"]') && doc.querySelectorAll('#app .steps li').length === 7 ? ok('신도 D450 용지 걸림: 공식 영상 + 7단계') : bad('신도 D450 걸림 ' + doc.querySelectorAll('#app .steps li').length);
+nav('#/m/hp-9010/f/adf-jam');
+doc.querySelector('#app .player[data-v="XsoTi03l39c"]') && appHtml().includes('분리 패드') ? ok('HP 9010 원고 걸림: 공식 영상 + 영상 순서') : bad('HP 9010 ADF');
+nav('#/m/xerox-c2263/f/adf-jam');
+appHtml().includes('좁은 유리띠') ? ok('제록스 원고 걸림: 후지필름 공통 순서') : bad('제록스 ADF 순서');
+nav('#/m/samsung-3220/f/jam');
+doc.querySelectorAll('#app .steps li').length === 9 ? ok('삼성 용지 걸림 순서는 그대로(9단계)') : bad('삼성 걸림 ' + doc.querySelectorAll('#app .steps li').length);

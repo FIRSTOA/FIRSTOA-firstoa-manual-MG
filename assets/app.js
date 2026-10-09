@@ -381,7 +381,7 @@
     const m = MODEL[mid], f = FIX[fid];
     if (!m || !f || !inScope(f, m)) return view404();
     remember(m);
-    const b = BRAND[m.brand], fv = fixVid(f, m), ov = (f.brands || {})[m.brand] || {};   // 브랜드별 덮어쓰기(2026-10-09)
+    const b = BRAND[m.brand], fv = fixVid(f, m), ov = (f.brands || {})[m.id] || (f.brands || {})[m.brand] || {};   // 기종 id → 브랜드 순으로 덮어쓰기(2026-10-09)
     const fSteps = ov.steps || f.steps || [], fCautions = ov.cautions || f.cautions || [];
     const ready = fSteps.length > 0;
     const others = fixesOf(m).filter(x => x.id !== fid);
