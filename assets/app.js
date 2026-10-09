@@ -195,6 +195,7 @@
           <span class="eyebrow on-dark">${esc(D.meta.company)} 고객지원</span>
           <h1 class="display">${D.meta.heroTitle || "복합기,<br><em>직접</em> 해결하세요."}</h1>
           <p class="lead">${esc(D.meta.tagline)}</p>
+          ${D.meta.heroNote ? `<p class="hero-note">${esc(D.meta.heroNote)}</p>` : ""}
           <form class="searchbar" onsubmit="return FIRSTOA.go(event)">
             ${ic("search", 21)}
             <input id="q" placeholder="기종명 또는 증상 (예: 3220, 토너, 줄)" autocomplete="off" aria-label="검색">

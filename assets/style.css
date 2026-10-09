@@ -869,3 +869,6 @@ body.has-tabbar{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
 .mpanel .mtip{margin:10px 0 0; font-size:13px; line-height:1.55; color:var(--ink-3)}
 .mpanel .msend{margin-top:12px}
 .mpanel .btn.kko{margin-top:18px}
+
+/* 홈 첫 화면 한 줄 설명(2026-10-09) */
+.hero .hero-note{margin:-6px 0 22px; font-size:14px; line-height:1.6; color:rgba(255,255,255,.72); max-width:520px}
