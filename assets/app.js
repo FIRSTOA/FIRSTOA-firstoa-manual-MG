@@ -492,25 +492,44 @@
       .some(k => mine.some(a => a === k || (k.length >= 4 && a.length >= 4 && (k.includes(a) || a.includes(k))))));
     return hit.length ? hit : all;
   }
-  // 순서 글 속의 [단추 이름]만 뽑아 키캡처럼 — 글을 읽기 전에 눈으로 먼저 따라가게
-  const keyflow = steps => {
-    const keys = [];
-    (steps || []).forEach(t => (String(t).match(/\[([^\]]+)\]/g) || []).forEach(k => keys.push(k.slice(1, -1))));
-    if (!keys.length) return "";
-    const arrow = `<i class="karr">${ic("chev", 14)}</i>`;
-    return `<div class="keyflow">${keys.map(k => `<span class="key">${esc(k)}</span>`).join(arrow)}${arrow}<span class="key end">${ic("kakao", 14)}사진 보내기</span></div>`;
+  // 순서 문장 → 그림 종류. [단추]는 화면 단추, "버튼"이 붙으면 실제 키, "→"가 있으면 메뉴 경로, "사진"이면 휴대폰으로 찍는 장면
+  const bracketsOf = p => (String(p).match(/\[([^\]]+)\]/g) || []).map(k => k.slice(1, -1));
+  const wordOf = p => {
+    const m = String(p).match(/([가-힣A-Za-z0-9+]+)(?:\([^)]*\))?\s*(?:모양|아이콘)/);
+    if (m) return m[1];
+    return String(p).replace(/(를|을)?\s*(누릅니다|누르고|눌러|들어갑니다|출력합니다|내립니다)/g, "").replace(/버튼|화면에서|화면의|[.,()]/g, "").trim();
   };
+  const sceneOf = t => {
+    const s = String(t), keys = bracketsOf(s);
+    const paper = /출력물|리포트|장을|장만|페이지를|출력한 뒤|출력해|뽑아/.test(s);
+    if (/사진/.test(s)) return { kind: paper ? "photo-paper" : "photo-screen" };
+    if (/→/.test(s) || keys.length >= 2) {
+      const labels = (/→/.test(s) ? s.split("→") : [s]).flatMap(p => { const ks = bracketsOf(p); return ks.length ? ks : [wordOf(p)]; }).filter(Boolean);
+      return { kind: "path", labels };
+    }
+    if (/넘깁니다|끌어내립니다/.test(s)) return { kind: "swipe" };
+    if (/톱니바퀴/.test(s)) return { kind: "gear" };
+    if (/점 세 개/.test(s)) return { kind: "dots" };
+    if (/\[홈\]|홈 화면으로/.test(s)) return { kind: "home" };
+    if (/출력합니다|인쇄합니다/.test(s) && !keys.length) return { kind: "print" };
+    if (keys.length && /키패드|버튼/.test(s)) return { kind: "key", label: keys[0] };
+    if (keys.length) return { kind: "touch", label: keys[0] };
+    return { kind: "touch", label: wordOf(s).slice(0, 7) || "누르기" };
+  };
+  const storyboard = steps => `<div class="story">${(steps || []).map((t, i) =>
+    `<figure class="scard"><span class="snum">${i + 1}</span>${U.scene(sceneOf(t))}<figcaption>${esc(t)}</figcaption></figure>`).join("")}</div>`;
   const meterBlock = (m, groups) => `<div class="panel mpanel">
       <div class="panel-h">${ic("meter", 19)}<b>${esc(m.name)} 카운터 뽑는 법</b></div>
-      <p class="pmeta" style="margin-top:0">${groups.length > 1 ? "쓰시는 기종의 방법을 따라 주세요. " : ""}[ ] 안이 누르는 단추입니다. 화면이나 출력물을 사진으로 찍어 카카오톡으로 보내주시면 됩니다.</p>
-      ${groups.map(g => `<div class="mgroup">
-        <span class="mmodels">${esc(g.models || g.label)}</span>
-        ${keyflow(g.steps)}
-        <ol class="ministeps">${(g.steps || []).map(t => `<li>${esc(t)}</li>`).join("")}</ol>
-        ${g.tip ? `<p class="mtip">${esc(g.tip)}</p>` : ""}
-        ${g.send ? `<span class="msend">${ic("kakao", 14)}보내주실 것 · ${esc(g.send)} 사진</span>` : ""}
-      </div>`).join("")}
-      ${D.meta.kakao ? `<a class="btn kko wide" style="margin-top:16px" href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">${ic("kakao", 19)}카카오톡으로 사진 보내기</a>` : ""}
+      <div class="mbody">
+        <p class="mintro">${groups.length > 1 ? "쓰시는 기종의 방법을 따라 주세요. " : ""}그림 순서대로 누르시고, 마지막에 나온 화면이나 출력물을 사진으로 찍어 카카오톡으로 보내주시면 됩니다.</p>
+        ${groups.map(g => `<section class="mgroup">
+          <h4 class="mmodels">${esc(g.models || g.label)}</h4>
+          ${storyboard(g.steps)}
+          ${g.tip ? `<p class="mtip">💡 ${esc(g.tip)}</p>` : ""}
+          ${g.send ? `<span class="msend">${ic("kakao", 14)}보내주실 것 · ${esc(g.send)} 사진</span>` : ""}
+        </section>`).join("")}
+        ${D.meta.kakao ? `<a class="btn kko wide" href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">${ic("kakao", 19)}카카오톡으로 사진 보내기</a>` : ""}
+      </div>
     </div>`;
 
   /* ── 화면: 작업 ────────────────────────────────────────────────────── */
@@ -758,7 +777,6 @@
                 <b style="font-size:17px">${esc(b.label)}</b></div>
               ${groups.map(g => `<div class="mgroup">
                 ${g.models ? `<span class="mmodels">${esc(g.models)}</span>` : ""}
-                ${keyflow(g.steps)}
                 <ol class="ministeps">${(g.steps || []).map(t => `<li>${esc(t)}</li>`).join("")}</ol>
                 ${g.tip ? `<p class="mtip">${esc(g.tip)}</p>` : ""}
                 ${g.send ? `<span class="msend">${ic("kakao", 14)}보내주실 것 · ${esc(g.send)} 사진</span>` : ""}

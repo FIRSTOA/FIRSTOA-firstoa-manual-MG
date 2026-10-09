@@ -207,7 +207,7 @@ nav('#/fixes/samsung');
 nav('#/m/samsung-3220/f/acr-ctd');
 doc.querySelector('#app .player') && appHtml().includes('영상대로 따라') ? ok('삼성 ACR·CTD: 영상 + 안내') : bad('ACR·CTD 화면');
 nav('#/m/samsung-3220/meter');
-doc.querySelector('#app .mpanel') && appHtml().includes('X3220') && doc.querySelectorAll('#app .keyflow .key').length >= 2 && !appHtml().includes('기종 공통 일반 안내') ? ok('삼성 3220 검침: 기종별 단추 흐름 + 글') : bad('검침 화면');
+doc.querySelector('#app .mpanel') && appHtml().includes('X3220') && doc.querySelectorAll('#app .story .scard .scene').length === 3 && !appHtml().includes('기종 공통 일반 안내') ? ok('삼성 3220 검침: 단계별 그림 카드 3장 + 문장') : bad('검침 화면 그림 카드 ' + doc.querySelectorAll('#app .story .scard .scene').length);
 nav('#/m/kyocera/meter');
 doc.querySelectorAll('#app .mpanel .mgroup').length === 2 ? ok('교세라 검침: 두 묶음(M5521·M5526·MA2100, 2101)') : bad('교세라 검침 묶음 ' + doc.querySelectorAll('#app .mpanel .mgroup').length);
 nav('#/m/hp-8710');
