@@ -409,6 +409,7 @@
             <span class="muted">${esc(D.meta.company)} · ${esc(D.meta.hours)}</span>
             ${tel() ? `<a class="btn wide sm" href="tel:${tel()}">${ic("phone", 17)}전화 ${esc(D.meta.phone)}</a>` : ""}
             ${D.meta.kakao ? `<a class="btn kko wide sm" href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">${ic("kakao", 17)}카카오톡 상담</a>` : ""}
+            <a class="qrlink" href="#/qr/${m.id}" title="직원용">${ic("grid", 14)}이 기종 QR 스티커 인쇄 <small>직원용</small></a>
           </div>
         </aside>
         <div class="mbody">
@@ -1520,6 +1521,7 @@
             ${D.meta.homepage ? `<a href="${esc(D.meta.homepage)}" target="_blank" rel="noopener">
               ${ic("home", 15)}본사 홈페이지</a>` : ""}
             <a href="#/products">${ic("star", 15)}취급 품목</a>
+            <a href="#/qr" title="직원용">${ic("grid", 15)}QR 스티커 인쇄</a>
           </div>
         </div>
         <div class="fbot">

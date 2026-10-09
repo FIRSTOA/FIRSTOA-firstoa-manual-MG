@@ -921,3 +921,9 @@ body.has-tabbar{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
 }
 /* 폰에서는 실적 띠를 접는다 — 고객이 폰으로 오는 이유는 문제 해결이지 회사 소개가 아니다 */
 @media(max-width:759px){ .trust{display:none} }
+
+/* 기종 화면 → 그 기종 QR 스티커(직원용) 작은 링크(2026-10-09) */
+.msum-help .qrlink{display:inline-flex; align-items:center; gap:5px; margin-top:10px; font-size:12px; font-weight:700; color:var(--ink-4); text-decoration:none}
+.msum-help .qrlink small{font-size:10px; font-weight:800; padding:1px 6px; border-radius:999px; background:var(--surface-2); color:var(--ink-3)}
+.msum-help .qrlink:hover{color:var(--ink)}
+.msum-help .qrlink .ic{width:14px; height:14px}
