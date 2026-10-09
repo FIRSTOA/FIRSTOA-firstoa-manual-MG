@@ -60,13 +60,13 @@ window.FIRSTOA_MANUAL = {
    * ------------------------------------------------------------ */
   PRODUCTS: [
     // 순서가 곧 화면 순서입니다. 2026-10-09: 데스크탑 → 노트북 → 맥 → 소프트웨어를 앞에(사용자 요청), 복합기는 이 사이트 자체가 복합기라 뒤로.
-    { id: "desktop", name: "데스크탑 PC", img: "assets/img/desktop.jpg",
+    { id: "desktop", name: "데스크탑 PC", img: "assets/img/desktop.webp",
       desc: "삼성 · HP 사무용 데스크탑, 모니터까지 한 번에",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=5" },
-    { id: "laptop", name: "노트북", img: "assets/img/pc.jpg",
+    { id: "laptop", name: "노트북", img: "assets/img/pc.webp",
       desc: "삼성 · LG 그램 · HP 프로북, 오피스 포함 구성",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=5" },
-    { id: "mac", name: "애플 (Mac)", img: "assets/img/mac.jpg",
+    { id: "mac", name: "애플 (Mac)", img: "assets/img/mac.webp",
       desc: "맥북 프로 · 맥 미니 · 맥 스튜디오 · 스튜디오 디스플레이",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=99" },
     // 소프트웨어는 상표 없는 그림입니다 — 윈도우·오피스 로고를 그대로 쓰지 않습니다.
@@ -74,36 +74,36 @@ window.FIRSTOA_MANUAL = {
       desc: "윈도우 · 오피스 · 한글 등 정품 라이선스. PC와 함께 신청하시면 설치까지 해드립니다.",
       link: "https://firstoa.co.kr" },
     // PC 유지보수(MSP) — 유튜브 채널 소개글 기준(월 15,000원 패키지, 원격+방문+대체장비). 2026-10-09 사용자 요청.
-    { id: "pc-care", name: "PC · 노트북 유지보수 (월 정액)", img: "assets/img/pc-care.jpg",
+    { id: "pc-care", name: "PC · 노트북 유지보수 (월 정액)", img: "assets/img/pc-care.webp",
       desc: "월 15,000원 패키지. 원격 지원 + 방문 지원 + 대체 장비까지, 사무실 PC를 저희가 관리합니다.",
       link: "https://firstoa.co.kr" },
-    { id: "copier", name: "복합기", img: "assets/img/copier.jpg",
+    { id: "copier", name: "복합기", img: "assets/img/copier.webp",
       desc: "삼성 · 신도리코 · 후지필름 · 교세라 A3 컬러/흑백",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=6" },
-    { id: "workstation", name: "워크스테이션", img: "assets/img/workstation.jpg",
+    { id: "workstation", name: "워크스테이션", img: "assets/img/workstation.webp",
       desc: "디자인 · 영상 · 설계용 고사양 PC",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=5" },
-    { id: "air", name: "공기청정기 · 가전", img: "assets/img/air.jpg",
+    { id: "air", name: "공기청정기 · 가전", img: "assets/img/air.webp",
       desc: "LG 퓨리케어 · 삼성 블루스카이 · 사무실 냉난방",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=7" },
-    { id: "shredder", name: "문서세단기", img: "assets/img/shredder.jpg",
+    { id: "shredder", name: "문서세단기", img: "assets/img/shredder.webp",
       desc: "신도테크노 · 대진코스탈 · 대형 세단기",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=9" },
-    { id: "board", name: "스마트보드 · 전자칠판", img: "assets/img/board.jpg",
+    { id: "board", name: "스마트보드 · 전자칠판", img: "assets/img/board.webp",
       desc: "삼성 플립2 65 / 55인치 터치스크린",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=8" },
-    { id: "plotter", name: "대형 플로터", img: "assets/img/plotter.jpg",
+    { id: "plotter", name: "대형 플로터", img: "assets/img/plotter.webp",
       desc: "HP T520 · T530 / A0 · A1 도면 출력",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=8" },
     // 용지 사진은 상표가 안 보이는 것으로 — 특정 상품 사진을 걸면 "받은 것과 다르다"는 항의가 생깁니다(2026-10-09 실제 사진으로 교체)
-    { id: "paper", name: "복사용지", img: "assets/img/paper.jpg",
+    { id: "paper", name: "복사용지", img: "assets/img/paper.webp",
       desc: "A4 · A3 복사용지 정기 납품. 복합기와 함께 신청하시면 됩니다.",
       link: "https://firstoa.co.kr" },
     // 사무 가구 — 2026-10-09 사용자 요청. 본사 쇼핑몰엔 분류가 없어 상담으로 연결.
-    { id: "furniture", name: "사무 가구", img: "assets/img/furniture.jpg",
+    { id: "furniture", name: "사무 가구", img: "assets/img/furniture.webp",
       desc: "책상 · 의자 · 파티션 · 수납장. 사무실 꾸밀 때 복합기 · PC와 함께 한 번에.",
       link: "https://firstoa.co.kr" },
-    { id: "nas", name: "NAS · 네트워크", img: "assets/img/nas.jpg",
+    { id: "nas", name: "NAS · 네트워크", img: "assets/img/nas.webp",
       desc: "사내 자료 공유 · 백업 · 보안 솔루션",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=73" },
     // 네트워크 공사는 상표 없는 그림입니다(2026-10-09 추가, 사용자 요청).
@@ -130,13 +130,13 @@ window.FIRSTOA_MANUAL = {
    * 본사 쇼핑몰의 실제 패키지 상품입니다. 사진도 그 상품 사진 그대로입니다.
    * ------------------------------------------------------------ */
   PACKAGES: [
-    { id: "pkg-air", name: "복합기 + 공기청정기", img: "assets/img/pkg-air.jpg",
+    { id: "pkg-air", name: "복합기 + 공기청정기", img: "assets/img/pkg-air.webp",
       desc: "사무실 공기까지 한 번에. 복합기 렌탈에 공기청정기를 묶어 따로 계약할 필요가 없습니다.",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=23" },
-    { id: "pkg-shred", name: "복합기 + 문서세단기", img: "assets/img/pkg-shred.jpg",
+    { id: "pkg-shred", name: "복합기 + 문서세단기", img: "assets/img/pkg-shred.webp",
       desc: "출력한 문서를 안전하게 폐기까지. 개인정보 관리가 필요한 사무실에 가장 많이 나갑니다.",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=24" },
-    { id: "pkg-nas", name: "복합기 + NAS 네트워크", img: "assets/img/pkg-nas.jpg",
+    { id: "pkg-nas", name: "복합기 + NAS 네트워크", img: "assets/img/pkg-nas.webp",
       desc: "스캔한 문서가 바로 사내 저장소로. 2TB · 4TB 구성으로 자료 공유와 백업을 함께 해결합니다.",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=25" },
   ],
@@ -704,7 +704,7 @@ window.FIRSTOA_MANUAL = {
       full: "SL-X3220 계열 컬러 복합기",
       aka: ["3220", "3250", "3255", "3280", "MX3", "X3220", "엑스3"],
       device: "floor-color",
-      photo: "assets/img/m-samsung-3220.jpg",
+      photo: "assets/img/m-samsung-3220.webp",
       videos: {
         toner: "RODkrd6bfeY", // 3220 토너 교체 방법
         waste: "bBUR7V6VRYs", // 3220,4220 폐통 교체 방법
@@ -750,7 +750,7 @@ window.FIRSTOA_MANUAL = {
       full: "SL-X4220 계열 컬러 복합기",
       aka: ["4220", "4225", "4255", "4300", "4305", "4350", "4355", "MX4", "X4220"],
       device: "floor-color",
-      photo: "assets/img/m-samsung-4220.jpg",
+      photo: "assets/img/m-samsung-4220.webp",
       videos: {
         toner: "0ZQ_yvoX85c", // 4220 토너 교체 방법
         waste: "bBUR7V6VRYs", // 3220,4220 폐통 교체 방법
@@ -796,7 +796,7 @@ window.FIRSTOA_MANUAL = {
       full: "SL-X7500 계열 컬러 복합기",
       aka: ["7500", "7400", "7600", "MX7", "X7500", "엑스7"],
       device: "floor-color",
-      photo: "assets/img/m-samsung-x7500.jpg",
+      photo: "assets/img/m-samsung-x7500.webp",
       videos: {
         toner: "moTYQ3usG9c", // x7500 토너 교체 방법
         waste: "2JuxnMC19p8", // x7500 폐통 교체 방법
@@ -840,7 +840,7 @@ window.FIRSTOA_MANUAL = {
       full: "SL-K4250 계열 흑백 복합기",
       aka: ["K4250", "4250", "흑백", "케이4250"],
       device: "floor-mono",
-      photo: "assets/img/m-samsung-k4250.jpg",
+      photo: "assets/img/m-samsung-k4250.webp",
       videos: {
         toner: "Swn0LRQpoi8", // K4250 토너 교체 방법
         waste: "OzhlvZ4f0E8", // K4250 폐통 교체 방법
@@ -883,7 +883,7 @@ window.FIRSTOA_MANUAL = {
       full: "SL-K7500 계열 흑백 복합기",
       aka: ["K7500", "흑백", "케이7500"],
       device: "floor-mono",
-      photo: "assets/img/m-samsung-k7500.jpg",
+      photo: "assets/img/m-samsung-k7500.webp",
       videos: {
         toner: "cythI1d3bwU", // k7500 토너 교체 방법
         waste: "4D9fZRltgMQ", // k7500 폐통 교체방법
@@ -925,7 +925,7 @@ window.FIRSTOA_MANUAL = {
       full: "대형 컬러 복합기",
       aka: ["9201", "9251", "9301", "CLX"],
       device: "floor-color",
-      photo: "assets/img/m-samsung-clx9201.jpg",
+      photo: "assets/img/m-samsung-clx9201.webp",
       videos: {
         toner: "",
         waste: "",
@@ -939,7 +939,7 @@ window.FIRSTOA_MANUAL = {
       full: "D320 · D410 · D420 공통",
       aka: ["320", "321", "410", "411", "420", "422", "D420", "D410", "D320"],
       device: "floor-color",
-      photo: "assets/img/m-sindoh-d420.jpg",
+      photo: "assets/img/m-sindoh-d420.webp",
       videos: {
         toner: "us13Br3-aBM", // 320,410,420 토너 교체 방법
         waste: "e_iTXoxXwM8", // 320,410,420 폐통 교체 방법
@@ -988,7 +988,7 @@ window.FIRSTOA_MANUAL = {
       full: "D450 · D451 · D452",
       aka: ["450", "451", "452", "D450"],
       device: "floor-color",
-      photo: "assets/img/m-sindoh-d450.jpg",
+      photo: "assets/img/m-sindoh-d450.webp",
       videos: {
         toner: "JvlmiOwwRo4", // 450 토너 교체 방법
         waste: "R1iJHkdYDes", // 450 폐통 교체 방법
@@ -1033,7 +1033,7 @@ window.FIRSTOA_MANUAL = {
       full: "N501 · N502",
       aka: ["501", "502", "N501", "엔501"],
       device: "floor-mono",
-      photo: "assets/img/m-sindoh-n501.jpg",
+      photo: "assets/img/m-sindoh-n501.webp",
       videos: {
         toner: "WYMZ-5k4prs", // N501 토너 교체 방법
         waste: "6Stqgvl5Rf8", // N501 폐통 교체 방법
@@ -1077,7 +1077,7 @@ window.FIRSTOA_MANUAL = {
       full: "A3 흑백 복합기",
       aka: ["600", "601", "D600", "N600"],
       device: "floor-color",
-      photo: "assets/img/m-sindoh-d600.jpg",
+      photo: "assets/img/m-sindoh-d600.webp",
       videos: {
         toner: "",
         waste: "",
@@ -1091,7 +1091,7 @@ window.FIRSTOA_MANUAL = {
       full: "ApeosPort-IV / DocuCentre-V 계열",
       aka: ["키슈", "세이토", "2270", "2275", "2276", "3370", "3375", "C2270", "C2276"],
       device: "floor-color",
-      photo: "assets/img/m-xerox-c2270.jpg",
+      photo: "assets/img/m-xerox-c2270.webp",
       videos: {
         toner: "DFJcuPt5yZk", // 키슈,세이토 토너 교체 방법
         waste: "LIhB66g5V6s", // 키슈,세이토 토너 회수통R5 교체 방법
@@ -1138,7 +1138,7 @@ window.FIRSTOA_MANUAL = {
       full: "DocuCentre-V · ApeosPort 계열",
       aka: ["마블", "2263", "2265", "C2263", "C2265"],
       device: "floor-color",
-      photo: "assets/img/m-xerox-c2263.jpg",
+      photo: "assets/img/m-xerox-c2263.webp",
       videos: {
         toner: "3XZ7PJaull4", // 마블 토너 교체 방법
         waste: "yBCH8_ouEmM", // 마블 토너 회수통R5 교체 방법
@@ -1187,7 +1187,7 @@ window.FIRSTOA_MANUAL = {
       full: "Apeos C2060 계열 (후지필름)",
       aka: ["2060", "2560", "3060", "Apeos", "C2060", "C2560", "C3060", "아페오스", "마블3", "마블4"],
       device: "floor-color",
-      photo: "assets/img/m-xerox-apeos-c2060.jpg",
+      photo: "assets/img/m-xerox-apeos-c2060.webp",
       videos: {
         toner: "3XZ7PJaull4", // 마블 토너 교체 방법 — 영상 속 기기는 후지필름 Apeos(2026-10-09 확인)
         waste: "yBCH8_ouEmM", // 마블 토너 회수통R5 교체 방법
@@ -1233,7 +1233,7 @@ window.FIRSTOA_MANUAL = {
       full: "ApeosPort-VI / VII 계열",
       aka: ["베니", "보탄", "2271", "2273", "3371", "3373", "C2271", "C3371"],
       device: "floor-color",
-      photo: "assets/img/m-xerox-c2271.jpg",
+      photo: "assets/img/m-xerox-c2271.webp",
       videos: {
         toner: "OG7jeQmpsbs", // 베니 토너 교체 방법
         waste: "WsK67N5FjC4", // 베니 토너 회수통R5 교체 방법
@@ -1278,7 +1278,7 @@ window.FIRSTOA_MANUAL = {
       full: "ApeosPort C 시리즈",
       aka: ["쇼부", "3070", "3570", "4570", "5570", "7070", "C3070", "C7070"],
       device: "floor-color",
-      photo: "assets/img/m-xerox-c3070.jpg",
+      photo: "assets/img/m-xerox-c3070.webp",
       videos: {
         toner: "Gc_NI3IdhuI", // 쇼부 토너 교체 방법
         waste: "P6-hVPSTV8Q", // 쇼부 토너 회수통R5 교체 방법
@@ -1322,7 +1322,7 @@ window.FIRSTOA_MANUAL = {
       full: "DocuCentre-V 대형기",
       aka: ["헤라", "5580", "5585", "6680", "C5585"],
       device: "floor-color",
-      photo: "assets/img/m-xerox-c5585.jpg",
+      photo: "assets/img/m-xerox-c5585.webp",
       videos: {
         toner: "WcICUyP0J2I", // 제조사 공식 영상(FUJIFILM Business Innovation Support) — 적용 기종 확인함
         waste: "QXgq0_njM2U", // 제조사 공식 영상(FUJIFILM Business Innovation Support) — 적용 기종 확인함
@@ -1364,7 +1364,7 @@ window.FIRSTOA_MANUAL = {
       full: "DocuCentre SC2022",
       aka: ["SC2022", "2022"],
       device: "desktop",
-      photo: "assets/img/m-xerox-sc2022.jpg",
+      photo: "assets/img/m-xerox-sc2022.webp",
       videos: {
         toner: "-5x1_VIVKdA", // 제조사 공식 영상(FUJIFILM Business Innovation Support) — 적용 기종 확인함
         waste: "CE7c5f-vUxk", // 제조사 공식 영상(FUJIFILM Business Innovation Support) — 적용 기종 확인함
@@ -1407,7 +1407,7 @@ window.FIRSTOA_MANUAL = {
       full: "ECOSYS M5521cdw · M5526cdw · MA2100cfx",   // 2026-10-09 실제 모델명으로(이전 TASKalfa 표기는 오류)
       aka: ["5521", "5526", "2100", "2101", "교세라", "ECOSYS", "M5521", "M5526", "MA2100", "TASKalfa"],
       device: "floor-color",
-      photo: "assets/img/m-kyocera.jpg",
+      photo: "assets/img/m-kyocera.webp",
       videos: {
         toner: "pRqyQJ5Lqns", // 교세라 토너 교체 방법
         meter: "",
@@ -1440,7 +1440,7 @@ window.FIRSTOA_MANUAL = {
       full: "Brother MFC-L5700DN",
       aka: ["5700", "L5700"],
       device: "desktop",
-      photo: "assets/img/m-brother-5700.jpg",
+      photo: "assets/img/m-brother-5700.webp",
       videos: {
         toner: "3GypB534uSs", // 브라더 토너 교체 방법
         drum: "Vok3STCstrQ",  // 브라더 드럼 교체 방법
@@ -1489,7 +1489,7 @@ window.FIRSTOA_MANUAL = {
       full: "Brother MFC-L8900CDW",
       aka: ["8900", "L8900"],
       device: "desktop",
-      photo: "assets/img/m-brother-8900.jpg",
+      photo: "assets/img/m-brother-8900.webp",
       videos: {
         toner: "",
         meter: "",
@@ -1502,7 +1502,7 @@ window.FIRSTOA_MANUAL = {
       full: "OKI ES5473 / MC5473",
       aka: ["5473", "오키", "ES5473", "MC5473"],
       device: "desktop",
-      photo: "assets/img/m-oki-5473.jpg",
+      photo: "assets/img/m-oki-5473.webp",
       videos: {
         toner: "BvbcfG8QZYM", // 오키 토너 교체 방법
         meter: "",
@@ -1534,7 +1534,7 @@ window.FIRSTOA_MANUAL = {
       full: "Lexmark MX410",
       aka: ["MX410", "렉스마크"],
       device: "desktop",
-      photo: "assets/img/m-lexmark-mx410.jpg",
+      photo: "assets/img/m-lexmark-mx410.webp",
       videos: {
         toner: "",
         meter: "",
@@ -1547,7 +1547,7 @@ window.FIRSTOA_MANUAL = {
       full: "잉크젯 복합기",
       aka: ["8710", "8720", "8730", "8600", "8610", "오피스젯"],
       device: "inkjet",
-      photo: "assets/img/m-hp-8710.jpg",
+      photo: "assets/img/m-hp-8710.webp",
       videos: {
         ink: "",   // 잉크젯 — 잉크 보충(2026-10-09)
         meter: "",
@@ -1560,7 +1560,7 @@ window.FIRSTOA_MANUAL = {
       full: "잉크젯 복합기",
       aka: ["9010", "7740"],
       device: "inkjet",
-      photo: "assets/img/m-hp-9010.jpg",
+      photo: "assets/img/m-hp-9010.webp",
       videos: {
         ink: "",   // 잉크젯 — 잉크 보충(2026-10-09)
         meter: "",
@@ -1573,7 +1573,7 @@ window.FIRSTOA_MANUAL = {
       full: "A4 흑백 레이저 프린터",
       aka: ["M501", "501", "477", "530", "650", "레이저젯", "LaserJet"],
       device: "desktop",
-      photo: "assets/img/m-hp-laser.jpg",
+      photo: "assets/img/m-hp-laser.webp",
       videos: {
         toner: "YUjIvksgoAc", // 제조사 공식 영상(HP Support) — 적용 기종 확인함
         meter: "",

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HP OfficeJet Pro 8710 · 8720 · 8730 PC 출력 시 흰 줄 · 연하게 나옴 해결 방법 | 퍼스트전산</title>
+<meta name="description" content="HP OfficeJet Pro 8710 · 8720 · 8730 복합기에서 PC에서 출력한 것에 흰 줄이 가거나 연하게 나올 때 (복사/스캔은 정상). 3단계 처리 순서.">
+<meta name="theme-color" content="#03183F">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="HP OfficeJet Pro 8710 · 8720 · 8730 PC 출력 시 흰 줄 · 연하게 나옴 해결 방법 | 퍼스트전산">
+<meta property="og:description" content="HP OfficeJet Pro 8710 · 8720 · 8730 복합기에서 PC에서 출력한 것에 흰 줄이 가거나 연하게 나올 때 (복사/스캔은 정상). 3단계 처리 순서.">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="(주)퍼스트전산">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- 공유 미리보기(카카오톡·문자)용. 공개 주소가 정해지면 한 번 실행하세요:
+     node scripts/set-domain.mjs https://내주소        (절대 주소여야 미리보기가 뜹니다) -->
+<meta property="og:url" content="https://firstoa-manual-mg.vercel.app/m/hp-8710/f/line-print">
+<meta property="og:image" content="https://firstoa-manual-mg.vercel.app/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><rect width='36' height='36' rx='10.5' fill='%2303183F'/><rect x='11' y='7' width='14' height='6.4' rx='2' fill='white' opacity='.5'/><rect x='7' y='15' width='22' height='8.6' rx='3' fill='%23F8B93E'/><rect x='13.5' y='25.4' width='9' height='4' rx='2' fill='white' opacity='.7'/></svg>">
+
+<!-- 본사 홈페이지와 같은 Pretendard. 못 받아오면 기기 기본 글꼴로 내려앉습니다. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<!-- 경로 주소(/m/기종?src=qr, QR 스티커)에서도 스크립트가 제대로 오도록 절대 경로(2026-10-09) -->
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="canonical" href="https://firstoa-manual-mg.vercel.app/m/hp-8710/f/line-print">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"처음","item":"https://firstoa-manual-mg.vercel.app/"},{"@type":"ListItem","position":2,"name":"HP","item":"https://firstoa-manual-mg.vercel.app/b/hp"},{"@type":"ListItem","position":3,"name":"HP OfficeJet Pro 8710 · 8720 · 8730","item":"https://firstoa-manual-mg.vercel.app/m/hp-8710"},{"@type":"ListItem","position":4,"name":"PC 출력 시 흰 줄 · 연하게 나옴","item":"https://firstoa-manual-mg.vercel.app/m/hp-8710/f/line-print"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"HP OfficeJet Pro 8710 · 8720 · 8730 PC 출력 시 흰 줄 · 연하게 나옴","description":"HP OfficeJet Pro 8710 · 8720 · 8730 복합기에서 PC에서 출력한 것에 흰 줄이 가거나 연하게 나올 때 (복사/스캔은 정상). 3단계 처리 순서.","url":"https://firstoa-manual-mg.vercel.app/m/hp-8710/f/line-print","totalTime":"PT5M","inLanguage":"ko","step":[{"@type":"HowToStep","position":1,"text":"어느 색에서 빠지는지 확인합니다."},{"@type":"HowToStep","position":2,"text":"해당 색 토너를 빼서 좌우로 5~6회 흔든 뒤 다시 넣습니다."},{"@type":"HowToStep","position":3,"text":"몇 장 출력해 보고 그대로면 인쇄물을 사진 찍어 보내주세요."}]}</script>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brandmark" href="/" aria-label="퍼스트전산 복합기 사용설명서 · 처음으로">
+      <img class="logo" src="/assets/img/logo-firstoa.jpg" alt="퍼스트전산" width="266" height="61">
+      <span class="rule"></span>
+      <span class="sub">복합기<br>사용설명서</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="/#models">기종 전체</a>
+      <a href="/fixes">자주 생기는 문제</a>
+      <a href="/pattern">4색 패턴 출력</a>
+      <a href="/meter">사용량 카운터</a>
+      <a href="/products">취급 품목</a>
+    </nav>
+    <span class="nav-sp"></span>
+    <a class="navtel" id="navTel" href="#"></a>
+    <button class="navbtn" id="navSearch" aria-label="검색 열기"></button>
+    <a class="navbtn kko" id="navKakao" href="#" target="_blank" rel="noopener"></a>
+  </div>
+</header>
+
+<main id="app"><div class="container prerender"><h1>HP OfficeJet Pro 8710 · 8720 · 8730 PC 출력 시 흰 줄 · 연하게 나옴</h1><p>PC에서 출력한 것에 흰 줄이 가거나 연하게 나올 때 (복사/스캔은 정상)</p><h2>따라 하는 순서</h2><ol><li>어느 색에서 빠지는지 확인합니다.</li><li>해당 색 토너를 빼서 좌우로 5~6회 흔든 뒤 다시 넣습니다.</li><li>몇 장 출력해 보고 그대로면 인쇄물을 사진 찍어 보내주세요.</li></ol>
+        <p><a href="/m/hp-8710">HP OfficeJet Pro 8710 · 8720 · 8730 전체 작업</a></p></div></main>
+
+<footer class="footer" id="footer"></footer>
+
+<!-- 폰·태블릿 하단 탭 — 가로로 밀어야 보이던 상단 메뉴 대신 엄지로 바로 고른다(2026-10-06) -->
+<nav class="tabbar" id="tabbar" aria-label="주요 메뉴"></nav>
+<div class="bsheet-wrap" id="bsheet" hidden>
+  <div class="bsheet" role="dialog" aria-modal="true" aria-label="메뉴"><div class="grab"></div><div id="bsheetBody"></div></div>
+</div>
+
+<!-- 검색 창 -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="검색">
+  <div class="sheet">
+    <div class="top">
+      <span id="sIcon"></span>
+      <input id="sq" placeholder="기종명, 증상, 작업 이름으로 검색" autocomplete="off" spellcheck="false">
+      <button class="esc" id="sClose">ESC</button>
+    </div>
+    <div class="res" id="res"></div>
+  </div>
+</div>
+
+<script src="/data/manuals.js"></script>
+<script src="/data/new-videos.js"></script>
+<script src="/assets/chart.js"></script>
+<script src="/assets/ui.js"></script>
+<script src="/assets/app.js"></script>
+</body>
+</html>

@@ -27,11 +27,13 @@ jobs:
           node-version: 20
       - name: 채널 읽고 자동 연결
         run: node scripts/fetch-channel.mjs --auto --save
+      - name: 검색엔진용 정적 페이지·사이트맵 다시 만들기
+        run: node scripts/prerender.mjs
       - name: 바뀐 게 있으면 커밋
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/manuals.js data/new-videos.js data/channel-videos.json
+          git add data/manuals.js data/new-videos.js data/channel-videos.json sitemap.xml m b f t fixes fixes.html meter.html pattern.html notices.html products.html
           if git diff --cached --quiet; then
             echo "변경 없음"
           else

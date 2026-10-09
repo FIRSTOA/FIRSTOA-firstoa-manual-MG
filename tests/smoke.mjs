@@ -25,7 +25,9 @@ try {
 } catch (e) { bad('스크립트 실행 실패: ' + e.message); console.log(e.stack); process.exit(1); }
 
 const doc = win.document, D = win.FIRSTOA_MANUAL;
-const nav = (h) => { win.location.hash = h; win.dispatchEvent(new win.Event('hashchange')); };
+// 경로 주소(2026-10-09): '#/m/x/#sec-fix' 처럼 적어도 되고, 그대로 경로('/m/x#sec-fix')로 바꿔 pushState 한다
+const toPath = (h) => { if (h.startsWith('#')) h = h.slice(1); if (h.startsWith('/#')) return '/#' + h.slice(2); const i = h.indexOf('/#'); return i >= 0 ? h.slice(0, i) + '#' + h.slice(i + 2) : h; };
+const nav = (h) => { win.history.pushState(null, '', toPath(h)); win.dispatchEvent(new win.Event('popstate')); };
 const junk = s => /undefined|\[object Object\]|NaN|&lt;svg/.test(s);
 
 /* 1. 모든 주소가 그려지는가 */
@@ -171,20 +173,20 @@ foot.includes('55명') && !foot.includes('40명') ? ok('꼬리말 문구에 55�
 console.log('\n[15] 기종 탭 · 취급 품목 · 카운터');
 nav('#/m/samsung-3220');
 const jumpHrefs = [...doc.querySelectorAll('#jump a')].map(a => a.getAttribute('href'));
-jumpHrefs.length && jumpHrefs.every(h => h.startsWith('#/m/samsung-3220/#sec-')) ? ok('기종 탭 주소가 화면 안 이동 형식 (' + jumpHrefs.length + '개)') : bad('기종 탭 주소: ' + jumpHrefs.join(' '));
+jumpHrefs.length && jumpHrefs.every(h => h.startsWith('/m/samsung-3220#sec-')) ? ok('기종 탭 주소가 화면 안 이동 형식 (' + jumpHrefs.length + '개)') : bad('기종 탭 주소: ' + jumpHrefs.join(' '));
 nav('#/m/samsung-3220/#sec-fix');
 doc.querySelector('#app .mpage') ? ok('탭 주소로 들어와도 기종 화면이 그려짐') : bad('탭 주소에서 404');
-nav('#sec-manage');
-(doc.querySelector('#app .mpage') || win.location.hash.includes('/m/samsung-3220')) ? ok('옛 탭 주소(#sec-…)는 마지막 기종으로 (' + win.location.hash + ')') : bad('옛 탭 주소에서 404: ' + win.location.hash);
+nav('/#sec-manage');
+(doc.querySelector('#app .mpage') || win.location.pathname.includes('/m/samsung-3220')) ? ok('옛 탭 주소(#sec-…)는 마지막 기종으로 (' + win.location.pathname + ')') : bad('옛 탭 주소에서 404: ' + win.location.pathname);
 nav('#/헛주소');
-doc.querySelector('#app .empty a[href="#/m/samsung-3220"]') ? ok('404 에 "삼성 3220 화면으로 돌아가기" 단추') : bad('404 에 되돌아가기 단추 없음');
+doc.querySelector('#app .empty a[href="/m/samsung-3220"]') ? ok('404 에 "삼성 3220 화면으로 돌아가기" 단추') : bad('404 에 되돌아가기 단추 없음');
 nav('#/products');
 const pcards = doc.querySelectorAll('#app .pcard:not(.pack)').length;
 pcards === D.PRODUCTS.length ? ok(`취급 품목 화면에 품목 ${pcards}개`) : bad(`취급 품목 화면 ${pcards} ≠ ${D.PRODUCTS.length}`);
 const grp = [...doc.querySelectorAll('#app .pgroups .section')].map(x => x.id);
 grp.join(',') === D.PRODUCT_GROUPS.map(g => 'grp-' + g.id).join(',') ? ok('묶음 순서: ' + grp.join(' → ')) : bad('묶음 순서: ' + grp.join(','));
 ['software', 'network'].every(id => D.PRODUCTS.some(p => p.id === id)) ? ok('소프트웨어 · 네트워크 카드 있음') : bad('소프트웨어/네트워크 카드 없음');
-[...doc.querySelectorAll('#navLinks a, .nav-links a')].some(a => a.getAttribute('href') === '#/products') ? ok('헤더 취급 품목 → 개별 화면') : bad('헤더 취급 품목 링크가 홈 안쪽');
+[...doc.querySelectorAll('#navLinks a, .nav-links a')].some(a => a.getAttribute('href') === '/products') ? ok('헤더 취급 품목 → 개별 화면') : bad('헤더 취급 품목 링크가 홈 안쪽');
 const cssText = fs.readFileSync(HOME + '/assets/style.css', 'utf8');
 cssText.includes('.callout > b{') && cssText.includes('.callout li b,.callout p b{display:inline') ? ok('안내 상자 문장 속 굵은 글씨는 inline') : bad('callout b 규칙');
 nav('#/meter');
@@ -270,7 +272,7 @@ navLinks.join('/') === '기종 전체/자주 생기는 문제/4색 패턴 출력
   ? ok('헤더: ' + navLinks.join(' · ')) : bad('헤더 구성 다름: ' + navLinks.join(','));
 // 용지는 브랜드 사진을 쓰지 않는다
 const paper = D.PRODUCTS.find(p => p.id === 'paper');
-paper && paper.img === 'assets/img/paper.jpg' ? ok('복사용지는 상표 없는 실제 사진(2026-10-09)') : bad('용지 사진이 지정한 상표 없는 사진이 아님');
+paper && paper.img === 'assets/img/paper.webp' ? ok('복사용지는 상표 없는 실제 사진(2026-10-09)') : bad('용지 사진이 지정한 상표 없는 사진이 아님');
 
 /* 13. 브랜드별 증상 구조 · 5장 출력 */
 console.log('\n[13] 브랜드별 증상 · 출력 5장');
@@ -427,4 +429,16 @@ nav('#/m/samsung-3220?src=qr');
 doc.querySelector('#app .qrhello') && doc.querySelector('#app .mpage') ? ok('QR 주소로 들어오면 기종 화면 + 연결 안내') : bad('QR 연결 안내 없음');
 nav('#/m/samsung-3220');
 !doc.querySelector('#app .qrhello') ? ok('일반 주소엔 연결 안내 없음') : bad('일반 주소에 QR 안내');
-[...doc.querySelectorAll('#bsheet a, .bsheet a, #app a')].some(a => a.getAttribute('href') === '#/qr') || doc.body.innerHTML.includes('#/qr') ? ok('더보기에 QR 스티커 메뉴') : bad('QR 메뉴 없음');
+[...doc.querySelectorAll('#bsheet a, .bsheet a, #app a, #footer a')].some(a => a.getAttribute('href') === '/qr') ? ok('더보기·꼬리말에 QR 스티커 메뉴') : bad('QR 메뉴 없음');
+
+/* 24. 경로 주소(2026-10-09) */
+console.log('\n[24] 경로 주소');
+nav('/m/samsung-3220/toner');
+win.location.pathname === '/m/samsung-3220/toner' && doc.querySelector('#app .player') ? ok('경로 주소로 작업 화면') : bad('경로 주소 ' + win.location.pathname);
+![...doc.querySelectorAll('#app a[href], #tabbar a[href], #footer a[href]')].some(a => a.getAttribute('href').startsWith('#/')) ? ok('화면·메뉴·꼬리말에 해시 링크 없음') : bad('해시 링크 남음: ' + [...doc.querySelectorAll('a[href^="#/"]')].slice(0,3).map(a => a.getAttribute('href')).join(','));
+doc.querySelector('link[rel="canonical"]').getAttribute('href').endsWith('/m/samsung-3220/toner') ? ok('canonical 이 현재 주소') : bad('canonical ' + doc.querySelector('link[rel="canonical"]').getAttribute('href'));
+nav('#/m/samsung-3220/#sec-fix');
+win.location.pathname === '/m/samsung-3220' && win.location.hash === '#sec-fix' ? ok('옛 해시 주소 → 경로 + 앵커') : bad('옛 해시 변환 ' + win.location.pathname + win.location.hash);
+const toner = doc.querySelector('#app a[href="/m/samsung-3220/toner"]');
+if (toner) { toner.dispatchEvent(new win.MouseEvent('click', { bubbles: true, cancelable: true, button: 0 })); }
+toner && win.location.pathname === '/m/samsung-3220/toner' ? ok('앱 안 링크 클릭 → pushState 이동') : bad('링크 클릭 이동 안 됨 ' + win.location.pathname);

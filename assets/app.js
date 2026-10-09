@@ -16,10 +16,23 @@
   // 마지막으로 본 기종 — 엉뚱한 주소나 빈 검색에서 "그 기종 화면으로 돌아가기"에 쓴다(2026-10-09)
   let lastModel = (() => { try { return sessionStorage.getItem("firstoa.lastModel"); } catch { return null; } })();
   const remember = m => { lastModel = m.id; try { sessionStorage.setItem("firstoa.lastModel", m.id); } catch {} };
-  let fromQr = false;   // "#/m/기종?src=qr" — 복합기에 붙인 QR 스티커로 들어온 화면(기종 화면에 연결 안내를 띄운다)
-  // QR 스티커 주소는 경로(/m/samsung-3220?src=qr)다. 서버는 모든 경로를 첫 화면으로 돌려주므로 여기서 해시 주소로 바꾼다(2026-10-09)
-  if (location.pathname && location.pathname !== "/" && !location.hash) {
-    location.replace(`${location.origin}/#${location.pathname.replace(/\/+$/, "")}${location.search}`);
+  let fromQr = false;   // "/m/기종?src=qr" — 복합기에 붙인 QR 스티커로 들어온 화면(기종 화면에 연결 안내를 띄운다)
+  /* ── 주소 체계(2026-10-09): 경로 방식. /m/samsung-3220, /m/samsung-3220/toner, /fixes/samsung/jam, /#models(화면 안 이동)
+   * 예전 해시 주소 "#/m/x/#sec-fix" 는 "/m/x#sec-fix" 로, "#/#models" 는 "/#models" 로 바꿔 준다(책갈피·카톡에 남은 링크용).
+   * 왜 경로인가: 검색엔진은 # 뒤를 무시한다 — 기종마다 진짜 주소가 있어야 구글·네이버에 기종별 페이지가 잡힌다. */
+  const toPath = h => {                                   // h: "/m/x/#sec-fix" | "/#models" | "/m/x?src=qr" | "/"
+    if (h.startsWith("/#")) return "/#" + h.slice(2);
+    const i = h.indexOf("/#");
+    return i >= 0 ? h.slice(0, i) + "#" + h.slice(i + 2) : h;
+  };
+  const fixLinks = root => root.querySelectorAll('a[href^="#/"]').forEach(a => a.setAttribute("href", toPath(a.getAttribute("href").slice(1))));
+  if (location.hash.startsWith("#/")) {
+    try { history.replaceState(null, "", toPath(decodeURIComponent(location.hash.slice(1)))); } catch {}
+  }
+  function navigate(href) {
+    const cur = location.pathname + location.search + location.hash;
+    if (href !== cur) { try { history.pushState(null, "", href); } catch { location.assign(href); return; } }
+    render();
   }
   const FIX   = Object.fromEntries((D.FIXES || []).map(f => [f.id, f]));
 
@@ -223,7 +236,7 @@
         <div class="hero-art">
           <div class="hero-shot">
             <span class="tagchip"><i></i>엔지니어 직접 촬영</span>
-            <img src="assets/img/copier.jpg" alt="복합기" loading="eager">
+            <img src="assets/img/copier.webp" alt="복합기" loading="eager">
           </div>
           <span class="hero-float f1">${ic("video", 22)}
             <span><b class="num">${totalVideos}</b><span>편의 작업 영상</span></span></span>
@@ -884,7 +897,7 @@
         <p class="lead">${m ? `${esc(m.name)} 스티커 8장 — A4 라벨지(2×4칸, 한 칸 약 99×67mm) 한 장` : "기종마다 한 장씩. 기종을 누르면 그 기종만 8장(A4 한 장) 인쇄합니다."}</p>
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:14px">
           <button class="btn" onclick="window.print()">${ic("printer", 17)}인쇄</button>
-          ${m ? `<a class="btn ghost" href="#/qr">전체 기종</a><a class="btn ghost" href="#/m/${m.id}?src=qr" target="_blank" rel="noopener">고객 화면 미리 보기 ${ic("ext", 15)}</a>` : ""}
+          ${m ? `<a class="btn ghost" href="#/qr">전체 기종</a><a class="btn ghost" href="/m/${m.id}?src=qr" target="_blank" rel="noopener">고객 화면 미리 보기 ${ic("ext", 15)}</a>` : ""}
         </div>
         <p class="muted" style="margin-top:12px">스티커 주소는 <code>${esc(location.origin)}/m/기종?src=qr</code> 입니다. 고객이 찍으면 그 기종 화면이 바로 열립니다.</p>
       </div>
@@ -1275,6 +1288,13 @@
   const ov = () => document.getElementById("overlay");
   let sel = 0, hits = [];
 
+  function setMeta(path, title) {
+    // 검색엔진·공유용: 주소마다 대표 주소(canonical)와 설명을 맞춘다. 정적 페이지(scripts/prerender.mjs)와 같은 값
+    const can = document.querySelector('link[rel="canonical"]'); if (can) can.href = location.origin + (path === "/" ? "/" : path);
+    const og = document.querySelector('meta[property="og:title"]'); if (og) og.content = title;
+    const ogu = document.querySelector('meta[property="og:url"]'); if (ogu) ogu.content = location.origin + (path === "/" ? "/" : path);
+  }
+
   function paintHits(q) {
     const box = document.getElementById("res");
     if (!q.trim()) {
@@ -1287,7 +1307,7 @@
       return;
     }
     const { models, tasks, fixes } = find(q);
-    hits = [...models.map(m => "#/m/" + m.id), ...fixes.map(f => "#/f/" + f.id), ...tasks.map(t => "#/t/" + t.id)];
+    hits = [...models.map(m => "/m/" + m.id), ...fixes.map(f => "/f/" + f.id), ...tasks.map(t => "/t/" + t.id)];
     sel = 0;
     box.innerHTML =
       (models.length ? `<div class="grp">기종 ${models.length}</div>` + models.map(m =>
@@ -1319,16 +1339,14 @@
   const STALE_MS = 30 * 60 * 1000;
   function render() {
     if (Date.now() - LOADED_AT > STALE_MS) { location.reload(); return; }
-    const raw0 = decodeURIComponent(location.hash.replace(/^#/, "")) || "/";
-    const qi = raw0.indexOf("?");                                  // "#/m/samsung-3220?src=qr"
-    fromQr = new URLSearchParams(qi >= 0 ? raw0.slice(qi + 1) : "").get("src") === "qr";
-    const raw = qi >= 0 ? raw0.slice(0, qi) : raw0;
-    const cut = raw.indexOf("/#");                                 // "/#models", "/m/samsung-3220/#sec-fix" 같은 화면 안 이동
-    const anchor = cut >= 0 ? raw.slice(cut + 2) : null;
-    const p = (cut >= 0 ? raw.slice(0, cut) : raw).split("/").filter(Boolean);
-    // 탭을 눌러 "#sec-…"만 남은 옛 주소 → 마지막 기종 화면의 그 자리로(2026-10-09)
-    if (p.length === 1 && /^sec-/.test(p[0]) && lastModel && MODEL[lastModel]) { location.replace(`#/m/${lastModel}/#${p[0]}`); return; }
-    if (p.length === 1 && /^grp-/.test(p[0])) { location.replace(`#/products/#${p[0]}`); return; }
+    if (location.hash.startsWith("#/")) { try { history.replaceState(null, "", toPath(decodeURIComponent(location.hash.slice(1)))); } catch {} }
+    const path = decodeURIComponent(location.pathname).replace(/\/+$/, "") || "/";
+    fromQr = new URLSearchParams(location.search).get("src") === "qr";
+    const anchor = location.hash && !location.hash.startsWith("#/") ? decodeURIComponent(location.hash.slice(1)) : null;   // "#models", "#sec-fix"
+    const p = path.split("/").filter(Boolean);
+    // 첫 화면에서 "#sec-…"만 남은 옛 주소 → 마지막 기종 화면의 그 자리로
+    if (!p.length && anchor && /^sec-/.test(anchor) && lastModel && MODEL[lastModel]) { navigate(`/m/${lastModel}#${anchor}`); return; }
+    if (!p.length && anchor && /^grp-/.test(anchor)) { navigate(`/products#${anchor}`); return; }
     let html, title = `${D.meta.company} ${D.meta.title}`;
 
     if (!p.length) html = viewHome();
@@ -1350,10 +1368,12 @@
     else html = view404();
 
     app.innerHTML = html;
+    fixLinks(document.body);                                      // 화면·메뉴판·꼬리말의 "#/…" 링크를 경로로
     document.title = title;
+    setMeta(path, title);
     // 헤더에서 지금 보고 있는 곳 표시
-    const key = p[0] === "fixes" ? "#/fixes" : p[0] === "pattern" ? "#/pattern"
-              : p[0] === "meter" ? "#/meter" : p[0] === "products" ? "#/products" : p[0] === "m" || p[0] === "t" || p[0] === "b" ? "#/#models" : "";
+    const key = p[0] === "fixes" ? "/fixes" : p[0] === "pattern" ? "/pattern"
+              : p[0] === "meter" ? "/meter" : p[0] === "products" ? "/products" : p[0] === "m" || p[0] === "t" || p[0] === "b" ? "/#models" : "";
     document.querySelectorAll("#navLinks a").forEach(el =>
       el.classList.toggle("on", !!key && el.getAttribute("href") === key));
     const tabKey = !p.length ? "home" : p[0] === "m" || p[0] === "t" || p[0] === "b" ? "models"
@@ -1371,7 +1391,7 @@
     go(e) {
       e.preventDefault();
       const q = document.getElementById("q").value.trim();
-      if (q) location.hash = "/s/" + encodeURIComponent(q);
+      if (q) navigate("/s/" + encodeURIComponent(q));
       return false;
     },
     // 썸네일을 누른 뒤에야 유튜브를 불러옵니다(첫 화면이 빨라지고, 안 본 영상은 기록도 남지 않습니다)
@@ -1548,7 +1568,7 @@
       if (e.key === "Escape") FIRSTOA.close();
       if (e.key === "ArrowDown") { e.preventDefault(); sel = Math.min(sel + 1, hits.length - 1); markSel(); }
       if (e.key === "ArrowUp")   { e.preventDefault(); sel = Math.max(sel - 1, 0); markSel(); }
-      if (e.key === "Enter" && hits[sel]) { e.preventDefault(); location.hash = hits[sel].slice(1); FIRSTOA.close(); }
+      if (e.key === "Enter" && hits[sel]) { e.preventDefault(); FIRSTOA.close(); navigate(hits[sel]); }
     });
     // 검색 결과를 누르면 창이 닫히도록
     document.getElementById("res").addEventListener("click", e => { if (e.target.closest(".hit")) FIRSTOA.close(); });
@@ -1563,7 +1583,18 @@
     addEventListener("scroll", () => nav.classList.toggle("stuck", scrollY > 8), { passive: true });
   }
 
-  addEventListener("hashchange", render);
-  matchMedia("(max-width: 759px)").addEventListener?.("change", () => { if (!location.hash || location.hash === "#/" || location.hash.startsWith("#/#")) render(); });
+  addEventListener("popstate", render);
+  // 어디선가 남은 "#/…" 링크(검색 결과 등)를 눌러 해시가 바뀌면 경로로 바꿔 그린다
+  addEventListener("hashchange", () => { if (location.hash.startsWith("#/")) render(); });
+  // 앱 안 링크는 전체 새로고침 없이 그린다(경로 링크만). 새 창·외부·전화·파일·화면 안 앵커는 그대로
+  document.addEventListener("click", e => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest("a[href]");
+    if (!a) return;
+    const href = a.getAttribute("href") || "";
+    if (a.target === "_blank" || a.hasAttribute("download") || !href.startsWith("/") || href.startsWith("//") || /^\/(assets|data|_vercel)\//.test(href)) return;
+    e.preventDefault(); navigate(href);
+  });
+  matchMedia("(max-width: 759px)").addEventListener?.("change", () => { if (location.pathname === "/") render(); });
   chrome(); bindGlobal(); render();
 })();

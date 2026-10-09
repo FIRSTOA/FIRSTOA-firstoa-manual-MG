@@ -5,7 +5,8 @@
   "description": "퍼스트전산 복합기 사용설명서 — 빌드 없는 정적 사이트",
   "scripts": {
     "dev": "python3 -m http.server 8080",
-    "test": "node tests/smoke.mjs"
+    "test": "node tests/smoke.mjs",
+    "prerender": "node scripts/prerender.mjs"
   },
   "devDependencies": { "happy-dom": "^20.0.0" }
 }
