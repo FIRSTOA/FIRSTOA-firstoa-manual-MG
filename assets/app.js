@@ -379,7 +379,9 @@
     const m = MODEL[mid], f = FIX[fid];
     if (!m || !f || !inScope(f, m)) return view404();
     remember(m);
-    const b = BRAND[m.brand], ready = (f.steps || []).length > 0, fv = fixVid(f, m);
+    const b = BRAND[m.brand], fv = fixVid(f, m), ov = (f.brands || {})[m.brand] || {};   // 브랜드별 덮어쓰기(2026-10-09)
+    const fSteps = ov.steps || f.steps || [], fCautions = ov.cautions || f.cautions || [];
+    const ready = fSteps.length > 0;
     const others = fixesOf(m).filter(x => x.id !== fid);
     const myTel = tel();
 
@@ -407,9 +409,9 @@
               <div class="panel-h">${ic("book", 19)}<b>따라 하는 순서</b>
                 <button class="rst" onclick="FIRSTOA.reset()">처음부터</button></div>
               <div class="progress"><i id="bar"></i></div>
-              <div class="pmeta"><span id="pnum" class="num">0 / ${f.steps.length}</span> 단계 · 누르면 체크됩니다</div>
+              <div class="pmeta"><span id="pnum" class="num">0 / ${fSteps.length}</span> 단계 · 누르면 체크됩니다</div>
               <ol class="steps" id="steps" data-key="${esc(mid + ".f." + fid)}">
-                ${f.steps.map((t, k) => `<li data-k="${k}" tabindex="0" role="button" aria-pressed="false">
+                ${fSteps.map((t, k) => `<li data-k="${k}" tabindex="0" role="button" aria-pressed="false">
                   <span class="mark"><span class="num">${k + 1}</span>${ic("check", 16)}</span>
                   <span class="tx">${esc(t)}</span></li>`).join("")}
               </ol></div>`
@@ -421,9 +423,9 @@
                  <p>이 항목은 담당 엔지니어가 처리 방법을 정리하는 중입니다.
                     지금은 전화나 카카오톡으로 연락 주시면 바로 안내해 드립니다.</p></div>`}
 
-          ${f.cautions?.length ? `<div class="callout warn" style="margin-top:16px">
+          ${fCautions.length ? `<div class="callout warn" style="margin-top:16px">
             <b>${ic("error", 17)}주의하세요</b>
-            <ul>${f.cautions.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>` : ""}
+            <ul>${fCautions.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>` : ""}
         </div>
 
         <aside class="aside">
@@ -930,7 +932,9 @@
   function viewFixBrand(bid, fid) {
     const b = BRAND[bid], f = FIX[fid];
     if (!b || !f) return view404();
-    const ready = (f.steps || []).length > 0, fv = fixVidBrand(f, bid);
+    const fv = fixVidBrand(f, bid), ov = (f.brands || {})[bid] || {};
+    const fSteps = ov.steps || f.steps || [], fCautions = ov.cautions || f.cautions || [];
+    const ready = fSteps.length > 0;
     const others = fixesForBrand(bid).filter(x => x.id !== fid);
     const models = modelsOf(bid);
     const myTel = tel();
@@ -959,9 +963,9 @@
               <div class="panel-h">${ic("book", 19)}<b>따라 하는 순서</b>
                 <button class="rst" onclick="FIRSTOA.reset()">처음부터</button></div>
               <div class="progress"><i id="bar"></i></div>
-              <div class="pmeta"><span id="pnum" class="num">0 / ${f.steps.length}</span> 단계 · 누르면 체크됩니다</div>
+              <div class="pmeta"><span id="pnum" class="num">0 / ${fSteps.length}</span> 단계 · 누르면 체크됩니다</div>
               <ol class="steps" id="steps" data-key="${esc(bid + ".f." + fid)}">
-                ${f.steps.map((t, k) => `<li data-k="${k}" tabindex="0" role="button" aria-pressed="false">
+                ${fSteps.map((t, k) => `<li data-k="${k}" tabindex="0" role="button" aria-pressed="false">
                   <span class="mark"><span class="num">${k + 1}</span>${ic("check", 16)}</span>
                   <span class="tx">${esc(t)}</span></li>`).join("")}
               </ol></div>`
@@ -972,9 +976,9 @@
                  <b>${ic("spark", 17)}내용을 준비하고 있습니다</b>
                  <p>이 항목은 담당 엔지니어가 처리 방법을 정리하는 중입니다.
                     지금은 전화나 카카오톡으로 연락 주시면 바로 안내해 드립니다.</p></div>`}
-          ${f.cautions?.length ? `<div class="callout warn" style="margin-top:16px">
+          ${fCautions.length ? `<div class="callout warn" style="margin-top:16px">
             <b>${ic("error", 17)}주의하세요</b>
-            <ul>${f.cautions.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>` : ""}
+            <ul>${fCautions.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>` : ""}
         </div>
 
         <aside class="aside">

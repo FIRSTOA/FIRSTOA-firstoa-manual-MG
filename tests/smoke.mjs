@@ -346,3 +346,14 @@ const noSteps = D.FIXES.filter(f => !(f.steps || []).length).map(f => f.id);
 noSteps.length ? bad('글 순서 없는 증상: ' + noSteps.join(', ')) : ok(`증상 ${D.FIXES.length}개 모두 글 순서 있음`);
 !D.FIXES.some(f => f.id === 'glass-pm') ? ok('유리 PM 은 "복사/스캔 시 줄 나옴"에 합쳐짐') : bad('glass-pm 남음');
 D.FIXES.every(f => !/PM|가이드 조정/.test(f.title)) ? ok('제목에 PM · 가이드 조정 같은 말 없음') : bad('제목: ' + D.FIXES.map(f => f.title).join(' | '));
+
+/* 18. 브랜드별 덮어쓰기 순서(삼성 영상 절차) */
+console.log('\n[18] 브랜드별 순서');
+nav('#/m/samsung-3220/f/jam');
+doc.querySelectorAll('#app .steps li').length === 9 ? ok('삼성 3220 용지 걸림: 삼성 절차 9단계') : bad('삼성 용지 걸림 단계 ' + doc.querySelectorAll('#app .steps li').length);
+nav('#/m/xerox-c2263/f/jam');
+doc.querySelectorAll('#app .steps li').length === 4 ? ok('제록스 용지 걸림: 공통 절차 4단계') : bad('제록스 용지 걸림 단계 ' + doc.querySelectorAll('#app .steps li').length);
+nav('#/fixes/samsung/line-print');
+doc.querySelectorAll('#app .steps li').length === 7 ? ok('삼성 브랜드 화면 PC 출력 흰 줄: 청소 막대 7단계') : bad('삼성 흰 줄 단계 ' + doc.querySelectorAll('#app .steps li').length);
+nav('#/m/samsung-3220/f/line-copy');
+doc.getElementById('app').textContent.includes('물티슈') ? ok('복사/스캔 줄: 영상 순서(오염 자리 찾기 · 물티슈)') : bad('복사/스캔 줄 순서');
