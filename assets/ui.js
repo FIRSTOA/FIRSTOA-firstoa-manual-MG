@@ -239,65 +239,7 @@
       <rect x="74" y="130" width="16" height="6" rx="3" fill="var(--dev-line)"/>`),
   };
 
-  /* ── 검침 그림 카드(2026-10-09): 단계마다 "어디를 누르는지"를 조작부 그림으로 ──
-   * kind: key(실제 버튼) · touch(화면 단추) · path(메뉴 경로) · swipe(화면 넘김) · gear(톱니바퀴) · home · dots(⋯)
-   *       print(출력물이 나옴) · photo-paper(출력물을 휴대폰으로) · photo-screen(화면을 휴대폰으로) */
-  const sesc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  const cut = (v, n) => { v = String(v || ""); return v.length > n ? v.slice(0, n - 1) + "…" : v; };
-  const SC = inner => `<svg class="scene" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-       <defs><linearGradient id="gScene" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--dev-hi)"/><stop offset="1" stop-color="var(--dev-body)"/></linearGradient></defs>${inner}</svg>`;
-  const T = (x, y, v, size = 9.5, fill = "#fff") => `<text x="${x}" y="${y}" font-size="${size}" font-weight="800" fill="${fill}" text-anchor="middle">${sesc(v)}</text>`;
-  const ripple = (x, y) => `<circle cx="${x}" cy="${y}" r="9" fill="none" stroke="var(--accent)" stroke-width="2.2" opacity=".6"/>
-      <circle cx="${x}" cy="${y}" r="16" fill="none" stroke="var(--accent)" stroke-width="1.6" opacity=".25"/>`;
-  const dimLines = `<rect x="26" y="30" width="60" height="5" rx="2.5" fill="#fff" opacity=".22"/><rect x="26" y="42" width="44" height="5" rx="2.5" fill="#fff" opacity=".13"/>`;
-  const tile = (x, y, w, h, label, hi) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="5" fill="${hi ? "var(--accent)" : "rgba(255,255,255,.16)"}"/>${T(x + w / 2, y + h / 2 + 3.5, label, 9)}`;
-  // 조작부 바탕: 왼쪽 화면 + 오른쪽 키패드 + 넓은 버튼
-  const panelBase = (screenInner, startLabel = "", startHi = false) => `
-      <rect x="6" y="8" width="188" height="104" rx="12" fill="url(#gScene)"/>
-      <rect x="16" y="18" width="112" height="84" rx="7" fill="var(--dev-dark)"/>
-      ${screenInner}
-      ${[24, 42, 60].map(y => [138, 156, 174].map(x => `<rect x="${x}" y="${y}" width="14" height="13" rx="3" fill="var(--dev-shade)"/>`).join("")).join("")}
-      <rect x="138" y="80" width="50" height="18" rx="9" fill="${startHi ? "var(--accent)" : "var(--dev-shade)"}"/>
-      ${startLabel ? T(163, 92.5, cut(startLabel, 5), 9, startHi ? "#fff" : "var(--dev-dark)") : ""}`;
-  // 휴대폰이 왼쪽에서 찍는 장면 — subject 는 오른쪽에 놓이는 대상(출력물/화면)
-  const photoScene = subject => `${subject}
-      <rect x="22" y="16" width="52" height="92" rx="10" fill="var(--dev-dark)"/>
-      <rect x="28" y="24" width="40" height="70" rx="5" fill="var(--dev-shade)"/>
-      <circle cx="48" cy="60" r="11" fill="none" stroke="var(--accent)" stroke-width="3"/><circle cx="48" cy="60" r="4" fill="var(--accent)"/>
-      <path d="M80 44 l8 -6 M84 60 h10 M80 76 l8 6" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>`;
-  const paperLines = (x, y) => `<rect x="${x}" y="${y}" width="30" height="4" rx="2" fill="var(--accent)" opacity=".8"/>
-      <rect x="${x}" y="${y + 10}" width="46" height="3.5" rx="1.75" fill="var(--dev-line)"/>
-      <rect x="${x}" y="${y + 19}" width="38" height="3.5" rx="1.75" fill="var(--dev-line)" opacity=".7"/>
-      <rect x="${x}" y="${y + 28}" width="44" height="3.5" rx="1.75" fill="var(--dev-line)" opacity=".5"/>`;
-  const SCENES = {
-    key: ({ label }) => SC(panelBase(dimLines, label, true) + ripple(163, 89)),
-    touch: ({ label }) => SC(panelBase(tile(34, 46, 76, 26, cut(label, 7), true)) + ripple(72, 59)),
-    path: ({ labels = [] }) => {
-      const ls = labels.length > 3 ? labels.slice(-3) : labels;
-      const n = Math.max(1, ls.length), w = n === 1 ? 76 : n === 2 ? 48 : 32, gap = 5, total = n * w + (n - 1) * gap;
-      let x = 72 - total / 2;
-      const tiles = ls.map((l, i) => { const out = tile(x, 48, w, 22, cut(l, n === 3 ? 4 : 6), i === n - 1) + (i < n - 1 ? `<path d="M${x + w + 0.5} 59 h4" stroke="#fff" stroke-width="1.6" opacity=".6"/>` : ""); x += w + gap; return out; }).join("");
-      return SC(panelBase(tiles) + ripple(x - gap - w / 2, 59));
-    },
-    swipe: () => SC(panelBase(`<path d="M34 60 H102" stroke="var(--accent)" stroke-width="4.5" stroke-linecap="round"/>
-      <path d="M94 50 l10 10 -10 10" fill="none" stroke="var(--accent)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>` + dimLines) + ripple(44, 60)),
-    gear: () => SC(panelBase(`<circle cx="72" cy="58" r="16" fill="none" stroke="var(--accent)" stroke-width="7" stroke-dasharray="5 4"/><circle cx="72" cy="58" r="6.5" fill="var(--accent)"/>`) + ripple(72, 58)),
-    home: () => SC(panelBase(`<path d="M54 60 L72 44 L90 60 V78 H54 Z" fill="var(--accent)"/><rect x="67" y="64" width="10" height="14" rx="2" fill="var(--dev-dark)"/>`) + ripple(72, 62)),
-    dots: () => SC(panelBase(dimLines + `<circle cx="62" cy="90" r="3.5" fill="var(--accent)"/><circle cx="72" cy="90" r="3.5" fill="var(--accent)"/><circle cx="82" cy="90" r="3.5" fill="var(--accent)"/>`) + ripple(72, 90)),
-    print: () => SC(`<rect x="36" y="58" width="128" height="50" rx="10" fill="url(#gScene)"/>
-      <rect x="48" y="68" width="60" height="8" rx="3" fill="var(--dev-dark)"/><rect x="140" y="70" width="14" height="6" rx="3" fill="var(--accent)"/>
-      <rect x="70" y="12" width="62" height="54" rx="3" fill="var(--dev-paper)" stroke="var(--dev-line)" stroke-width="1.2"/>
-      ${paperLines(78, 22)}
-      <path d="M100 76 v18 m-6 -6 l6 6 6 -6" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`),
-    "photo-paper": () => SC(photoScene(`<rect x="110" y="20" width="64" height="80" rx="3" fill="var(--dev-paper)" stroke="var(--dev-line)" stroke-width="1.2"/>${paperLines(118, 32)}
-      <rect x="118" y="70" width="30" height="3.5" rx="1.75" fill="var(--dev-line)" opacity=".4"/>`)),
-    "photo-screen": () => SC(photoScene(`<rect x="106" y="26" width="78" height="66" rx="6" fill="var(--dev-dark)"/>
-      <rect x="114" y="36" width="42" height="10" rx="3" fill="var(--accent)"/>${T(135, 43.5, "카운터", 7)}
-      ${T(145, 72, "128,340", 13)}`)),
-  };
-  const scene = sc => (SCENES[sc && sc.kind] || SCENES.touch)(sc || {});
-
   const device = (kind) => (DEVICES[kind] || DEVICES["floor-color"])();
 
-  window.UI = { icon, logo, device, scene, DEVICE_KINDS: Object.keys(DEVICES) };
+  window.UI = { icon, logo, device, DEVICE_KINDS: Object.keys(DEVICES) };
 })();

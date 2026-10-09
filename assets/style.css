@@ -847,20 +847,25 @@ body.has-tabbar{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
 .tcard .thumb .ph.art{background:linear-gradient(160deg,#FFFFFF,var(--surface-2)); padding:8px}
 .tcard .thumb .ph.art .dev{height:88%; width:auto; max-width:76%; opacity:1}
 .tcard.soon .thumb .ph.art .dev{opacity:1}
-/* ── 검침 작업 화면: 단계별 그림 카드 (2026-10-09, 키캡 줄 대신) ── */
-.mpanel .mbody{padding:14px 20px 20px}
-.mpanel .mintro{margin:0 0 4px; font-size:14px; line-height:1.6; color:var(--ink-3)}
-.mpanel .mgroup{padding:18px 0 8px; border-top:1px dashed var(--line)}
+/* ── 검침 작업 화면 (2026-10-09): 단추 흐름 + 번호 순서. 그림 카드는 실제 기기와 단추 자리가 달라 헷갈려서 뺌 ── */
+.mpanel .mbody{padding:16px 22px 22px}
+.mpanel .mintro{margin:0 0 6px; font-size:14px; line-height:1.6; color:var(--ink-3)}
+.mpanel .mgroup{padding:18px 0 10px; border-top:1px dashed var(--line)}
 .mpanel .mgroup:first-of-type{border-top:0; padding-top:12px}
 .mpanel .mmodels{display:flex; align-items:center; gap:8px; margin:0 0 12px; font-size:16px; font-weight:800; letter-spacing:-.02em}
 .mpanel .mmodels::before{content:""; width:4px; height:18px; border-radius:2px; background:var(--accent)}
-.story{display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr))}
-@media(max-width:560px){ .story{grid-template-columns:1fr 1fr; gap:10px} }
-.scard{position:relative; margin:0; padding:10px 10px 12px; background:var(--surface-3); border:1px solid var(--line); border-radius:var(--r-xl)}
-.scard .snum{position:absolute; left:10px; top:10px; z-index:1; width:24px; height:24px; border-radius:50%; background:var(--navy); color:#fff;
-  font-size:12px; font-weight:800; display:grid; place-items:center; box-shadow:0 2px 6px rgba(3,24,63,.25)}
-.scard .scene{display:block; width:100%; height:auto; aspect-ratio:5/3; border-radius:12px; background:var(--surface); border:1px solid var(--line-2)}
-.scard figcaption{margin:9px 2px 0; font-size:13.5px; line-height:1.55; font-weight:650; color:var(--ink)}
+.keyflow{display:flex; flex-wrap:wrap; align-items:center; gap:8px 6px; margin:2px 0 14px; padding:12px 14px 13px;
+  background:var(--surface-3); border:1px solid var(--line-2); border-radius:14px}
+.keyflow .klabel{flex:0 0 100%; font-size:11.5px; font-weight:800; letter-spacing:.03em; color:var(--ink-4); margin-bottom:-1px}
+.keyflow .key{display:inline-flex; align-items:center; gap:5px; min-height:34px; padding:0 13px; border-radius:9px; background:var(--navy); color:#fff;
+  font-weight:800; font-size:14px; letter-spacing:-.01em; box-shadow:0 2px 0 rgba(0,0,0,.28)}
+.keyflow .key.end{background:#FEE500; color:#191919; box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.keyflow .key .ic{width:15px; height:15px}
+.keyflow .karr{display:inline-flex; color:var(--ink-4)} .keyflow .karr .ic{width:15px; height:15px}
+.mpanel .ministeps li{font-size:15px; line-height:1.6; padding:9px 0 9px 34px}
+.mpanel .ministeps li::before{top:10px; width:23px; height:23px}
+.ministeps kbd,.mtip kbd{font:inherit; font-weight:800; background:var(--surface-2); border:1px solid var(--line); border-bottom-width:2px;
+  border-radius:6px; padding:0 7px; margin:0 1px; white-space:nowrap}
 .mpanel .mtip{margin:10px 0 0; font-size:13px; line-height:1.55; color:var(--ink-3)}
 .mpanel .msend{margin-top:12px}
 .mpanel .btn.kko{margin-top:18px}

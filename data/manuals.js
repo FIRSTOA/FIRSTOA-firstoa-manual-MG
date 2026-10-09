@@ -388,8 +388,8 @@ window.FIRSTOA_MANUAL = {
    * ------------------------------------------------------------ */
   FIXES: [
     // 제목은 고객이 겪는 증상 그대로(2026-10-09 사용자: "유리 PM·가이드 조정 같은 말은 모른다"). 복사/스캔 쪽인지 PC 출력 쪽인지를 제목에서 가른다.
-    { id: "jam", scope: { all: true }, title: "용지 걸림 (JAM 표시)", icon: "jam", minutes: 3,
-      summary: "화면에 용지 걸림 · JAM 표시가 뜰 때", video: "",
+    { id: "jam", scope: { all: true }, title: "용지 걸림 (JAM · M2-1317 에러)", icon: "jam", minutes: 3,
+      summary: "화면에 용지 걸림 · JAM 표시나 M2-1317 에러가 뜰 때", video: "",
       videos: { samsung: "xxPDPqYOViE" }, /* 삼성 AS 영상(2026-10-09): 용지걸림에러, M2 1317 에러 */
       steps: [
         "화면에 표시된 위치 번호를 먼저 확인합니다. 표시된 곳부터 여세요.",
