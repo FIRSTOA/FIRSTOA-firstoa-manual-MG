@@ -33,7 +33,7 @@ console.log('\n[1] 화면 그리기');
 const routes = ['#/', '#/m/samsung-3220', '#/m/samsung-3220/toner', '#/m/hp-8710/toner',
   '#/fixes', '#/fixes/samsung', '#/fixes/samsung/acr-ctd', '#/fixes/xerox', '#/fixes/xerox/jam', '#/pattern', '#/meter', '#/notices', '#/f/jam', '#/f/acr-ctd', '#/m/samsung-3220/f/jam', '#/m/samsung-3220/f/acr-ctd',
   '#/m/xerox-c2263/f/line-copy',
-  '#/t/toner', '#/t/meter', '#/s/3220', '#/s/줄', '#/s/zzz없음', '#/m/없음', '#/헛주소'];
+  '#/products', '#/products/#grp-office', '#/m/samsung-3220/#sec-fix', '#/t/toner', '#/t/meter', '#/s/3220', '#/s/줄', '#/s/zzz없음', '#/m/없음', '#/헛주소'];
 for (const r of routes) {
   try {
     nav(r);
@@ -62,7 +62,7 @@ console.log('\n[4] 단계 체크');
 nav('#/m/samsung-3220/toner');
 const items = [...doc.querySelectorAll('#steps li')];
 const want = D.TASKS.find(t => t.id === 'toner').steps.length;
-items.length === want ? ok(`단계 ${items.length}개 표시`) : bad(`단계 수 불일치 ${items.length} ≠ ${want}`);
+items.length === want ? ok(`단계 ${items.length}개 표시`) : bad(`단계 수 불일치 ${items.length} ≠ ${wantGroups}`);
 items[0].dispatchEvent(new win.Event('click', { bubbles: true }));
 items[2].dispatchEvent(new win.Event('click', { bubbles: true }));
 const done = doc.querySelectorAll('#steps li.done').length;
@@ -144,7 +144,7 @@ const home = doc.getElementById('app').innerHTML;
 const kko = [...doc.querySelectorAll('#app a[href*="pf.kakao.com"]')];
 kko.length ? ok(`카카오 채널 링크 ${kko.length}곳 (${kko[0].getAttribute('href')})`) : bad('카카오 링크 없음');
 const prods = doc.querySelectorAll('#app .pcard:not(.pack)');
-prods.length === D.PRODUCTS.length ? ok(`취급 품목 ${prods.length}개 표시`) : bad(`취급 품목 ${prods.length} ≠ ${D.PRODUCTS.length}`);
+prods.length > 0 && prods.length <= D.PRODUCTS.length ? ok(`홈 취급 품목 맛보기 ${prods.length}개 (전체 ${D.PRODUCTS.length}개는 #/products)`) : bad(`홈 취급 품목 ${prods.length} / ${D.PRODUCTS.length}`);
 const packs = doc.querySelectorAll('#app .pcard.pack');
 packs.length === D.PACKAGES.length ? ok(`렌탈 패키지 ${packs.length}개 표시`) : bad(`패키지 ${packs.length} ≠ ${D.PACKAGES.length}`);
 const stats = doc.querySelectorAll('#app .trust .cell');
@@ -164,6 +164,31 @@ logo && logo.getAttribute('src').includes('logo-firstoa') ? ok('헤더에 실제
 doc.getElementById('navTel')?.innerHTML.includes(D.meta.phone) ? ok('헤더에 대표번호') : bad('헤더 전화번호 없음');
 const foot = doc.getElementById('footer').innerHTML;
 foot.includes('55명') && !foot.includes('40명') ? ok('꼬리말 문구에 55명') : bad('꼬리말 문구 수치');
+
+/* 15. 2026-10-09: 기종 탭 · 취급 품목 화면 · 안내 상자 줄바꿈 · 카운터 기종별 */
+console.log('\n[15] 기종 탭 · 취급 품목 · 카운터');
+nav('#/m/samsung-3220');
+const jumpHrefs = [...doc.querySelectorAll('#jump a')].map(a => a.getAttribute('href'));
+jumpHrefs.length && jumpHrefs.every(h => h.startsWith('#/m/samsung-3220/#sec-')) ? ok('기종 탭 주소가 화면 안 이동 형식 (' + jumpHrefs.length + '개)') : bad('기종 탭 주소: ' + jumpHrefs.join(' '));
+nav('#/m/samsung-3220/#sec-fix');
+doc.querySelector('#app .mpage') ? ok('탭 주소로 들어와도 기종 화면이 그려짐') : bad('탭 주소에서 404');
+nav('#sec-manage');
+(doc.querySelector('#app .mpage') || win.location.hash.includes('/m/samsung-3220')) ? ok('옛 탭 주소(#sec-…)는 마지막 기종으로 (' + win.location.hash + ')') : bad('옛 탭 주소에서 404: ' + win.location.hash);
+nav('#/헛주소');
+doc.querySelector('#app .empty a[href="#/m/samsung-3220"]') ? ok('404 에 "삼성 3220 화면으로 돌아가기" 단추') : bad('404 에 되돌아가기 단추 없음');
+nav('#/products');
+const pcards = doc.querySelectorAll('#app .pcard:not(.pack)').length;
+pcards === D.PRODUCTS.length ? ok(`취급 품목 화면에 품목 ${pcards}개`) : bad(`취급 품목 화면 ${pcards} ≠ ${D.PRODUCTS.length}`);
+const grp = [...doc.querySelectorAll('#app .pgroups .section')].map(x => x.id);
+grp.join(',') === D.PRODUCT_GROUPS.map(g => 'grp-' + g.id).join(',') ? ok('묶음 순서: ' + grp.join(' → ')) : bad('묶음 순서: ' + grp.join(','));
+['software', 'network'].every(id => D.PRODUCTS.some(p => p.id === id)) ? ok('소프트웨어 · 네트워크 카드 있음') : bad('소프트웨어/네트워크 카드 없음');
+[...doc.querySelectorAll('#navLinks a, .nav-links a')].some(a => a.getAttribute('href') === '#/products') ? ok('헤더 취급 품목 → 개별 화면') : bad('헤더 취급 품목 링크가 홈 안쪽');
+const cssText = fs.readFileSync(HOME + '/assets/style.css', 'utf8');
+cssText.includes('.callout > b{') && cssText.includes('.callout li b,.callout p b{display:inline') ? ok('안내 상자 문장 속 굵은 글씨는 inline') : bad('callout b 규칙');
+nav('#/meter');
+const mg = doc.querySelectorAll('#app .mgroup').length, wantGroups = D.METER.brands.reduce((n, b) => n + (b.groups || [1]).length, 0);
+mg === wantGroups ? ok(`카운터 안내 기종 묶음 ${mg}개`) : bad(`카운터 묶음 ${mg} ≠ ${wantGroups}`);
+doc.getElementById('app').innerHTML.includes('X3220') && doc.getElementById('app').innerHTML.includes('MX410') ? ok('카운터 안내에 실제 기종명') : bad('카운터 안내 기종명 누락');
 foot.includes(D.meta.bizNo) && foot.includes('유튜브') ? ok('바닥글: 사업자번호·유튜브 채널 포함') : bad('바닥글 내용 누락');
 nav('#/m/samsung-3220');
 doc.querySelector('#app .msum-art img.photo, #app .phead .art img.photo') ? ok('기종 화면에 실제 제품 사진') : bad('기종 사진 안 붙음');
@@ -203,8 +228,8 @@ else {
   h.includes('background') ? bad('CSS 배경 사용 — 인쇄에서 빠질 수 있음') : ok('배경색 대신 도형으로만 그려 인쇄 안전');
 }
 nav('#/meter');
-const mBrands = doc.querySelectorAll('#app .ministeps');
-mBrands.length === D.METER.brands.length ? ok(`카운터 안내 ${mBrands.length}개 브랜드`) : bad('카운터 안내 누락');
+const mBrands = doc.querySelectorAll('#app .mcard');
+mBrands.length === D.METER.brands.length ? ok(`카운터 안내 ${mBrands.length}개 브랜드 카드`) : bad(`카운터 안내 카드 ${mBrands.length} ≠ ${D.METER.brands.length}`);
 nav('#/notices');
 const nCards = doc.querySelectorAll('#app .notice');
 nCards.length === D.NOTICES.length ? ok(`이용 안내 ${nCards.length}가지`) : bad('이용 안내 누락');

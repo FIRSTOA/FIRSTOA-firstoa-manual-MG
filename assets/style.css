@@ -467,7 +467,8 @@ h1,h2,h3{margin:0; letter-spacing:-.035em; line-height:1.22; font-weight:800; te
 .steps li.done .tx{color:var(--ink-4); text-decoration:line-through; text-decoration-thickness:1.5px}
 
 .callout{border-radius:var(--r-xl); padding:18px 20px; border:1px solid}
-.callout b{display:flex; align-items:center; gap:8px; font-size:15px; font-weight:800; margin-bottom:9px}
+.callout > b{display:flex; align-items:center; gap:8px; font-size:15px; font-weight:800; margin-bottom:9px}
+.callout li b,.callout p b{display:inline; font-size:inherit; font-weight:800; margin:0}   /* 문장 속 굵은 글씨는 줄을 끊지 않는다(2026-10-09) */
 .callout ul{margin:0; padding-left:20px}
 .callout li{margin:6px 0; font-size:14.5px; line-height:1.6}
 .callout p{margin:0; font-size:14.5px; line-height:1.62}
@@ -825,3 +826,19 @@ body.has-tabbar{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
 
 /* 새 영상 카드(제목만) */
 .tcard .body > b{font-size:15px; font-weight:800; letter-spacing:-.03em; line-height:1.4}
+
+/* ── 2026-10-09: 화면 안 이동 자리(기종 탭·취급 품목 묶음)는 붙박이 상단 바 아래로 오게 ── */
+[id^="sec-"],[id^="grp-"]{scroll-margin-top:calc(var(--nav-h) + 74px)}
+.empty .btns{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
+
+/* ── 사용량 카운터: 브랜드 카드 안의 기종 묶음 ── */
+.mgroup{padding:13px 0 2px; border-top:1px dashed var(--line)}
+.mgroup:first-of-type{border-top:0; padding-top:0}
+.mgroup .mmodels{display:block; font-weight:800; font-size:14.5px; letter-spacing:-.02em; margin-bottom:7px}
+.mgroup .mtip{margin:8px 0 0; font-size:13px; line-height:1.55; color:var(--ink-3)}
+.mgroup .msend{display:inline-flex; align-items:center; gap:6px; margin-top:9px; padding:4px 10px; border-radius:999px;
+  background:var(--surface-2); font-size:12.5px; font-weight:700; color:var(--ink-2)}
+.mgroup .msend .ic{width:14px; height:14px}
+
+/* ── 취급 품목 화면 ── */
+.pgroups .section.tight{padding-top:8px}

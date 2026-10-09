@@ -162,6 +162,24 @@
       <rect x="118" y="142" width="24" height="14" rx="3" fill="var(--dev-shade)"/>
       <rect x="84" y="156" width="92" height="9" rx="4.5" fill="var(--dev-shade)"/>`),
 
+    // 네트워크 — 공유기(포트·불빛·안테나)와 전파. 상표 없는 그림.
+    "network": () => shell("0 0 260 200", `
+      <ellipse cx="130" cy="184" rx="88" ry="9" fill="var(--dev-shadow)"/>
+      <path d="M92 76 Q130 40 168 76" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round" opacity=".35"/>
+      <path d="M106 92 Q130 70 154 92" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round" opacity=".65"/>
+      <circle cx="130" cy="106" r="6.5" fill="var(--accent)"/>
+      <rect x="203" y="80" width="6" height="40" rx="3" fill="var(--dev-shade)"/>
+      <circle cx="206" cy="78" r="5" fill="var(--dev-dark)"/>
+      <rect x="44" y="118" width="172" height="46" rx="11" fill="url(#gBody)"/>
+      <rect x="44" y="118" width="172" height="11" rx="5.5" fill="var(--dev-shade)" opacity=".55"/>
+      <rect x="62" y="137" width="15" height="13" rx="2.5" fill="var(--dev-dark)"/>
+      <rect x="84" y="137" width="15" height="13" rx="2.5" fill="var(--dev-dark)"/>
+      <rect x="106" y="137" width="15" height="13" rx="2.5" fill="var(--dev-dark)"/>
+      <rect x="128" y="137" width="15" height="13" rx="2.5" fill="var(--dev-dark)"/>
+      <circle cx="172" cy="143" r="3.6" fill="var(--accent)" opacity=".95"/>
+      <circle cx="185" cy="143" r="3.6" fill="var(--accent)" opacity=".6"/>
+      <circle cx="198" cy="143" r="3.6" fill="var(--accent)" opacity=".3"/>`),
+
     // 잉크젯 복합기
     "inkjet": () => shell("0 0 260 200", `
       <ellipse cx="130" cy="186" rx="76" ry="9" fill="var(--dev-shadow)"/>

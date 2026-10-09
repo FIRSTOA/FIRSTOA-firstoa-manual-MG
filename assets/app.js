@@ -13,6 +13,9 @@
   const CAT   = Object.fromEntries(D.CATEGORIES.map(c => [c.id, c]));
   const BRAND = Object.fromEntries(D.BRANDS.map(b => [b.id, b]));
   const MODEL = Object.fromEntries(D.MODELS.map(m => [m.id, m]));
+  // 마지막으로 본 기종 — 엉뚱한 주소나 빈 검색에서 "그 기종 화면으로 돌아가기"에 쓴다(2026-10-09)
+  let lastModel = (() => { try { return sessionStorage.getItem("firstoa.lastModel"); } catch { return null; } })();
+  const remember = m => { lastModel = m.id; try { sessionStorage.setItem("firstoa.lastModel", m.id); } catch {} };
   const FIX   = Object.fromEntries((D.FIXES || []).map(f => [f.id, f]));
 
   // 간단 AS 는 기종마다 따로 쓰지 않고 적용 범위(scope)로 붙인다 — 삼성 6기종에 같은 내용을 여섯 번 쓰지 않는다
@@ -277,10 +280,9 @@
             <h2 class="h2" style="margin-top:10px">복합기만 하는 게 아닙니다</h2>
             <p class="lead">${esc(D.meta.oneStop)} — 사무실에 필요한 것은 한 곳에서 해결합니다.
                ${esc(D.meta.trust || "")}</p></div>
-          <a class="more" href="${esc(D.meta.homepage)}" target="_blank" rel="noopener">
-            전체 품목 보기 ${ic("ext", 16)}</a>
+          <a class="more" href="#/products">취급 품목 전체 보기 ${ic("arrow", 16)}</a>
         </div>
-        <div class="promo rail">${(D.PRODUCTS || []).map(productCard).join("")}</div>
+        <div class="promo rail">${(D.PRODUCTS || []).filter(p => ["desktop", "laptop", "mac", "software", "copier", "network"].includes(p.id)).map(productCard).join("")}</div>
       </section>
 
       <section class="section" id="packages" style="padding-top:0">
@@ -303,6 +305,7 @@
   function viewModel(id) {
     const m = MODEL[id];
     if (!m) return view404();
+    remember(m);
     const b = BRAND[m.brand], list = tasksOf(m), fixes = fixesOf(m), n = vidCount(m);
     const sup = list.filter(t => t.cat === "consumable");
     const mng = list.filter(t => t.cat === "manage");
@@ -351,7 +354,7 @@
         <div class="mbody">
           <p class="lead mintro">필요한 것을 고르면 영상과 순서를 함께 보여드립니다.</p>
           <div class="jump" id="jump">${secs.map((x, i) =>
-            `<a href="#${x.id}" data-sec="${x.id}" class="${i ? "" : "on"}">${ic(x.cat.icon, 16)}${esc(x.cat.name)}</a>`).join("")}</div>
+            `<a href="#/m/${m.id}/#${x.id}" data-sec="${x.id}" class="${i ? "" : "on"}">${ic(x.cat.icon, 16)}${esc(x.cat.name)}</a>`).join("")}</div>
           ${secs.map(x => `<section class="section tight" id="${x.id}">
             <div class="sec-head" data-rv><div>
               <span class="eyebrow">${esc(x.cat.desc)}</span>
@@ -368,6 +371,7 @@
   function viewFix(mid, fid) {
     const m = MODEL[mid], f = FIX[fid];
     if (!m || !f || !inScope(f, m)) return view404();
+    remember(m);
     const b = BRAND[m.brand], ready = (f.steps || []).length > 0;
     const others = fixesOf(m).filter(x => x.id !== fid);
     const myTel = tel();
@@ -470,6 +474,7 @@
   function viewTask(mid, tid) {
     const m = MODEL[mid], t = TASK[tid];
     if (!m || !t) return view404();
+    remember(m);
     const b = BRAND[m.brand], v = vidOf(m, tid), note = (m.notes || {})[tid], steps = stepsOf(m, t);
     const siblings = tasksOf(m);
     const i = siblings.findIndex(x => x.id === tid);
@@ -695,18 +700,23 @@
       </section>
 
       <section class="section tight">
-        <div class="sec-head" data-rv><div><span class="eyebrow">브랜드별</span>
+        <div class="sec-head" data-rv><div><span class="eyebrow">브랜드 · 기종별</span>
           <h2 class="h2" style="margin-top:8px">화면에서 찾는 법</h2>
-          <p class="lead">쓰시는 복합기 제조사를 찾으세요. 같은 브랜드면 기종이 달라도 거의 같습니다.</p></div></div>
+          <p class="lead">쓰시는 복합기 제조사와 기종을 찾으세요. 기종명은 기기 앞면 라벨에 있습니다.</p></div></div>
         <div class="cards">${M.brands.map(b => {
           const br = BRAND[b.brand];
+          const groups = b.groups || [{ models: "", steps: b.steps || [], tip: b.alt || "" }];
           return `<div class="mcard" style="cursor:default" data-rv>
             <div class="info" style="padding:20px">
               <div style="display:flex; align-items:center; gap:9px; margin-bottom:12px">
                 <i style="width:9px;height:9px;border-radius:50%;background:${esc(br?.accent || "#888")};flex:none"></i>
                 <b style="font-size:17px">${esc(b.label)}</b></div>
-              <ol class="ministeps">${b.steps.map(t => `<li>${esc(t)}</li>`).join("")}</ol>
-              ${b.alt ? `<p class="muted" style="margin:12px 0 0; line-height:1.55">${esc(b.alt)}</p>` : ""}
+              ${groups.map(g => `<div class="mgroup">
+                ${g.models ? `<span class="mmodels">${esc(g.models)}</span>` : ""}
+                <ol class="ministeps">${(g.steps || []).map(t => `<li>${esc(t)}</li>`).join("")}</ol>
+                ${g.tip ? `<p class="mtip">${esc(g.tip)}</p>` : ""}
+                ${g.send ? `<span class="msend">${ic("kakao", 14)}보내주실 것 · ${esc(g.send)} 사진</span>` : ""}
+              </div>`).join("")}
             </div></div>`;
         }).join("")}</div>
       </section>
@@ -715,6 +725,49 @@
         <div class="callout warn" data-rv>
           <b>${ic("error", 17)}알아두세요</b>
           <ul>${M.cautions.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>
+      </section>
+      ${band()}
+    </div>`;
+  }
+
+  /* ── 화면: 취급 품목 (2026-10-09: 홈 안쪽 구역이 아니라 개별 화면) ─────── */
+  function viewProducts() {
+    const all = D.PRODUCTS || [], byId = Object.fromEntries(all.map(p => [p.id, p]));
+    const groups = (D.PRODUCT_GROUPS || []).map(g => ({ ...g, items: g.ids.map(id => byId[id]).filter(Boolean) })).filter(g => g.items.length);
+    const used = new Set(groups.flatMap(g => g.ids));
+    const rest = all.filter(p => !used.has(p.id));
+    if (rest.length) groups.push({ id: "etc", name: "그 밖에", desc: rest.map(p => p.name).join(" · "), icon: "box", items: rest });
+    return `<div class="container">
+      <div class="phead">
+        ${crumbs([{ label: "처음", to: "/" }, { label: "취급 품목" }])}
+        <span class="eyebrow gold">${esc(D.meta.legal || D.meta.company)}</span>
+        <h1 class="h1" style="margin-top:10px">복합기만 하는 게 아닙니다</h1>
+        <p class="lead">${esc(D.meta.oneStop)} — 사무실에 필요한 것은 한 곳에서 해결합니다. ${esc(D.meta.trust || "")}</p>
+        <div class="jump" id="jump">${groups.map((g, i) =>
+          `<a href="#/products/#grp-${g.id}" data-sec="grp-${g.id}" class="${i ? "" : "on"}">${ic(g.icon || "box", 16)}${esc(g.name)}</a>`).join("")}</div>
+      </div>
+      <div class="pgroups">
+        ${groups.map(g => `<section class="section tight" id="grp-${g.id}">
+          <div class="sec-head" data-rv><div><span class="eyebrow">${esc(g.desc || "")}</span>
+            <h2 class="h2" style="margin-top:8px">${esc(g.name)}</h2></div></div>
+          <div class="promo">${g.items.map(productCard).join("")}</div>
+        </section>`).join("")}
+      </div>
+      ${(D.PACKAGES || []).length ? `<section class="section tight" id="grp-packages">
+        <div class="sec-head" data-rv><div><span class="eyebrow gold">묶어서 빌리면 더 쌉니다</span>
+          <h2 class="h2" style="margin-top:8px">가장 많이 나가는 조합</h2></div></div>
+        <div class="promo">${D.PACKAGES.map(packCard).join("")}</div>
+      </section>` : ""}
+      <section class="section tight">
+        <div class="callout info" data-rv>
+          <b>${ic("spark", 17)}여기 없는 것도 물어보세요</b>
+          <p>사무실에 필요한 것은 대부분 구해 드립니다. 본사 쇼핑몰에서 전체 품목과 가격을 보실 수 있고,
+             카카오톡으로 물어보시면 담당자가 맞는 구성을 제안해 드립니다.</p>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px">
+            <a class="btn sm" href="${esc(D.meta.homepage)}" target="_blank" rel="noopener">본사 쇼핑몰 ${ic("ext", 15)}</a>
+            ${D.meta.kakao ? `<a class="btn kko sm" href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">${ic("kakao", 16)}카카오톡 상담</a>` : ""}
+          </div>
+        </div>
       </section>
       ${band()}
     </div>`;
@@ -920,7 +973,7 @@
     if (!models.length && !tasks.length && !fixes.length) return `<div class="container"><div class="empty">
       ${ic("search", 44)}<b>“${esc(q)}” 결과가 없습니다</b>
       <p>모델명 숫자 몇 자리(예: 3220)나 증상(예: 줄, 걸림)으로 다시 찾아보세요.</p>
-      <a class="btn ghost" href="#/">처음으로</a></div>${band()}</div>`;
+      ${backBtns()}</div>${band()}</div>`;
 
     return `<div class="container">
       <div class="phead">${crumbs([{ label: "처음", to: "/" }, { label: "검색" }])}
@@ -945,9 +998,13 @@
       ${band()}</div>`;
   }
 
+  // 마지막으로 보던 기종이 있으면 그 화면으로 돌아가는 단추를 먼저(2026-10-09: 기종 탭에서 길을 잃고 홈으로 가던 것)
+  const backBtns = () => { const m = lastModel && MODEL[lastModel];
+    return `<div class="btns">${m ? `<a class="btn" href="#/m/${m.id}">${ic("grid", 17)}${esc(m.name)} 화면으로 돌아가기</a>` : ""}
+      <a class="btn ${m ? "ghost" : ""}" href="#/">처음으로</a></div>`; };
   const view404 = () => { return `<div class="container"><div class="empty">
     ${ic("search", 44)}<b>찾는 쪽이 없습니다</b><p>주소가 바뀌었을 수 있습니다.</p>
-    <a class="btn" href="#/">처음으로</a></div></div>`; };
+    ${backBtns()}</div></div>`; };
 
   /* ── 단계 체크 (기기별로 브라우저에 기억) ──────────────────────────── */
   const KEY = k => "firstoa.steps." + k;
@@ -1001,8 +1058,18 @@
   /* ── 목차 칩 따라다니기 ────────────────────────────────────────────── */
   function bindJump() {
     const wrap = document.getElementById("jump");
-    if (!wrap || !("IntersectionObserver" in window)) return;
+    if (!wrap) return;
     const links = [...wrap.querySelectorAll("a")];
+    // 누르면 해시를 바꾸지 않고(바꾸면 화면이 다시 그려져 "찾는 쪽이 없습니다"로 가던 버그, 2026-10-09) 그 자리로 부드럽게 내려간다
+    links.forEach(a => a.addEventListener("click", e => {
+      const target = document.getElementById(a.dataset.sec);
+      if (!target) return;
+      e.preventDefault();
+      links.forEach(x => x.classList.toggle("on", x === a));
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      try { history.replaceState(null, "", a.getAttribute("href")); } catch {}
+    }));
+    if (!("IntersectionObserver" in window)) return;
     const io = new IntersectionObserver(es => {
       es.forEach(e => {
         if (!e.isIntersecting) return;
@@ -1067,8 +1134,12 @@
   /* ── 라우터 ────────────────────────────────────────────────────────── */
   function render() {
     const raw = decodeURIComponent(location.hash.replace(/^#/, "")) || "/";
-    const anchor = raw.startsWith("/#") ? raw.slice(2) : null;   // 첫 화면 안쪽 이동
-    const p = (anchor ? "/" : raw).split("/").filter(Boolean);
+    const cut = raw.indexOf("/#");                                 // "/#models", "/m/samsung-3220/#sec-fix" 같은 화면 안 이동
+    const anchor = cut >= 0 ? raw.slice(cut + 2) : null;
+    const p = (cut >= 0 ? raw.slice(0, cut) : raw).split("/").filter(Boolean);
+    // 탭을 눌러 "#sec-…"만 남은 옛 주소 → 마지막 기종 화면의 그 자리로(2026-10-09)
+    if (p.length === 1 && /^sec-/.test(p[0]) && lastModel && MODEL[lastModel]) { location.replace(`#/m/${lastModel}/#${p[0]}`); return; }
+    if (p.length === 1 && /^grp-/.test(p[0])) { location.replace(`#/products/#${p[0]}`); return; }
     let html, title = `${D.meta.company} ${D.meta.title}`;
 
     if (!p.length) html = viewHome();
@@ -1082,6 +1153,7 @@
     else if (p[0] === "pattern") { html = viewPattern(); title = `4색 패턴 출력 | ${D.meta.company}`; }
     else if (p[0] === "meter") { html = viewMeter(); title = `사용량 카운터 | ${D.meta.company}`; }
     else if (p[0] === "notices") { html = viewNotices(); title = `이용 안내 | ${D.meta.company}`; }
+    else if (p[0] === "products") { html = viewProducts(); title = `취급 품목 | ${D.meta.company}`; }
     else if (p[0] === "f") { html = viewFixPick(p[1]); title = `${FIX[p[1]]?.title || "증상"} | ${D.meta.company}`; }
     else if (p[0] === "s") { html = viewSearch(p.slice(1).join("/")); title = `검색 | ${D.meta.company}`; }
     else html = view404();
@@ -1090,12 +1162,12 @@
     document.title = title;
     // 헤더에서 지금 보고 있는 곳 표시
     const key = p[0] === "fixes" ? "#/fixes" : p[0] === "pattern" ? "#/pattern"
-              : p[0] === "meter" ? "#/meter" : p[0] === "m" || p[0] === "t" ? "#/#models" : "";
+              : p[0] === "meter" ? "#/meter" : p[0] === "products" ? "#/products" : p[0] === "m" || p[0] === "t" ? "#/#models" : "";
     document.querySelectorAll("#navLinks a").forEach(el =>
       el.classList.toggle("on", !!key && el.getAttribute("href") === key));
     const tabKey = !p.length ? "home" : p[0] === "m" || p[0] === "t" ? "models"
                  : p[0] === "fixes" || p[0] === "f" ? "fixes"
-                 : (p[0] === "pattern" || p[0] === "meter" || p[0] === "notices") ? "more" : "";
+                 : (p[0] === "pattern" || p[0] === "meter" || p[0] === "notices" || p[0] === "products") ? "more" : "";
     document.querySelectorAll("#tabbar [data-tab]").forEach(el => el.classList.toggle("on", el.dataset.tab === tabKey));
     window.FIRSTOA?.sheetClose?.();
     bindSteps(); bindTabs(); bindJump(); reveal();
@@ -1184,7 +1256,7 @@
            ${row("#/pattern", "palette", "4색 패턴 출력", "인쇄 상태를 한 장으로 점검")}
            ${row("#/meter", "meter", "사용량 카운터", "검침 숫자 확인하는 법")}
            ${row("#/notices", "book", "이용 안내", "장마철 용지 · 방문 원칙 · 소모품 신청")}
-           ${row("#/#products", "star", "취급 품목", "복합기 · PC · 가전 · 가구 · 네트워크")}
+           ${row("#/products", "star", "취급 품목", "컴퓨터 · 소프트웨어 · 사무기기 · 네트워크 · 가전")}
            ${D.meta.channel ? row(D.meta.channel, "youtube", "유튜브 채널", "작업 영상 전체 보기", true) : ""}
            ${D.meta.homepage ? row(D.meta.homepage, "home", "본사 홈페이지", "firstoa.co.kr", true) : ""}`;
       wrap.hidden = false; document.body.style.overflow = "hidden";
@@ -1256,7 +1328,7 @@
             <div>${ic("clock", 15)}${esc(D.meta.hours)}</div>
             ${D.meta.homepage ? `<a href="${esc(D.meta.homepage)}" target="_blank" rel="noopener">
               ${ic("home", 15)}본사 홈페이지</a>` : ""}
-            <a href="#/#products">${ic("star", 15)}취급 품목</a>
+            <a href="#/products">${ic("star", 15)}취급 품목</a>
           </div>
         </div>
         <div class="fbot">
