@@ -524,6 +524,7 @@
     if (!m || !t) return view404();
     remember(m);
     const b = BRAND[m.brand], v = vidOf(m, tid), note = (m.notes || {})[tid], steps = stepsOf(m, t);
+    const cautions = (m.cautions || {})[tid] || t.cautions || [];   // 기종별 주의(2026-10-09) → 없으면 작업 공통
     const siblings = tasksOf(m);
     const i = siblings.findIndex(x => x.id === tid);
     const prev = siblings[i - 1], next = siblings[i + 1];
@@ -549,10 +550,10 @@
                : mg.length ? meterBlock(m, mg)
                : `<div class="noplayer">${ic("video", 34)}<b>영상 준비 중입니다</b>
                    <span>아래 순서를 따라 하시면 됩니다</span></div>
-                 <div class="callout warn" style="margin-top:16px">
+                 ${(m.steps || {})[tid] ? "" : `<div class="callout warn" style="margin-top:16px">
                    <b>${ic("error", 17)}이 순서는 기종 공통 일반 안내입니다</b>
                    <p style="margin:0; font-size:14.5px; line-height:1.6">기기마다 위치와 방법이 다를 수 있습니다.
-                   화면과 다르거나 확실하지 않으면 무리하지 마시고 전화 주세요.</p></div>`}
+                   화면과 다르거나 확실하지 않으면 무리하지 마시고 전화 주세요.</p></div>`}`}
 
           ${note ? `<div class="callout info" style="margin-top:16px">
                       <b>${ic("spark", 17)}이 기종은 이렇습니다</b><p>${esc(note)}</p></div>` : ""}
@@ -569,9 +570,9 @@
             </ol>
           </div>`}
 
-          ${t.cautions?.length ? `<div class="callout warn" style="margin-top:16px">
+          ${cautions.length ? `<div class="callout warn" style="margin-top:16px">
             <b>${ic("error", 17)}주의하세요</b>
-            <ul>${t.cautions.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>` : ""}
+            <ul>${cautions.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>` : ""}
         </div>
 
         <aside class="aside">

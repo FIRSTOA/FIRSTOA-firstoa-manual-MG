@@ -61,8 +61,8 @@ broken.length ? bad('덜 그려진 일러스트: ' + broken.join(', ')) : ok(`${
 console.log('\n[4] 단계 체크');
 nav('#/m/samsung-3220/toner');
 const items = [...doc.querySelectorAll('#steps li')];
-const want = D.TASKS.find(t => t.id === 'toner').steps.length;
-items.length === want ? ok(`단계 ${items.length}개 표시`) : bad(`단계 수 불일치 ${items.length} ≠ ${wantGroups}`);
+const want = ((D.MODELS.find(m => m.id === 'samsung-3220').steps || {}).toner || D.TASKS.find(t => t.id === 'toner').steps).length;   // 기종별 순서가 있으면 그것(2026-10-09)
+items.length === want ? ok(`단계 ${items.length}개 표시`) : bad(`단계 수 불일치 ${items.length} ≠ ${want}`);
 items[0].dispatchEvent(new win.Event('click', { bubbles: true }));
 items[2].dispatchEvent(new win.Event('click', { bubbles: true }));
 const done = doc.querySelectorAll('#steps li.done').length;
@@ -367,3 +367,17 @@ nav('#/m/xerox-apeos-c2060/meter');
 appHtml().includes('톱니바퀴') ? ok('Apeos C2060 검침: 톱니바퀴 방법으로 안내') : bad('Apeos C2060 검침 안내');
 nav('#/s/2060');
 doc.querySelectorAll('#app .mcard').length === 1 ? ok('"2060" 검색 → Apeos 카드 하나') : bad('2060 검색 결과 ' + doc.querySelectorAll('#app .mcard').length);
+
+/* 20. 기종별 따라 하는 순서(영상 27편에서 옮김) */
+console.log('\n[20] 기종별 따라 하는 순서');
+const withVideo = []; D.MODELS.forEach(m => Object.entries(m.videos || {}).forEach(([t, v]) => { if (v) withVideo.push([m.id, t]); }));
+const noOwnSteps = withVideo.filter(([mid, t]) => !((D.MODELS.find(m => m.id === mid).steps || {})[t] || []).length);
+noOwnSteps.length ? bad('영상은 있는데 기종별 순서가 없음: ' + noOwnSteps.map(x => x.join('.')).join(', ')) : ok(`영상 있는 ${withVideo.length}칸 모두 기종별 순서 있음`);
+nav('#/m/brother-5700/drum');
+doc.querySelectorAll('#app .steps li').length === 8 && doc.getElementById('app').textContent.includes('DR') ? ok('브라더 5700 드럼: 영상 순서 8단계') : bad('브라더 드럼 순서 ' + doc.querySelectorAll('#app .steps li').length);
+nav('#/m/samsung-3220/toner');
+doc.getElementById('app').textContent.includes('칩이 위로') ? ok('삼성 3220 토너: 영상 순서(칩 방향)') : bad('삼성 3220 토너 순서');
+nav('#/m/xerox-apeos-c2060/toner');
+doc.querySelector('#app .player') && doc.getElementById('app').textContent.includes('움푹 들어간 손잡이') ? ok('Apeos C2060 토너: 마블 영상 + 순서') : bad('Apeos 토너 화면');
+nav('#/m/sindoh-d420/waste');
+doc.getElementById('app').textContent.includes('마개') && doc.getElementById('app').textContent.includes('새 통에서 뺀 마개') ? ok('신도 D420 폐토너통: 기종별 주의 표시') : bad('신도 D420 주의');
