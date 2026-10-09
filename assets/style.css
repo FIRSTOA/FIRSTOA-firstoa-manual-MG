@@ -927,3 +927,8 @@ body.has-tabbar{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
 .msum-help .qrlink small{font-size:10px; font-weight:800; padding:1px 6px; border-radius:999px; background:var(--surface-2); color:var(--ink-3)}
 .msum-help .qrlink:hover{color:var(--ink)}
 .msum-help .qrlink .ic{width:14px; height:14px}
+
+/* 기종 화면이 폰에서 옆으로 밀리던 것(2026-10-09): 가로 스크롤 탭 줄(.jump)이 격자 칸 안에서 내용 폭(423px)만큼 버텼다 — 칸의 최소 폭을 풀고 스크롤 줄은 칸 폭에 가둔다 */
+.mpage > *{min-width:0}
+.mbody{min-width:0; max-width:100%}
+.mbody .jump{max-width:100%}
