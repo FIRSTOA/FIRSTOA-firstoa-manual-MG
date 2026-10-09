@@ -30,7 +30,7 @@ const junk = s => /undefined|\[object Object\]|NaN|&lt;svg/.test(s);
 
 /* 1. 모든 주소가 그려지는가 */
 console.log('\n[1] 화면 그리기');
-const routes = ['#/', '#/m/samsung-3220', '#/m/samsung-3220/toner', '#/m/hp-8710/toner',
+const routes = ['#/', '#/m/samsung-3220', '#/m/samsung-3220/toner', '#/m/hp-8710/ink',
   '#/fixes', '#/fixes/samsung', '#/fixes/samsung/acr-ctd', '#/fixes/xerox', '#/fixes/xerox/jam', '#/pattern', '#/meter', '#/notices', '#/f/jam', '#/f/acr-ctd', '#/m/samsung-3220/f/jam', '#/m/samsung-3220/f/acr-ctd',
   '#/m/xerox-c2263/f/line-copy',
   '#/products', '#/products/#grp-office', '#/m/samsung-3220/#sec-fix', '#/t/toner', '#/t/meter', '#/s/3220', '#/s/줄', '#/s/zzz없음', '#/m/없음', '#/헛주소'];
@@ -124,6 +124,7 @@ m.videos.toner = keep;
 /* 9. 영상 연결 빠짐 없음 */
 console.log('\n[9] 채널 영상 연결');
 const wired = new Set(); D.MODELS.forEach(m => Object.values(m.videos).forEach(v => v && wired.add(v)));
+(D.FIXES || []).forEach(f => { if (f.video) wired.add(f.video); Object.values(f.videos || {}).forEach(v => v && wired.add(v)); });
 const idRe = /^[\w-]{11}$/;
 const badId = [...wired].filter(v => !idRe.test(v));
 badId.length ? bad('형식이 틀린 영상 ID: ' + badId.join(', ')) : ok(`영상 ${wired.size}편 연결, ID 형식 정상`);
@@ -189,6 +190,32 @@ nav('#/meter');
 const mg = doc.querySelectorAll('#app .mgroup').length, wantGroups = D.METER.brands.reduce((n, b) => n + (b.groups || [1]).length, 0);
 mg === wantGroups ? ok(`카운터 안내 기종 묶음 ${mg}개`) : bad(`카운터 묶음 ${mg} ≠ ${wantGroups}`);
 doc.getElementById('app').innerHTML.includes('X3220') && doc.getElementById('app').innerHTML.includes('MX410') ? ok('카운터 안내에 실제 기종명') : bad('카운터 안내 기종명 누락');
+
+/* 16. 2026-10-09: 관리·검침 그림 · 검침 기종별 안내 · 증상 숨김/삼성 영상 · 잉크 · 폐토너통 없음 · 이사 안내 */
+console.log('\n[16] 관리·검침 · 증상 영상 · 잉크 · 이사 안내');
+const appHtml = () => doc.getElementById('app').innerHTML;
+nav('#/m/samsung-3220');
+const mArts = doc.querySelectorAll('#sec-manage .ph.art .dev').length;
+mArts >= 3 ? ok(`관리·검침 카드 그림 ${mArts}개`) : bad('관리·검침 카드 그림 ' + mArts);
+const sFix = [...doc.querySelectorAll('#sec-fix .tcard')];
+sFix.length === 8 && sFix.every(c => c.querySelector('img')) ? ok('삼성 3220 증상 8개 모두 영상 썸네일') : bad(`삼성 증상 ${sFix.length}개, 썸네일 ${sFix.filter(c => c.querySelector('img')).length}`);
+nav('#/m/xerox-c2263');
+const xFix = [...doc.querySelectorAll('#sec-fix .tcard b')].map(b => b.textContent);
+xFix.length === 5 && !xFix.some(t => /ACR|가이드 조정/.test(t)) ? ok('제록스엔 글 순서 있는 증상 5개만') : bad('제록스 증상: ' + xFix.join(','));
+nav('#/fixes/samsung');
+!appHtml().includes('내용 준비 중') ? ok('삼성 증상 목록에 "준비 중" 없음') : bad('삼성 증상 목록에 준비 중 남음');
+nav('#/m/samsung-3220/f/acr-ctd');
+doc.querySelector('#app .player') && appHtml().includes('영상대로 따라') ? ok('삼성 ACR·CTD: 영상 + 안내') : bad('ACR·CTD 화면');
+nav('#/m/samsung-3220/meter');
+doc.querySelector('#app .mpanel') && appHtml().includes('X3220') && doc.querySelectorAll('#app .keyflow .key').length >= 2 && !appHtml().includes('기종 공통 일반 안내') ? ok('삼성 3220 검침: 기종별 단추 흐름 + 글') : bad('검침 화면');
+nav('#/m/kyocera/meter');
+doc.querySelectorAll('#app .mpanel .mgroup').length === 2 ? ok('교세라 검침: 두 묶음(M5521·M5526·MA2100, 2101)') : bad('교세라 검침 묶음 ' + doc.querySelectorAll('#app .mpanel .mgroup').length);
+nav('#/m/hp-8710');
+appHtml().includes('잉크 카트리지 교체') && !appHtml().includes('토너 교체') ? ok('HP 오피스젯: 잉크 카트리지') : bad('HP 오피스젯 작업명');
+for (const id of ['kyocera', 'brother-5700', 'brother-8900', 'oki-5473', 'lexmark-mx410']) { nav('#/m/' + id); if ([...doc.querySelectorAll('#sec-consumable .tcard b')].some(b => b.textContent.includes('폐토너통'))) bad(id + ' 에 폐토너통 카드 남음'); }
+ok('교세라·브라더·오키·렉스마크 폐토너통 없음');
+nav('#/notices');
+appHtml().includes('이삿짐') && appHtml().includes('보험') && appHtml().includes('운반비') ? ok('이사 안내: 물류비 · 이삿짐 보험') : bad('이사 안내 문구');
 foot.includes(D.meta.bizNo) && foot.includes('유튜브') ? ok('바닥글: 사업자번호·유튜브 채널 포함') : bad('바닥글 내용 누락');
 nav('#/m/samsung-3220');
 doc.querySelector('#app .msum-art img.photo, #app .phead .art img.photo') ? ok('기종 화면에 실제 제품 사진') : bad('기종 사진 안 붙음');

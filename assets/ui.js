@@ -180,6 +180,50 @@
       <circle cx="185" cy="143" r="3.6" fill="var(--accent)" opacity=".6"/>
       <circle cx="198" cy="143" r="3.6" fill="var(--accent)" opacity=".3"/>`),
 
+    // 검침 카운터 — 조작부 화면에 매수가 떠 있는 모습. 관리·검침 카드(영상 없음)에 쓴다.
+    "panel-meter": () => shell("0 0 260 200", `
+      <ellipse cx="130" cy="186" rx="94" ry="8" fill="var(--dev-shadow)"/>
+      <rect x="28" y="36" width="204" height="124" rx="14" fill="url(#gBody)"/>
+      <rect x="40" y="48" width="118" height="82" rx="8" fill="var(--dev-dark)"/>
+      <rect x="48" y="56" width="102" height="15" rx="4" fill="var(--accent)" opacity=".92"/>
+      <text x="55" y="67" font-size="9" font-weight="800" fill="#fff">카운터</text>
+      <text x="50" y="98" font-size="21" font-weight="800" fill="#fff" letter-spacing="1">128,340</text>
+      <rect x="48" y="108" width="46" height="14" rx="4" fill="var(--dev-paper)" opacity=".9"/>
+      <text x="54" y="118" font-size="8" font-weight="800" fill="var(--dev-dark)">흑백 ■</text>
+      <rect x="102" y="108" width="46" height="14" rx="4" fill="var(--dev-paper)" opacity=".9"/>
+      <text x="108" y="118" font-size="8" font-weight="800" fill="var(--dev-dark)">컬러 ■</text>
+      <rect x="170" y="52" width="16" height="13" rx="3" fill="var(--dev-shade)"/><rect x="190" y="52" width="16" height="13" rx="3" fill="var(--dev-shade)"/><rect x="210" y="52" width="16" height="13" rx="3" fill="var(--dev-shade)"/>
+      <rect x="170" y="70" width="16" height="13" rx="3" fill="var(--dev-shade)"/><rect x="190" y="70" width="16" height="13" rx="3" fill="var(--dev-shade)"/><rect x="210" y="70" width="16" height="13" rx="3" fill="var(--dev-shade)"/>
+      <rect x="170" y="88" width="16" height="13" rx="3" fill="var(--dev-shade)"/><rect x="190" y="88" width="16" height="13" rx="3" fill="var(--dev-shade)"/><rect x="210" y="88" width="16" height="13" rx="3" fill="var(--dev-shade)"/>
+      <rect x="170" y="110" width="56" height="18" rx="9" fill="var(--accent)"/>
+      <text x="186" y="123" font-size="9" font-weight="800" fill="#fff">인쇄</text>`),
+
+    // 4색 패턴 출력 — 검정·파랑·빨강·노랑 띠가 든 점검 차트 한 장.
+    "chart-4c": () => shell("0 0 260 200", `
+      <ellipse cx="130" cy="188" rx="82" ry="7" fill="var(--dev-shadow)"/>
+      <rect x="66" y="16" width="128" height="164" rx="7" fill="var(--dev-paper)" stroke="var(--dev-line)" stroke-width="1.4"/>
+      <rect x="80" y="30" width="100" height="20" rx="3" fill="#111111"/>
+      <rect x="80" y="56" width="100" height="20" rx="3" fill="#00AEEF"/>
+      <rect x="80" y="82" width="100" height="20" rx="3" fill="#EC008C"/>
+      <rect x="80" y="108" width="100" height="20" rx="3" fill="#FFF200" stroke="var(--dev-line)" stroke-width="1"/>
+      <rect x="80" y="140" width="100" height="4" rx="2" fill="var(--dev-line)" opacity=".7"/>
+      <rect x="80" y="150" width="72" height="4" rx="2" fill="var(--dev-line)" opacity=".5"/>
+      <rect x="80" y="160" width="88" height="4" rx="2" fill="var(--dev-line)" opacity=".35"/>`),
+
+    // 이용 안내 — 집게로 고정한 안내판.
+    "notice-book": () => shell("0 0 260 200", `
+      <ellipse cx="130" cy="188" rx="84" ry="7" fill="var(--dev-shadow)"/>
+      <rect x="62" y="28" width="136" height="152" rx="11" fill="url(#gBody)"/>
+      <rect x="74" y="46" width="112" height="124" rx="5" fill="var(--dev-paper)"/>
+      <rect x="106" y="20" width="48" height="18" rx="6" fill="var(--dev-dark)"/>
+      <rect x="86" y="62" width="62" height="6" rx="3" fill="var(--accent)" opacity=".85"/>
+      <rect x="86" y="78" width="86" height="4" rx="2" fill="var(--dev-line)" opacity=".8"/>
+      <rect x="86" y="90" width="70" height="4" rx="2" fill="var(--dev-line)" opacity=".65"/>
+      <rect x="86" y="102" width="86" height="4" rx="2" fill="var(--dev-line)" opacity=".5"/>
+      <rect x="86" y="114" width="54" height="4" rx="2" fill="var(--dev-line)" opacity=".4"/>
+      <circle cx="92" cy="142" r="5" fill="var(--accent)" opacity=".6"/>
+      <rect x="102" y="139" width="62" height="5" rx="2.5" fill="var(--dev-line)" opacity=".5"/>`),
+
     // 잉크젯 복합기
     "inkjet": () => shell("0 0 260 200", `
       <ellipse cx="130" cy="186" rx="76" ry="9" fill="var(--dev-shadow)"/>

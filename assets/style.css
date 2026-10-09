@@ -842,3 +842,17 @@ body.has-tabbar{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
 
 /* ── 취급 품목 화면 ── */
 .pgroups .section.tight{padding-top:8px}
+
+/* ── 2026-10-09: 영상 없는 작업 카드의 그림(관리·검침) ── */
+.tcard .thumb .ph.art{background:linear-gradient(160deg,#FFFFFF,var(--surface-2)); padding:8px}
+.tcard .thumb .ph.art .dev{height:88%; width:auto; max-width:76%; opacity:1}
+.tcard.soon .thumb .ph.art .dev{opacity:1}
+/* ── 검침: 단추 흐름([ ] 안의 단추 이름을 키캡처럼) ── */
+.keyflow{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:4px 0 10px}
+.keyflow .key{display:inline-flex; align-items:center; gap:5px; padding:6px 11px; border-radius:9px; background:var(--navy); color:#fff;
+  font-weight:800; font-size:13px; letter-spacing:-.01em; box-shadow:0 2px 0 rgba(0,0,0,.28)}
+.keyflow .key.end{background:#FEE500; color:#191919; box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.keyflow .key .ic{width:14px; height:14px}
+.keyflow .karr{display:inline-flex; color:var(--ink-4)} .keyflow .karr .ic{width:14px; height:14px}
+.mpanel .mgroup{padding:14px 0 6px}
+.mpanel .mgroup:first-of-type{padding-top:4px}

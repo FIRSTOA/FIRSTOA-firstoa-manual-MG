@@ -281,12 +281,13 @@ window.FIRSTOA_MANUAL = {
              "장기 휴무로 일주일 넘게 비울 때만 전원을 내려주세요."],
       tip: "전원을 내리실 때는 반드시 조작부 전원 버튼으로 먼저 종료한 뒤 콘센트를 빼주세요." },
 
-    { id: "move", icon: "pin", tag: "운영", title: "자리를 옮기실 때는 연락 주세요",
-      lead: "직접 옮기시면 고장으로 이어질 수 있습니다.",
-      body: ["복합기 안에는 토너가 담긴 부품이 있어, 기울이거나 굴리면 내부에 가루가 쏟아집니다.",
-             "사무실 이전이나 자리 이동이 예정되면 미리 알려주세요. 일정에 맞춰 방문합니다.",
-             "같은 층 안에서 조금 옮기는 것도 바퀴 잠금과 수평을 다시 맞춰야 합니다."],
-      tip: "" },
+    { id: "move", icon: "pin", tag: "운영", title: "복합기를 옮기셔야 할 때 (사무실 이전 · 배치 변경)",
+      lead: "복합기는 일반 짐처럼 옮기면 고장이 납니다. 옮기실 계획이 잡히면 먼저 알려주세요.",
+      body: ["복합기 안에는 토너 가루가 든 부품이 있어 기울이거나 눕히면 내부에 가루가 쏟아지고, 유리와 드럼은 충격에 쉽게 깨집니다.",
+             "가장 안전한 방법은 저희에게 맡기시는 것입니다. 운반비(물류비)만 부담하시면 포장 · 운반 · 재설치와 수평 맞춤, 네트워크 연결까지 한 번에 해드립니다.",
+             "이삿짐센터로 옮기실 때는 반드시 세운 채로 고정해 옮기고, 운반 중 파손에 대비해 이삿짐센터의 적재물(파손) 보험이 적용되는지 미리 확인해 주세요. 보험이 없으면 파손 수리비를 고객이 부담하시게 될 수 있습니다.",
+             "같은 사무실 안에서 조금 미는 정도는 전원을 끄고 바퀴 잠금을 푼 뒤, 기울이지 않게 천천히 밀어 옮기시면 됩니다. 옮긴 뒤 바퀴를 다시 잠가 주세요."],
+      tip: "옮긴 뒤 줄 · 얼룩이 생기거나 네트워크 인쇄가 안 되면 그때 연락 주세요." },
   ],
 
   /* ── 작업 분류 ─────────────────────────────────────────────── */
@@ -319,6 +320,21 @@ window.FIRSTOA_MANUAL = {
       ],
     },
     {
+      // 잉크젯(HP 오피스젯)은 토너가 아니라 잉크 카트리지입니다(2026-10-09). 기종의 videos 에 ink 칸이 있으면 이 작업이 나옵니다.
+      id: "ink", cat: "consumable", title: "잉크 카트리지 교체", icon: "toner", minutes: 3,
+      summary: "화면에 잉크 부족 · 교체 표시가 뜰 때",
+      steps: [
+        "카트리지 덮개를 열고 카트리지 받침대가 가운데로 움직여 멈출 때까지 기다립니다.",
+        "빈 카트리지를 살짝 눌러 걸쇠를 풀고 빼냅니다.",
+        "새 카트리지의 보호 테이프를 떼고, 색 표시에 맞춰 딸깍 소리가 날 때까지 밀어 넣습니다.",
+        "덮개를 닫고 화면 안내에 따라 정렬 페이지를 인쇄합니다.",
+      ],
+      cautions: [
+        "카트리지의 금색 접점과 노즐은 손으로 만지지 마세요.",
+        "카트리지를 뺀 채 오래 두면 노즐이 마릅니다. 새 카트리지를 준비한 뒤 바꿔 주세요.",
+      ],
+    },
+    {
       id: "waste", cat: "consumable", title: "폐토너통 교체", icon: "waste", minutes: 3,
       summary: "폐토너통 가득 참 표시가 뜰 때",
       steps: [
@@ -348,7 +364,7 @@ window.FIRSTOA_MANUAL = {
       ],
     },
     {
-      id: "meter", cat: "manage", title: "검침 카운터 확인", icon: "meter", minutes: 1,
+      id: "meter", cat: "manage", title: "검침 카운터 확인", icon: "meter", minutes: 1, art: "panel-meter", // art: 영상이 없을 때 카드에 그리는 그림(assets/ui.js)
       summary: "매달 알려주셔야 하는 흑백·컬러 장수 보는 법",
       steps: [
         "화면에서 기기 정보 또는 카운터 항목을 찾습니다.",
@@ -373,6 +389,7 @@ window.FIRSTOA_MANUAL = {
   FIXES: [
     { id: "jam", scope: { all: true }, title: "용지 걸림", icon: "jam", minutes: 3,
       summary: "용지 걸림 · JAM 표시가 뜰 때", video: "",
+      videos: { samsung: "xxPDPqYOViE" }, /* 삼성 AS 영상(2026-10-09): 용지걸림에러, M2 1317 에러 */
       steps: [
         "화면에 표시된 위치 번호를 먼저 확인합니다. 표시된 곳부터 여세요.",
         "용지를 나가던 방향으로 천천히 당겨 뺍니다.",
@@ -387,6 +404,7 @@ window.FIRSTOA_MANUAL = {
 
     { id: "adf-jam", scope: { all: true }, title: "ADF 용지 걸림 (이물질)", icon: "jam", minutes: 3,
       summary: "위쪽 자동급지대에서 원본이 걸릴 때", video: "",
+      videos: { samsung: "sjxiKdqiYbE" }, /* 삼성 AS 영상(2026-10-09): ADF 용지걸림 이물질 제거 코팅지로 해결 */
       steps: [
         "위쪽 급지대 덮개를 엽니다.",
         "걸린 원본을 나가던 방향으로 천천히 빼냅니다.",
@@ -397,6 +415,7 @@ window.FIRSTOA_MANUAL = {
 
     { id: "line-copy", scope: { all: true }, title: "복사할 때 줄이 나옴", icon: "quality", minutes: 3,
       summary: "복사물에만 세로줄이 생길 때", video: "",
+      videos: { samsung: "R94JAaRZkRE" }, /* 삼성 AS 영상(2026-10-09): 복사,스캔시 줄나옴 증상 유리 PM */
       steps: [
         "덮개를 열고 유리면을 마른 부드러운 천으로 닦습니다.",
         "위쪽 급지대(ADF) 쪽의 좁고 긴 유리띠도 함께 닦습니다.",
@@ -409,6 +428,7 @@ window.FIRSTOA_MANUAL = {
 
     { id: "line-print", scope: { all: true }, title: "출력할 때 흰 줄이 나옴", icon: "quality", minutes: 3,
       summary: "PC에서 출력한 것에 흰 줄·빠진 부분이 생길 때", video: "",
+      videos: { samsung: "X_wbjG8dxKI" }, /* 삼성 AS 영상(2026-10-09): 출력시 흰줄,연하게 출력시 처리 방법 */
       steps: [
         "어느 색에서 빠지는지 확인합니다.",
         "해당 색 토너를 빼서 좌우로 5~6회 흔든 뒤 다시 넣습니다.",
@@ -418,6 +438,7 @@ window.FIRSTOA_MANUAL = {
 
     { id: "glass-pm", scope: { all: true }, title: "유리 PM (유리면 청소)", icon: "clean", minutes: 3,
       summary: "정기적으로 해두면 줄·얼룩이 크게 줄어듭니다", video: "",
+      videos: { samsung: "R94JAaRZkRE" }, /* 삼성 AS 영상(2026-10-09): 복사,스캔시 줄나옴 증상 유리 PM (복사 줄과 같은 영상) */
       steps: [
         "덮개를 열고 유리면 전체를 마른 부드러운 천으로 닦습니다.",
         "급지대 쪽 좁고 긴 유리띠를 특히 꼼꼼히 닦습니다.",
@@ -425,16 +446,20 @@ window.FIRSTOA_MANUAL = {
       ],
       cautions: ["알코올·세제를 유리에 직접 뿌리지 마세요. 천에 살짝 묻혀 닦습니다."] },
 
-    /* ↓ 아래 세 가지는 절차 확인 전이라 순서를 비워 두었습니다.
-       담당자가 확인해 주시면 steps 에 채워 넣으면 바로 화면에 나옵니다. */
+    /* ↓ 아래 세 가지는 글 순서(steps)가 아직 없습니다. 삼성은 영상이 있어 삼성 기종 화면에만 나오고,
+       글 순서도 영상도 없는 브랜드에서는 목록에서 자동으로 빠집니다(2026-10-09). steps 를 채우면 바로 나옵니다.
+       증상 영상은 video(공통) 또는 videos: { samsung: "…" }(브랜드별) 에 넣습니다. */
     { id: "adf-guide", scope: { brand: "samsung" }, title: "ADF 가이드 조정", icon: "paper", minutes: 5,
-      summary: "원본이 비뚤게 들어가거나 한쪽만 걸릴 때", video: "", steps: [], cautions: [] },
+      summary: "원본이 비뚤게 들어가거나 한쪽만 걸릴 때", video: "",
+      videos: { samsung: "GJwR5_t-ons" }, /* 삼성 AS 영상(2026-10-09): 복사,스캔 시 상 틀어짐 ADF 가이드조정 */ steps: [], cautions: [] },
 
     { id: "tray-guide", scope: { brand: "samsung" }, title: "트레이 가이드 조정 (틀어짐)", icon: "paper", minutes: 5,
-      summary: "용지함에서 비뚤게 급지되거나 자주 걸릴 때", video: "", steps: [], cautions: [] },
+      summary: "용지함에서 비뚤게 급지되거나 자주 걸릴 때", video: "",
+      videos: { samsung: "VVAUqVdQneg" }, /* 삼성 AS 영상(2026-10-09): 출력시 틀어짐 용지 트레이 가이드조정 */ steps: [], cautions: [] },
 
     { id: "acr-ctd", scope: { brand: "samsung" }, title: "ACR · CTD 센서 에러", icon: "error", minutes: 5,
-      summary: "화면에 ACR 또는 CTD 센서 관련 오류가 표시될 때", video: "", steps: [], cautions: [] },
+      summary: "화면에 ACR 또는 CTD 센서 관련 오류가 표시될 때", video: "",
+      videos: { samsung: "SaDQsqdgtLA" }, /* 삼성 AS 영상(2026-10-09): ACR,CTD센서 오염 처리 방법 */ steps: [], cautions: [] },
   ],
 
   /* ── 브랜드 ────────────────────────────────────────────────── */
@@ -709,7 +734,6 @@ window.FIRSTOA_MANUAL = {
       photo: "assets/img/m-kyocera.jpg",
       videos: {
         toner: "pRqyQJ5Lqns", // 교세라 토너 교체 방법
-        waste: "",
         meter: "",
       },
       notes: {
@@ -725,7 +749,6 @@ window.FIRSTOA_MANUAL = {
       photo: "assets/img/m-brother-5700.jpg",
       videos: {
         toner: "3GypB534uSs", // 브라더 토너 교체 방법
-        waste: "",
         drum: "Vok3STCstrQ",  // 브라더 드럼 교체 방법
         meter: "",
       },
@@ -742,7 +765,6 @@ window.FIRSTOA_MANUAL = {
       photo: "assets/img/m-brother-8900.jpg",
       videos: {
         toner: "",
-        waste: "",
         meter: "",
       },
       notes: {},
@@ -756,7 +778,6 @@ window.FIRSTOA_MANUAL = {
       photo: "assets/img/m-oki-5473.jpg",
       videos: {
         toner: "BvbcfG8QZYM", // 오키 토너 교체 방법
-        waste: "",
         meter: "",
       },
       notes: {},
@@ -770,7 +791,6 @@ window.FIRSTOA_MANUAL = {
       photo: "assets/img/m-lexmark-mx410.jpg",
       videos: {
         toner: "",
-        waste: "",
         meter: "",
       },
       notes: {},
@@ -783,7 +803,7 @@ window.FIRSTOA_MANUAL = {
       device: "inkjet",
       photo: "assets/img/m-hp-8710.jpg",
       videos: {
-        toner: "",
+        ink: "",   // 잉크젯 — 잉크 카트리지 교체(2026-10-09)
         meter: "",
       },
       notes: {},
@@ -796,7 +816,7 @@ window.FIRSTOA_MANUAL = {
       device: "inkjet",
       photo: "assets/img/m-hp-9010.jpg",
       videos: {
-        toner: "",
+        ink: "",   // 잉크젯 — 잉크 카트리지 교체(2026-10-09)
         meter: "",
       },
       notes: {},

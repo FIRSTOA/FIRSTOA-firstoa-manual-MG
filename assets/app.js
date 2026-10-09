@@ -20,13 +20,19 @@
 
   // 간단 AS 는 기종마다 따로 쓰지 않고 적용 범위(scope)로 붙인다 — 삼성 6기종에 같은 내용을 여섯 번 쓰지 않는다
   const inScope = (f, m) => !!(f.scope.all || f.scope.brand === m.brand || (f.scope.models || []).includes(m.id));
-  const fixesOf = m => (D.FIXES || []).filter(f => inScope(f, m));
-  const modelsForFix = f => D.MODELS.filter(m => inScope(f, m));
+  const fixesOf = m => (D.FIXES || []).filter(f => inScope(f, m) && fixLiveBrand(f, m.brand));
+  // 증상 영상: 브랜드별(videos: { samsung: … })이 있으면 그것, 없으면 공통(video).
+  // 글 순서도 영상도 없는 증상은 목록에서 뺀다 — "준비 중" 카드가 고객을 헷갈리게 한다(2026-10-09).
+  const fixVidBrand = (f, bid) => (f.videos || {})[bid] || f.video || "";
+  const fixVid = (f, m) => fixVidBrand(f, m.brand);
+  const fixLiveBrand = (f, bid) => (f.steps || []).length > 0 || !!fixVidBrand(f, bid);
+  const fixLiveAny = f => (f.steps || []).length > 0 || !!f.video || Object.values(f.videos || {}).some(Boolean);
+  const modelsForFix = f => D.MODELS.filter(m => inScope(f, m) && fixLiveBrand(f, m.brand));
   // 브랜드마다 구조가 달라 증상도 브랜드 단위로 본다
-  const fixesForBrand = bid => (D.FIXES || []).filter(f =>
-    f.scope.all || f.scope.brand === bid || (f.scope.models || []).some(id => MODEL[id]?.brand === bid));
-  const brandOwn = bid => (D.FIXES || []).filter(f =>
-    f.scope.brand === bid || (f.scope.models || []).some(id => MODEL[id]?.brand === bid));
+  const fixesForBrand = bid => (D.FIXES || []).filter(f => fixLiveBrand(f, bid) &&
+    (f.scope.all || f.scope.brand === bid || (f.scope.models || []).some(id => MODEL[id]?.brand === bid)));
+  const brandOwn = bid => (D.FIXES || []).filter(f => fixLiveBrand(f, bid) &&
+    (f.scope.brand === bid || (f.scope.models || []).some(id => MODEL[id]?.brand === bid)));
 
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -77,13 +83,14 @@
         ${v ? `<img src="${thumb(v)}" onerror="${fallback(v)}" alt="" loading="lazy">
                <span class="playdot"><i>${ic("play", 20)}</i></span>
                <span class="pin">${ic("clock", 13)}${t.minutes}분</span>`
-            : `<span class="ph">${ic(t.icon, 38)}</span>
+            : `<span class="ph${t.art ? " art" : ""}">${t.art ? U.device(t.art) : ic(t.icon, 38)}</span>
                <span class="pin">${ic("clock", 13)}${t.minutes}분</span>`}
       </div>
       <div class="body">
         <div class="row1">${ic(t.icon, 19)}<b>${esc(t.title)}</b></div>
         <p>${esc(t.summary)}</p>
         <div class="meta">${v ? `<span class="badge b-vid">${ic("video", 13)}영상</span>`
+                               : t.id === "meter" ? `<span class="badge b-gold">기종별 안내</span>`
                                : `<span class="badge b-soon">영상 준비 중</span>`}
           <span>${esc(CAT[t.cat]?.name || "")}</span></div>
       </div></a>`;
@@ -91,19 +98,19 @@
 
   // 간단 AS 카드 — 기종마다 복제하지 않고 적용 범위로 붙인다
   const fixCard = (m, f) => {
-    const ready = (f.steps || []).length > 0;
+    const steps = (f.steps || []).length > 0, v = fixVid(f, m), ready = steps || !!v;
     return `<a class="tcard ${ready ? "" : "soon"}" href="#/m/${m.id}/f/${f.id}" data-rv>
       <div class="thumb">
-        ${f.video ? `<img src="${thumb(f.video)}" onerror="${fallback(f.video)}" alt="" loading="lazy">
-                     <span class="playdot"><i>${ic("play", 20)}</i></span>`
-                  : `<span class="ph">${ic(f.icon, 38)}</span>`}
+        ${v ? `<img src="${thumb(v)}" onerror="${fallback(v)}" alt="" loading="lazy">
+               <span class="playdot"><i>${ic("play", 20)}</i></span>`
+            : `<span class="ph">${ic(f.icon, 38)}</span>`}
         <span class="pin">${ic("clock", 13)}${f.minutes}분</span>
       </div>
       <div class="body">
         <div class="row1">${ic(f.icon, 19)}<b>${esc(f.title)}</b></div>
         <p>${esc(f.summary)}</p>
-        <div class="meta">${ready ? `<span class="badge b-gold">직접 해보기</span>`
-                                  : `<span class="badge b-soon">내용 준비 중</span>`}
+        <div class="meta">${v ? `<span class="badge b-vid">${ic("video", 13)}영상</span>` : ""}${steps ? `<span class="badge b-gold">직접 해보기</span>`
+                                  : v ? "" : `<span class="badge b-soon">내용 준비 중</span>`}
           <span>${f.scope.all ? "전 기종 공통" : esc(BRAND[m.brand]?.name || "") + " 공통"}</span></div>
       </div></a>`;
   };
@@ -310,18 +317,18 @@
     const sup = list.filter(t => t.cat === "consumable");
     const mng = list.filter(t => t.cat === "manage");
     const secs = [];
-    if (sup.length)   secs.push({ id: "sec-consumable", cat: CAT.consumable, html: sup.map(t => taskCard(m, t)).join("") });
+    if (sup.length)   secs.push({ id: "sec-consumable", cat: { ...CAT.consumable, desc: sup.map(t => t.title.replace(/ 교체$/, "")).join(" · ") }, html: sup.map(t => taskCard(m, t)).join("") });
     if (fixes.length) secs.push({ id: "sec-fix",        cat: CAT.fix,        html: fixes.map(f => fixCard(m, f)).join("") });
     if (mng.length)   secs.push({ id: "sec-manage", cat: CAT.manage,
       html: mng.map(t => taskCard(m, t)).join("") + `
         <a class="tcard" href="#/pattern" data-rv>
-          <div class="thumb"><span class="ph">${ic("palette", 38)}</span>
+          <div class="thumb"><span class="ph art">${U.device("chart-4c")}</span>
             <span class="pin">${ic("clock", 13)}1분</span></div>
           <div class="body"><div class="row1">${ic("palette", 19)}<b>4색 패턴 출력</b></div>
             <p>인쇄 상태를 한 장으로 점검하는 차트</p>
             <div class="meta"><span class="badge b-gold">바로 출력</span><span>전 기종 공통</span></div></div></a>
         <a class="tcard" href="#/notices" data-rv>
-          <div class="thumb"><span class="ph">${ic("book", 38)}</span></div>
+          <div class="thumb"><span class="ph art">${U.device("notice-book")}</span></div>
           <div class="body"><div class="row1">${ic("book", 19)}<b>이용 안내</b></div>
             <p>장마철·겨울철 용지, 방문 원칙, 소모품 신청 시점</p>
             <div class="meta"><span class="badge b-soon">읽을거리</span><span>${(D.NOTICES || []).length}가지</span></div></div></a>` });
@@ -372,7 +379,7 @@
     const m = MODEL[mid], f = FIX[fid];
     if (!m || !f || !inScope(f, m)) return view404();
     remember(m);
-    const b = BRAND[m.brand], ready = (f.steps || []).length > 0;
+    const b = BRAND[m.brand], ready = (f.steps || []).length > 0, fv = fixVid(f, m);
     const others = fixesOf(m).filter(x => x.id !== fid);
     const myTel = tel();
 
@@ -390,8 +397,8 @@
 
       <div class="work" style="margin-top:22px">
         <div>
-          ${f.video ? `<div class="player" id="player" data-v="${esc(f.video)}">
-                 <img src="${thumb(f.video, true)}" onerror="${fallback(f.video)}" alt="">
+          ${fv ? `<div class="player" id="player" data-v="${esc(fv)}">
+                 <img src="${thumb(fv, true)}" onerror="${fallback(fv)}" alt="">
                  <span class="veil"></span>
                  <button class="go" onclick="FIRSTOA.play()" aria-label="영상 재생"><i>${ic("play", 26)}</i></button>
                </div>` : ""}
@@ -406,6 +413,9 @@
                   <span class="mark"><span class="num">${k + 1}</span>${ic("check", 16)}</span>
                   <span class="tx">${esc(t)}</span></li>`).join("")}
               </ol></div>`
+            : fv ? `<div class="callout info">
+                 <b>${ic("video", 17)}영상대로 따라 하시면 됩니다</b>
+                 <p>글로 적은 순서는 준비 중입니다. 영상에서 막히는 부분이 있으면 그 장면을 캡처해 카카오톡으로 보내주세요.</p></div>`
             : `<div class="callout info">
                  <b>${ic("spark", 17)}내용을 준비하고 있습니다</b>
                  <p>이 항목은 담당 엔지니어가 처리 방법을 정리하는 중입니다.
@@ -470,6 +480,39 @@
     </div>`;
   }
 
+  /* ── 검침 카운터: 기종에 맞는 안내 묶음 + 단추 흐름 (2026-10-09) ────────
+   * 영상이 없는 검침 작업 화면에서 METER(사용량 카운터 화면과 같은 자료)의 그 브랜드 묶음 중
+   * 기종 번호가 맞는 것만 추려 보여준다. 맞는 게 없으면 브랜드 전체를 보여준다. */
+  const mnorm = s => String(s || "").toLowerCase().replace(/[^0-9a-z가-힣]/g, "");
+  function meterGroupsFor(m) {
+    const all = ((D.METER || {}).brands || []).filter(b => b.brand === m.brand)
+      .flatMap(b => (b.groups || []).map(g => ({ ...g, label: b.label })));
+    const mine = [m.name.replace(/^\S+\s+/, ""), ...(m.aka || [])].map(mnorm).filter(k => k.length >= 3);
+    const hit = all.filter(g => String(g.models || "").split(/[·/,]/).map(mnorm).filter(Boolean)
+      .some(k => mine.some(a => a === k || (k.length >= 4 && a.length >= 4 && (k.includes(a) || a.includes(k))))));
+    return hit.length ? hit : all;
+  }
+  // 순서 글 속의 [단추 이름]만 뽑아 키캡처럼 — 글을 읽기 전에 눈으로 먼저 따라가게
+  const keyflow = steps => {
+    const keys = [];
+    (steps || []).forEach(t => (String(t).match(/\[([^\]]+)\]/g) || []).forEach(k => keys.push(k.slice(1, -1))));
+    if (!keys.length) return "";
+    const arrow = `<i class="karr">${ic("chev", 14)}</i>`;
+    return `<div class="keyflow">${keys.map(k => `<span class="key">${esc(k)}</span>`).join(arrow)}${arrow}<span class="key end">${ic("kakao", 14)}사진 보내기</span></div>`;
+  };
+  const meterBlock = (m, groups) => `<div class="panel mpanel">
+      <div class="panel-h">${ic("meter", 19)}<b>${esc(m.name)} 카운터 뽑는 법</b></div>
+      <p class="pmeta" style="margin-top:0">${groups.length > 1 ? "쓰시는 기종의 방법을 따라 주세요. " : ""}[ ] 안이 누르는 단추입니다. 화면이나 출력물을 사진으로 찍어 카카오톡으로 보내주시면 됩니다.</p>
+      ${groups.map(g => `<div class="mgroup">
+        <span class="mmodels">${esc(g.models || g.label)}</span>
+        ${keyflow(g.steps)}
+        <ol class="ministeps">${(g.steps || []).map(t => `<li>${esc(t)}</li>`).join("")}</ol>
+        ${g.tip ? `<p class="mtip">${esc(g.tip)}</p>` : ""}
+        ${g.send ? `<span class="msend">${ic("kakao", 14)}보내주실 것 · ${esc(g.send)} 사진</span>` : ""}
+      </div>`).join("")}
+      ${D.meta.kakao ? `<a class="btn kko wide" style="margin-top:16px" href="${esc(D.meta.kakao)}" target="_blank" rel="noopener">${ic("kakao", 19)}카카오톡으로 사진 보내기</a>` : ""}
+    </div>`;
+
   /* ── 화면: 작업 ────────────────────────────────────────────────────── */
   function viewTask(mid, tid) {
     const m = MODEL[mid], t = TASK[tid];
@@ -480,6 +523,7 @@
     const i = siblings.findIndex(x => x.id === tid);
     const prev = siblings[i - 1], next = siblings[i + 1];
     const myTel = tel();
+    const mg = tid === "meter" && !v ? meterGroupsFor(m) : [];   // 검침은 영상 대신 기종별 카운터 뽑는 법
 
     return `<div class="container">
       <div class="phead">
@@ -497,6 +541,7 @@
                    <button class="go" onclick="FIRSTOA.play()" aria-label="영상 재생"><i>${ic("play", 26)}</i></button>
                    <span class="cap">${ic("video", 17)}${esc(t.title)} · ${esc(m.name)}</span>
                  </div>`
+               : mg.length ? meterBlock(m, mg)
                : `<div class="noplayer">${ic("video", 34)}<b>영상 준비 중입니다</b>
                    <span>아래 순서를 따라 하시면 됩니다</span></div>
                  <div class="callout warn" style="margin-top:16px">
@@ -507,7 +552,7 @@
           ${note ? `<div class="callout info" style="margin-top:16px">
                       <b>${ic("spark", 17)}이 기종은 이렇습니다</b><p>${esc(note)}</p></div>` : ""}
 
-          <div class="panel" style="margin-top:18px">
+          ${mg.length ? "" : `<div class="panel" style="margin-top:18px">
             <div class="panel-h">${ic("book", 19)}<b>따라 하는 순서</b>
               <button class="rst" onclick="FIRSTOA.reset()">처음부터</button></div>
             <div class="progress"><i id="bar"></i></div>
@@ -517,7 +562,7 @@
                 <span class="mark"><span class="num">${k + 1}</span>${ic("check", 16)}</span>
                 <span class="tx">${esc(s)}</span></li>`).join("")}
             </ol>
-          </div>
+          </div>`}
 
           ${t.cautions?.length ? `<div class="callout warn" style="margin-top:16px">
             <b>${ic("error", 17)}주의하세요</b>
@@ -713,6 +758,7 @@
                 <b style="font-size:17px">${esc(b.label)}</b></div>
               ${groups.map(g => `<div class="mgroup">
                 ${g.models ? `<span class="mmodels">${esc(g.models)}</span>` : ""}
+                ${keyflow(g.steps)}
                 <ol class="ministeps">${(g.steps || []).map(t => `<li>${esc(t)}</li>`).join("")}</ol>
                 ${g.tip ? `<p class="mtip">${esc(g.tip)}</p>` : ""}
                 ${g.send ? `<span class="msend">${ic("kakao", 14)}보내주실 것 · ${esc(g.send)} 사진</span>` : ""}
@@ -839,13 +885,13 @@
   function viewFixesBrand(bid) {
     const b = BRAND[bid];
     if (!b) return view404();
-    const own = brandOwn(bid), common = (D.FIXES || []).filter(f => f.scope.all);
+    const own = brandOwn(bid), common = (D.FIXES || []).filter(f => f.scope.all && fixLiveBrand(f, bid));
     const tile = f => {
-      const ready = (f.steps || []).length > 0;
+      const ready = (f.steps || []).length > 0, fv = fixVidBrand(f, bid);
       return `<a class="tile" href="#/fixes/${bid}/${f.id}" data-rv>
         <span class="box">${ic(f.icon, 24)}</span>
         <b>${esc(f.title)}</b><p>${esc(f.summary)}</p>
-        <span class="foot">${ready ? `${ic("clock", 14)}약 ${f.minutes}분`
+        <span class="foot">${ready || fv ? `${ic(fv ? "video" : "clock", 14)}${fv ? "영상 · " : ""}약 ${f.minutes}분`
                                    : `${ic("spark", 14)}내용 준비 중`}</span></a>`;
     };
     return `<div class="container">
@@ -882,7 +928,7 @@
   function viewFixBrand(bid, fid) {
     const b = BRAND[bid], f = FIX[fid];
     if (!b || !f) return view404();
-    const ready = (f.steps || []).length > 0;
+    const ready = (f.steps || []).length > 0, fv = fixVidBrand(f, bid);
     const others = fixesForBrand(bid).filter(x => x.id !== fid);
     const models = modelsOf(bid);
     const myTel = tel();
@@ -902,8 +948,8 @@
 
       <div class="work" style="margin-top:22px">
         <div>
-          ${f.video ? `<div class="player" id="player" data-v="${esc(f.video)}">
-                 <img src="${thumb(f.video, true)}" onerror="${fallback(f.video)}" alt="">
+          ${fv ? `<div class="player" id="player" data-v="${esc(fv)}">
+                 <img src="${thumb(fv, true)}" onerror="${fallback(fv)}" alt="">
                  <span class="veil"></span>
                  <button class="go" onclick="FIRSTOA.play()" aria-label="영상 재생"><i>${ic("play", 26)}</i></button>
                </div>` : ""}
@@ -917,6 +963,9 @@
                   <span class="mark"><span class="num">${k + 1}</span>${ic("check", 16)}</span>
                   <span class="tx">${esc(t)}</span></li>`).join("")}
               </ol></div>`
+            : fv ? `<div class="callout info">
+                 <b>${ic("video", 17)}영상대로 따라 하시면 됩니다</b>
+                 <p>글로 적은 순서는 준비 중입니다. 영상에서 막히는 부분이 있으면 그 장면을 캡처해 카카오톡으로 보내주세요.</p></div>`
             : `<div class="callout info">
                  <b>${ic("spark", 17)}내용을 준비하고 있습니다</b>
                  <p>이 항목은 담당 엔지니어가 처리 방법을 정리하는 중입니다.
@@ -963,8 +1012,8 @@
         hit(BRAND[m.brand]?.name || "") || hit(BRAND[m.brand]?.full || "")),
       tasks: D.TASKS.filter(t => hit(t.title) || hit(t.summary) || hit(CAT[t.cat]?.name || "") ||
         (t.steps || []).some(hit) || (t.cautions || []).some(hit)),
-      fixes: (D.FIXES || []).filter(f => hit(f.title) || hit(f.summary) ||
-        (f.steps || []).some(hit) || (f.cautions || []).some(hit)),
+      fixes: (D.FIXES || []).filter(f => fixLiveAny(f) && (hit(f.title) || hit(f.summary) ||
+        (f.steps || []).some(hit) || (f.cautions || []).some(hit))),
     };
   }
 

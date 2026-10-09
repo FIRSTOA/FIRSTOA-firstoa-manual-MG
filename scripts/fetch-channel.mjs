@@ -79,16 +79,37 @@ const load = src => { const g = {}; new Function('window', src)(g); return g.FIR
 const D = load(dataJs);
 const wired = new Map();                           // 영상 ID → [기종.작업]
 D.MODELS.forEach(m => Object.entries(m.videos || {}).forEach(([t, v]) => { if (v) wired.set(v, [...(wired.get(v) || []), `${m.id}.${t}`]); }));
-(D.FIXES || []).forEach(f => { if (f.video) wired.set(f.video, [...(wired.get(f.video) || []), `fix.${f.id}`]); });
+(D.FIXES || []).forEach(f => {
+  if (f.video) wired.set(f.video, [...(wired.get(f.video) || []), `fix.${f.id}`]);
+  Object.entries(f.videos || {}).forEach(([b, v]) => { if (v) wired.set(v, [...(wired.get(v) || []), `fix.${f.id}.${b}`]); });
+});
 
 /* ── 제목 → 작업·기종 ── */
 const TASK_RULES = [
+  [/잉크/, 'ink'],                                  // 잉크젯(HP 오피스젯)은 토너가 아니라 잉크
   [/폐토너|폐통|회수통|폐\s*토너/, 'waste'],
   [/드럼|이미징/, 'drum'],
   [/토너/, 'toner'],
   [/검침|카운터|미터/, 'meter'],
 ];
 const taskOf = title => (TASK_RULES.find(([re]) => re.test(title)) || [])[1] || null;
+// 증상(자주 생기는 문제) 영상 — 제목에 브랜드가 함께 있어야 연결한다(FIXES[].videos[브랜드]). 브랜드가 없으면 "새로 올라온 영상"으로.
+const FIX_RULES = [
+  [/acr|ctd/i, 'acr-ctd'],
+  [/adf.*(가이드|틀어짐)|상\s*틀어짐/i, 'adf-guide'],
+  [/adf.*(걸림|이물질)/i, 'adf-jam'],
+  [/트레이.*가이드|용지.*틀어짐|틀어짐.*트레이/, 'tray-guide'],
+  [/유리|\bpm\b/i, 'line-copy'],
+  [/흰\s*줄|연하게|빠진/, 'line-print'],
+  [/줄/, 'line-copy'],
+  [/걸림|jam|잼/i, 'jam'],
+];
+const BRAND_RULES = [
+  [/삼성|samsung/i, 'samsung'], [/신도/, 'sindoh'], [/제록스|후지|xerox|apeos|docu/i, 'xerox'],
+  [/교세라|kyocera/i, 'kyocera'], [/브라더|brother/i, 'brother'], [/\bhp\b/i, 'hp'], [/오키|\boki\b|렉스마크|lexmark|리코|ricoh/i, 'etc'],
+];
+const fixOf = title => (FIX_RULES.find(([re]) => re.test(title)) || [])[1] || null;
+const brandOf = title => (BRAND_RULES.find(([re]) => re.test(title)) || [])[1] || null;
 const norm = s => String(s).toLowerCase().replace(/\s+/g, '');
 const tokensOf = title => title.toLowerCase().split(/[\s,·/()\[\]\-_:~]+/).filter(Boolean);
 function modelsOf(title) {
@@ -115,6 +136,24 @@ function wireInto(src, modelId, task, vid, title) {
   return src.slice(0, at) + block.slice(0, vi) + fixed + (end < 0 ? '' : src.slice(end));
 }
 
+// 증상 영상을 FIXES 의 그 증상 videos: { 브랜드: "…" } 에 넣는다(없으면 칸을 만든다)
+function wireFix(src, fixId, brand, vid, title) {
+  const fa = src.indexOf('FIXES: [');
+  const at = fa < 0 ? -1 : src.indexOf(`id: "${fixId}"`, fa);
+  if (at < 0) return null;
+  let end = src.indexOf('\n    {', at + 1); if (end < 0) end = src.indexOf('\n  ],', at + 1); if (end < 0) end = src.length;
+  const block = src.slice(at, end);
+  const note = ` // ${brand}: ${title.replace(/[\r\n]+/g, ' ')} (자동 연결 ${today})`;
+  let fixed;
+  if (block.includes('videos: {')) {
+    if (new RegExp(`\\b${brand}:`).test(block)) return null;                 // 이미 그 브랜드 영상이 있음
+    fixed = block.replace('videos: {', `videos: { ${brand}: "${vid}",`);
+  } else if (block.includes('video: "",')) {
+    fixed = block.replace('video: "",', `video: "",\n      videos: { ${brand}: "${vid}" },${note}`);
+  } else return null;
+  return src.slice(0, at) + fixed + src.slice(end);
+}
+
 /* ── 실행 ── */
 const live = await fetchVideos();
 let src = dataJs, linked = [], skipped = [];
@@ -123,7 +162,13 @@ const unwired = live.filter(v => !wired.has(v.id));
 if (args.has('--auto')) {
   for (const v of unwired) {
     const task = taskOf(v.title), models = modelsOf(v.title);
-    if (!task || !models.length) { skipped.push(v); continue; }
+    if (!task || !models.length) {
+      // 기종·작업이 아니면 증상 영상인지 본다(브랜드 + 증상 낱말)
+      const fix = fixOf(v.title), brand = brandOf(v.title);
+      const next = fix && brand ? wireFix(src, fix, brand, v.id, v.title) : null;
+      if (next) { src = next; linked.push(`fix.${fix}.${brand} ← ${v.id} (${v.title})`); } else skipped.push(v);
+      continue;
+    }
     let hit = 0;
     for (const m of models) {
       const next = wireInto(src, m.id, task, v.id, v.title);
@@ -142,7 +187,8 @@ if (args.has('--auto')) {
 }
 
 if (args.has('--save')) {
-  ref.videos = live.filter(v => !v.stale).map(v => ({ id: v.id, title: v.title, ...(v.published ? { published: v.published } : {}) }));
+  // 최근 목록(채널 페이지 약 30편 + RSS 15편)에서 밀려난 옛 영상도 유튜브엔 그대로 있으므로 기준표에 남긴다(stale 표시만). 2026-10-09: 삼성 영상 7편이 올라오며 옛 4편이 빠졌던 것
+  ref.videos = live.map(v => ({ id: v.id, title: v.title, ...(v.published ? { published: v.published } : {}), ...(v.stale ? { stale: true } : {}) }));
   ref.fetchedAt = today;
   fs.writeFileSync(REF, JSON.stringify(ref, null, 2) + '\n');
 }
