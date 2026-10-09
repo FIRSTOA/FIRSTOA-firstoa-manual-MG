@@ -872,3 +872,7 @@ body.has-tabbar{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
 
 /* 홈 첫 화면 한 줄 설명(2026-10-09) */
 .hero .hero-note{margin:-6px 0 22px; font-size:14px; line-height:1.6; color:rgba(255,255,255,.72); max-width:520px}
+
+/* 제조사 공식 영상 배지(2026-10-09) */
+.b-off{background:#EEF2FF; color:#3730A3}
+@media (prefers-color-scheme: dark){ .b-off{background:#1E2452; color:#C7D2FE} }

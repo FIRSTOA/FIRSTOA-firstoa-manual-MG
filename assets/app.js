@@ -24,7 +24,8 @@
   // 증상 영상: 브랜드별(videos: { samsung: … })이 있으면 그것, 없으면 공통(video).
   // 글 순서도 영상도 없는 증상은 목록에서 뺀다 — "준비 중" 카드가 고객을 헷갈리게 한다(2026-10-09).
   const fixVidBrand = (f, bid) => (f.videos || {})[bid] || f.video || "";
-  const fixVid = (f, m) => fixVidBrand(f, m.brand);
+  const fixVid = (f, m) => (f.videos || {})[m.id] || fixVidBrand(f, m.brand);   // 기종 id 영상이 브랜드 영상보다 먼저(2026-10-09)
+  const officialOf = v => (D.OFFICIAL_VIDEOS || {})[v] || "";               // 제조사 공식 영상이면 채널명
   const fixLiveBrand = (f, bid) => (f.steps || []).length > 0 || !!fixVidBrand(f, bid);
   const fixLiveAny = f => (f.steps || []).length > 0 || !!f.video || Object.values(f.videos || {}).some(Boolean);
   const modelsForFix = f => D.MODELS.filter(m => inScope(f, m) && fixLiveBrand(f, m.brand));
@@ -89,7 +90,7 @@
       <div class="body">
         <div class="row1">${ic(t.icon, 19)}<b>${esc(t.title)}</b></div>
         <p>${esc(t.summary)}</p>
-        <div class="meta">${v ? `<span class="badge b-vid">${ic("video", 13)}영상</span>`
+        <div class="meta">${v ? `<span class="badge ${officialOf(v) ? "b-off" : "b-vid"}">${ic("video", 13)}${officialOf(v) ? "공식 영상" : "영상"}</span>`
                                : t.id === "meter" ? `<span class="badge b-gold">기종별 안내</span>`
                                : `<span class="badge b-soon">영상 준비 중</span>`}
           <span>${esc(CAT[t.cat]?.name || "")}</span></div>
@@ -109,7 +110,7 @@
       <div class="body">
         <div class="row1">${ic(f.icon, 19)}<b>${esc(f.title)}</b></div>
         <p>${esc(f.summary)}</p>
-        <div class="meta">${v ? `<span class="badge b-vid">${ic("video", 13)}영상</span>` : ""}${steps ? `<span class="badge b-gold">직접 해보기</span>`
+        <div class="meta">${v ? `<span class="badge ${officialOf(v) ? "b-off" : "b-vid"}">${ic("video", 13)}${officialOf(v) ? "공식 영상" : "영상"}</span>` : ""}${steps ? `<span class="badge b-gold">직접 해보기</span>`
                                   : v ? "" : `<span class="badge b-soon">내용 준비 중</span>`}
           <span>${f.scope.all ? "전 기종 공통" : esc(BRAND[m.brand]?.name || "") + " 공통"}</span></div>
       </div></a>`;
@@ -404,6 +405,7 @@
                  <img src="${thumb(fv, true)}" onerror="${fallback(fv)}" alt="">
                  <span class="veil"></span>
                  <button class="go" onclick="FIRSTOA.play()" aria-label="영상 재생"><i>${ic("play", 26)}</i></button>
+                 ${officialOf(fv) ? `<span class="cap">${ic("video", 17)}제조사 공식 영상 · ${esc(officialOf(fv))}</span>` : ""}
                </div>` : ""}
 
           ${ready ? `<div class="panel">
@@ -546,7 +548,7 @@
                    <img src="${thumb(v, true)}" onerror="${fallback(v)}" alt="">
                    <span class="veil"></span>
                    <button class="go" onclick="FIRSTOA.play()" aria-label="영상 재생"><i>${ic("play", 26)}</i></button>
-                   <span class="cap">${ic("video", 17)}${esc(t.title)} · ${esc(m.name)}</span>
+                   <span class="cap">${ic("video", 17)}${officialOf(v) ? `제조사 공식 영상 · ${esc(officialOf(v))}` : `${esc(t.title)} · ${esc(m.name)}`}</span>
                  </div>`
                : mg.length ? meterBlock(m, mg)
                : `<div class="noplayer">${ic("video", 34)}<b>영상 준비 중입니다</b>
@@ -960,6 +962,7 @@
                  <img src="${thumb(fv, true)}" onerror="${fallback(fv)}" alt="">
                  <span class="veil"></span>
                  <button class="go" onclick="FIRSTOA.play()" aria-label="영상 재생"><i>${ic("play", 26)}</i></button>
+                 ${officialOf(fv) ? `<span class="cap">${ic("video", 17)}제조사 공식 영상 · ${esc(officialOf(fv))}</span>` : ""}
                </div>` : ""}
           ${ready ? `<div class="panel">
               <div class="panel-h">${ic("book", 19)}<b>따라 하는 순서</b>

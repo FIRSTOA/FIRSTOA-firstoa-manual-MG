@@ -146,6 +146,26 @@ window.FIRSTOA_MANUAL = {
    * 같은 브랜드라도 연식에 따라 메뉴 이름이 조금 다를 수 있어, 화면을 사진으로
    * 찍어 보내는 방법을 항상 함께 안내합니다(그게 제일 정확하고 빠릅니다).
    * ------------------------------------------------------------ */
+  /* ── 제조사 공식 유튜브 영상 출처 — 여기 적힌 영상은 화면에 '제조사 공식 영상 · 채널'로 표시되고, 우리 채널 점검에서 제외된다(2026-10-09).
+   *    정확히 그 기종에 해당하는 영상만 넣는다(영상 설명의 적용 기종 목록으로 확인). ── */
+  OFFICIAL_VIDEOS: {
+    "YUjIvksgoAc": "HP Support",
+    "-5x1_VIVKdA": "FUJIFILM Business Innovation Support",
+    "CE7c5f-vUxk": "FUJIFILM Business Innovation Support",
+    "WcICUyP0J2I": "FUJIFILM Business Innovation Support",
+    "QXgq0_njM2U": "FUJIFILM Business Innovation Support",
+    "Um0Y1RETt1Q": "신도리코 Sindoh",
+    "L9IVEiUrFy0": "신도리코 Sindoh",
+    "lgR3x00AZ3A": "신도리코 Sindoh",
+    "ZCIlijLqK5M": "FUJIFILM Business Innovation Support",
+    "XJR4QANPOMg": "FUJIFILM Business Innovation Support",
+    "PHNJ4POhNHQ": "Kyocera's How To Series",
+    "dQvyzngNJGI": "HP Support",
+    "8oM8f3Ao5OE": "HP Support",
+    "XsoTi03l39c": "HP Support",
+    "KRYSNvkfmCs": "Brother Office USA",
+  },
+
   METER: {
     /* 2026-10-09: CS팀이 실제로 안내하는 기종별 방법으로 교체(이전 일반 안내는 실제와 달랐음).
      * brands[] 한 칸 = 화면의 카드 하나. groups[] = 그 안의 기종 묶음. send = 보내주실 것(출력물 / 화면).
@@ -405,7 +425,11 @@ window.FIRSTOA_MANUAL = {
     // 제목은 고객이 겪는 증상 그대로(2026-10-09 사용자: "유리 PM·가이드 조정 같은 말은 모른다"). 복사/스캔 쪽인지 PC 출력 쪽인지를 제목에서 가른다.
     { id: "jam", scope: { all: true }, title: "용지 걸림 (JAM · M2-1317 에러)", icon: "jam", minutes: 3,
       summary: "화면에 용지 걸림 · JAM 표시나 M2-1317 에러가 뜰 때", video: "",
-      videos: { samsung: "xxPDPqYOViE" }, /* 삼성 AS 영상(2026-10-09): 용지걸림에러, M2 1317 에러 */
+      // 브랜드(samsung) 또는 기종 id 로 영상을 건다. 기종 id 가 먼저. 아래 기종별 영상은 제조사 공식(OFFICIAL_VIDEOS) — 적용 기종 확인함(2026-10-09)
+      videos: { samsung: "xxPDPqYOViE", /* 삼성 AS 영상: 용지걸림에러, M2 1317 에러 */
+        "sindoh-d450": "Um0Y1RETt1Q", "sindoh-d420": "lgR3x00AZ3A" /* D320 — 카드가 D320·D410·D420 공통 */,
+        "xerox-c2271": "ZCIlijLqK5M" /* ApeosPort-VII C2273·C3373 기준 */, "kyocera": "PHNJ4POhNHQ" /* ECOSYS M5526cdw */,
+        "hp-8710": "dQvyzngNJGI", "hp-9010": "8oM8f3Ao5OE", "brother-5700": "KRYSNvkfmCs" /* MFC-L5700DW 계열(DN 과 같은 본체) */ },
       steps: [
         "화면에 표시된 위치 번호를 먼저 확인합니다. 표시된 곳부터 여세요.",
         "용지를 나가던 방향으로 천천히 당겨 뺍니다.",
@@ -438,7 +462,8 @@ window.FIRSTOA_MANUAL = {
 
     { id: "adf-jam", scope: { all: true }, title: "복사/스캔 시 원고 걸림 (ADF)", icon: "jam", minutes: 3,
       summary: "위쪽 자동급지대에 넣은 원고가 걸릴 때", video: "",
-      videos: { samsung: "sjxiKdqiYbE" }, /* 삼성 AS 영상(2026-10-09): ADF 용지걸림 이물질 제거 코팅지로 해결 */
+      videos: { samsung: "sjxiKdqiYbE", /* 삼성 AS 영상: ADF 용지걸림 이물질 제거 코팅지로 해결 */
+        "sindoh-d450": "L9IVEiUrFy0", "hp-9010": "XsoTi03l39c", xerox: "XJR4QANPOMg" /* 후지필름 전 기종 공통 */ },
       steps: [
         "원고가 들어가다 걸리면 위쪽 급지대(ADF) 커버를 엽니다.",
         "걸린 원고의 양쪽을 잡고 찢어지지 않게 천천히 빼냅니다.",
@@ -1193,11 +1218,39 @@ window.FIRSTOA_MANUAL = {
       device: "floor-color",
       photo: "assets/img/m-xerox-c5585.jpg",
       videos: {
-        toner: "",
-        waste: "",
+        toner: "WcICUyP0J2I", // 제조사 공식 영상(FUJIFILM Business Innovation Support) — 적용 기종 확인함
+        waste: "QXgq0_njM2U", // 제조사 공식 영상(FUJIFILM Business Innovation Support) — 적용 기종 확인함
         meter: "",
       },
       notes: {},
+      // 따라 하는 순서 — 제조사 공식 영상 기준(2026-10-09)
+      steps: {
+        toner: [
+          "정면 커버를 엽니다. 토너 카트리지 4개가 가로로 나란히 있습니다.",
+          "교체할 색 카트리지를 잡고 천천히 당겨 끝까지 빼냅니다.",
+          "새 카트리지를 상자에서 꺼내 비닐을 벗기고, 위아래·좌우로 몇 번 흔들어 토너를 고르게 합니다.",
+          "색 표시에 맞춰 카트리지를 끝까지 밀어 넣습니다.",
+          "정면 커버를 닫습니다.",
+          "다 쓴 것은 버리지 마시고 상자에 넣어 보관해 주세요. 방문 때 수거합니다.",
+        ],
+        waste: [
+          "새 폐토너통을 상자에서 꺼내 비닐을 벗깁니다. 비닐은 다 쓴 통을 넣을 때 쓰니 버리지 마세요.",
+          "기기 왼쪽 아래의 작은 커버를 엽니다. 안에 폐토너통이 보입니다.",
+          "폐토너통 손잡이를 잡고 수평을 유지하며 천천히 끝까지 당겨 빼냅니다.",
+          "다 쓴 폐토너통을 비닐에 넣어 입구를 묶고 상자에 담습니다.",
+          "새 폐토너통을 레일에 맞춰 끝까지 밀어 넣습니다.",
+          "커버를 닫습니다.",
+          "다 쓴 폐토너통은 상자째 보관해 주세요. 방문 때 수거합니다.",
+        ],
+      },
+      cautions: {
+        toner: [
+          "카트리지를 세게 흔들거나 떨어뜨리면 토너가 샙니다.",
+        ],
+        waste: [
+          "폐토너통은 무겁고 가루가 가득 차 있습니다. 기울이지 말고 두 손으로 다루세요.",
+        ],
+      },
     },
     {
       id: "xerox-sc2022", brand: "xerox",
@@ -1207,17 +1260,46 @@ window.FIRSTOA_MANUAL = {
       device: "desktop",
       photo: "assets/img/m-xerox-sc2022.jpg",
       videos: {
-        toner: "",
-        waste: "",
+        toner: "-5x1_VIVKdA", // 제조사 공식 영상(FUJIFILM Business Innovation Support) — 적용 기종 확인함
+        waste: "CE7c5f-vUxk", // 제조사 공식 영상(FUJIFILM Business Innovation Support) — 적용 기종 확인함
         meter: "",
       },
       notes: {},
+      // 따라 하는 순서 — 제조사 공식 영상 기준(2026-10-09)
+      steps: {
+        toner: [
+          "정면 커버를 엽니다.",
+          "교체할 색의 토너 카트리지(길쭉한 통) 손잡이를 잡고 천천히 당겨 끝까지 빼냅니다.",
+          "새 카트리지를 상자에서 꺼내 보호 비닐을 벗기고, 좌우로 몇 번 가볍게 흔들어 토너를 고르게 합니다.",
+          "색 표시에 맞춰 카트리지를 끝까지 밀어 넣습니다. 딸깍 소리가 나면 고정된 것입니다.",
+          "정면 커버를 닫습니다.",
+          "다 쓴 것은 버리지 마시고 상자에 넣어 보관해 주세요. 방문 때 수거합니다.",
+        ],
+        waste: [
+          "정면 커버를 엽니다. 가운데 아래쪽의 회색 통이 폐토너통입니다.",
+          "폐토너통 손잡이를 잡고 수평을 유지한 채 천천히 당겨 빼냅니다.",
+          "다 쓴 폐토너통은 새 통이 들어 있던 비닐에 넣어 입구를 묶습니다.",
+          "폐토너통을 뺀 자리 안쪽에 청소 막대가 색마다 하나씩(4개) 있습니다. 막대를 끝까지 당겼다가 다시 밀어 넣기를 3번씩 반복해 LED 창을 닦습니다.",
+          "새 폐토너통을 끝까지 밀어 넣습니다.",
+          "정면 커버를 닫습니다.",
+          "다 쓴 폐토너통은 밀봉한 채 보관해 주세요. 방문 때 수거합니다.",
+        ],
+      },
+      cautions: {
+        toner: [
+          "카트리지를 세게 흔들거나 떨어뜨리면 토너가 샙니다.",
+        ],
+        waste: [
+          "폐토너통을 기울이면 토너 가루가 쏟아집니다. 뺀 자세 그대로 다루세요.",
+          "청소 막대는 끝까지 넣어 두어야 합니다. 덜 넣으면 커버가 안 닫힙니다.",
+        ],
+      },
     },
     {
       id: "kyocera", brand: "kyocera",
       name: "교세라 5521 · 5526 · 2100",
-      full: "TASKalfa 5521ci · 5526ci · 2100",
-      aka: ["5521", "5526", "2100", "2101", "교세라", "TASKalfa"],
+      full: "ECOSYS M5521cdw · M5526cdw · MA2100cfx",   // 2026-10-09 실제 모델명으로(이전 TASKalfa 표기는 오류)
+      aka: ["5521", "5526", "2100", "2101", "교세라", "ECOSYS", "M5521", "M5526", "MA2100", "TASKalfa"],
       device: "floor-color",
       photo: "assets/img/m-kyocera.jpg",
       videos: {
@@ -1387,10 +1469,29 @@ window.FIRSTOA_MANUAL = {
       device: "desktop",
       photo: "assets/img/m-hp-laser.jpg",
       videos: {
-        toner: "",
+        toner: "YUjIvksgoAc", // 제조사 공식 영상(HP Support) — 적용 기종 확인함
         meter: "",
       },
       notes: {},
+      // 따라 하는 순서 — 제조사 공식 영상 기준(2026-10-09)
+      steps: {
+        toner: [
+          "프린터 오른쪽 옆면의 버튼을 누르면 앞쪽 덮개(카트리지 도어)가 열립니다. 덮개를 끝까지 내립니다.",
+          "다 쓴 토너 카트리지의 손잡이를 잡고 앞으로 당겨 빼냅니다.",
+          "새 카트리지를 상자에서 꺼내 보호 비닐을 벗깁니다.",
+          "카트리지 양쪽 끝을 잡고 좌우로 5~6번 가볍게 흔들어 토너를 고르게 합니다.",
+          "카트리지 옆의 탭을 잡아당겨 봉인 테이프를 끝까지 빼냅니다.",
+          "카트리지를 안쪽 레일에 맞춰 밀어 넣어 제자리에 고정합니다.",
+          "앞쪽 덮개를 닫습니다.",
+          "다 쓴 카트리지는 새 카트리지가 들어 있던 상자에 넣어 보관해 주세요. 방문 때 수거합니다.",
+        ],
+      },
+      cautions: {
+        toner: [
+          "카트리지의 녹색 드럼 면은 손으로 만지거나 빛에 오래 두지 마세요. 인쇄 품질이 떨어집니다.",
+          "봉인 테이프를 빼지 않으면 토너가 나오지 않습니다.",
+        ],
+      },
     },
   ],
 };

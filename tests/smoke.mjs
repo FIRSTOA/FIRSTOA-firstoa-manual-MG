@@ -132,7 +132,8 @@ const ref = JSON.parse(read('data/channel-videos.json'));
 const unwired = ref.videos.filter(v => !wired.has(v.id));
 unwired.length ? bad(`채널 영상 ${unwired.length}편이 아직 연결 안 됨: ` + unwired.map(v => v.title).join(', '))
                : ok(`채널 ${ref.videos.length}편 전부 연결됨`);
-const ghost = [...wired].filter(id => !ref.videos.some(v => v.id === id));
+const officialIds = new Set(Object.keys(D.OFFICIAL_VIDEOS || {}));
+const ghost = [...wired].filter(id => !officialIds.has(id) && !ref.videos.some(v => v.id === id));
 ghost.length ? bad('채널에 없는 영상 ID: ' + ghost.join(', ')) : ok('엉뚱한 영상 ID 없음');
 nav('#/m/samsung-3220');
 const vbadges = doc.querySelectorAll('#app .b-vid').length;
@@ -381,3 +382,23 @@ nav('#/m/xerox-apeos-c2060/toner');
 doc.querySelector('#app .player') && doc.getElementById('app').textContent.includes('움푹 들어간 손잡이') ? ok('Apeos C2060 토너: 마블 영상 + 순서') : bad('Apeos 토너 화면');
 nav('#/m/sindoh-d420/waste');
 doc.getElementById('app').textContent.includes('마개') && doc.getElementById('app').textContent.includes('새 통에서 뺀 마개') ? ok('신도 D420 폐토너통: 기종별 주의 표시') : bad('신도 D420 주의');
+
+/* 21. 제조사 공식 영상(2026-10-09) */
+console.log('\n[21] 제조사 공식 영상');
+const usedIds = new Set(); D.MODELS.forEach(m => Object.values(m.videos || {}).forEach(v => v && usedIds.add(v))); D.FIXES.forEach(f => Object.values(f.videos || {}).forEach(v => v && usedIds.add(v)));
+const unusedOfficial = Object.keys(D.OFFICIAL_VIDEOS).filter(id => !usedIds.has(id));
+unusedOfficial.length ? bad('출처표에만 있고 안 쓰인 공식 영상: ' + unusedOfficial.join(', ')) : ok(`공식 영상 ${Object.keys(D.OFFICIAL_VIDEOS).length}편 모두 화면에 연결`);
+nav('#/m/hp-laser/toner');
+doc.querySelector('#app .player') && appHtml().includes('제조사 공식 영상 · HP Support') && doc.querySelectorAll('#app .steps li').length === 8 ? ok('HP M501 토너: 공식 영상 + 순서 8단계') : bad('HP M501 화면');
+nav('#/m/xerox-sc2022/waste');
+appHtml().includes('청소 막대') && appHtml().includes('FUJIFILM') ? ok('SC2022 폐토너: 공식 영상 + 청소 막대 순서') : bad('SC2022 폐토너 화면');
+nav('#/m/sindoh-d450/f/jam');
+doc.querySelector('#app .player[data-v="Um0Y1RETt1Q"]') && appHtml().includes('신도리코 Sindoh') ? ok('신도 D450 용지 걸림: 기종별 공식 영상') : bad('신도 D450 걸림 화면');
+nav('#/m/sindoh-n501/f/jam');
+!doc.querySelector('#app .player') ? ok('신도 N501 용지 걸림: 맞는 영상 없음 → 영상 없이 글 순서만') : bad('N501 에 엉뚱한 영상');
+nav('#/m/xerox-c2263/f/adf-jam');
+doc.querySelector('#app .player[data-v="XJR4QANPOMg"]') ? ok('제록스 원고 걸림: 후지필름 공통 공식 영상') : bad('제록스 ADF 화면');
+nav('#/m/kyocera');
+appHtml().includes('ECOSYS M5521cdw') ? ok('교세라 카드 실제 모델명') : bad('교세라 모델명');
+const offBadges = (() => { nav('#/m/hp-laser'); return doc.querySelectorAll('#app .badge.b-off').length; })();
+offBadges >= 1 ? ok('공식 영상 배지 표시') : bad('공식 영상 배지 없음');
