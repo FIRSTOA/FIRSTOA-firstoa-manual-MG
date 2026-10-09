@@ -587,7 +587,7 @@
             <b>${esc(m.name)}의 다른 작업</b>
             <div class="links">${siblings.filter(x => x.id !== tid).slice(0, 7).map(x =>
               `<a href="#/m/${m.id}/${x.id}">${ic(x.icon, 18)}${esc(x.title)}
-                 ${vidOf(m, x.id) ? "" : `<span class="badge b-soon">준비 중</span>`}
+                 ${vidOf(m, x.id) || x.id === "meter" || (m.steps || {})[x.id] ? "" : `<span class="badge b-soon">준비 중</span>`}
                  <span class="arw">${ic("chev", 16)}</span></a>`).join("")}</div>
           </div>` : ""}
           <div class="box">
@@ -646,8 +646,8 @@
         <div class="sec-head" data-rv><div><span class="eyebrow">영상 있는 기종</span>
           <h2 class="h2" style="margin-top:8px">${has.length}종</h2></div></div>${grid(has)}</section>` : ""}
       ${soon.length ? `<section class="section tight">
-        <div class="sec-head" data-rv><div><span class="eyebrow">영상 준비 중</span>
-          <h2 class="h2" style="margin-top:8px">글 순서는 지금도 보실 수 있습니다</h2></div></div>${grid(soon)}</section>` : ""}
+        <div class="sec-head" data-rv><div><span class="eyebrow">${t.id === "meter" ? "기종별 안내" : "영상 준비 중"}</span>
+          <h2 class="h2" style="margin-top:8px">${t.id === "meter" ? "기종을 고르면 카운터 뽑는 법이 나옵니다" : "글 순서는 지금도 보실 수 있습니다"}</h2></div></div>${grid(soon)}</section>` : ""}
       ${band()}
     </div>`;
   }
