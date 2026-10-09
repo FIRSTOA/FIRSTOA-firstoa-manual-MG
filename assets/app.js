@@ -16,6 +16,11 @@
   // 마지막으로 본 기종 — 엉뚱한 주소나 빈 검색에서 "그 기종 화면으로 돌아가기"에 쓴다(2026-10-09)
   let lastModel = (() => { try { return sessionStorage.getItem("firstoa.lastModel"); } catch { return null; } })();
   const remember = m => { lastModel = m.id; try { sessionStorage.setItem("firstoa.lastModel", m.id); } catch {} };
+  let fromQr = false;   // "#/m/기종?src=qr" — 복합기에 붙인 QR 스티커로 들어온 화면(기종 화면에 연결 안내를 띄운다)
+  // QR 스티커 주소는 경로(/m/samsung-3220?src=qr)다. 서버는 모든 경로를 첫 화면으로 돌려주므로 여기서 해시 주소로 바꾼다(2026-10-09)
+  if (location.pathname && location.pathname !== "/" && !location.hash) {
+    location.replace(`${location.origin}/#${location.pathname.replace(/\/+$/, "")}${location.search}`);
+  }
   const FIX   = Object.fromEntries((D.FIXES || []).map(f => [f.id, f]));
 
   // 간단 AS 는 기종마다 따로 쓰지 않고 적용 범위(scope)로 붙인다 — 삼성 6기종에 같은 내용을 여섯 번 쓰지 않는다
@@ -178,8 +183,18 @@
     </section>`;
   };
 
+  const isPhone = () => matchMedia("(max-width: 759px)").matches;
+  // 폰 홈의 첫 단계 — 브랜드 사진 타일. 누르면 그 브랜드의 기종만 나온다(QR 없이 들어온 고객도 두 번 눌러 기종에 닿게, 2026-10-09)
+  const brandTiles = () => `<div class="btiles">${D.BRANDS.filter(b => modelsOf(b.id).length).map(b => {
+      const rep = D.MODELS.find(m => m.brand === b.id && m.photo);
+      return `<a class="btile" href="#/b/${b.id}" data-rv>
+        <span class="bshot">${rep ? `<img src="${esc(rep.photo)}" alt="" loading="lazy">` : U.device("floor-color")}</span>
+        <b><i style="background:${esc(b.accent)}"></i>${esc(b.name)}</b>
+        <span class="bn">기종 ${modelsOf(b.id).length}종 ${ic("chev", 14)}</span></a>`; }).join("")}</div>`;
+
   /* ── 화면: 첫 화면 ─────────────────────────────────────────────────── */
   function viewHome() {
+    const phone = isPhone();
     const quick = [
       { to: "#/t/toner", icon: "toner", label: "토너 교체" },
       { to: "#/t/waste", icon: "waste", label: "폐토너통 교체" },
@@ -224,6 +239,22 @@
     </section>
 
     <div class="container">
+      ${phone ? `      <section class="section" id="models" style="padding-top:0">
+        <div class="sec-head" data-rv>
+          <div><span class="eyebrow">${phone ? "1단계 · 브랜드" : "기종으로 찾기"}</span>
+            <h2 class="h2" style="margin-top:10px">${phone ? "어느 회사 복합기인가요?" : "쓰시는 복합기를 고르세요"}</h2>
+            <p class="lead">${phone ? "기기 앞면의 제조사 표시를 보고 고르면 그 회사 기종만 나옵니다." : "기기 앞면 스티커의 번호를 확인하세요. 숫자 몇 자리만 검색해도 찾아집니다."}</p></div>
+          <button class="more" onclick="FIRSTOA.open()">전체 검색 ${ic("arrow", 17)}</button>
+        </div>
+        ${phone ? brandTiles() : `<div class="tabs" role="tablist">
+          <button class="tab" role="tab" aria-selected="true" data-brand="">전체 <span class="n num">${D.MODELS.length}</span></button>
+          ${D.BRANDS.filter(b => modelsOf(b.id).length).map(b =>
+            `<button class="tab" role="tab" aria-selected="false" data-brand="${b.id}" style="--bdot:${esc(b.accent)}">
+               <i class="dot"></i>${esc(b.name)} <span class="n num">${modelsOf(b.id).length}</span></button>`).join("")}
+        </div>
+        <div class="models collapsed" id="modelGrid">${D.MODELS.map(modelCard).join("")}</div>
+        <button class="btn ghost wide sm showall" id="showAll" onclick="FIRSTOA.showAll()">기종 ${D.MODELS.length}종 모두 보기 ${ic("chev", 16)}</button>`}
+      </section>
       <section class="section">
         <div class="sec-head" data-rv>
           <div><span class="eyebrow">시작하기</span>
@@ -244,24 +275,43 @@
             <span class="dgo">증상 고르기 ${ic("arrow", 18)}</span>
           </a>
         </div>
+      </section>` : `      <section class="section">
+        <div class="sec-head" data-rv>
+          <div><span class="eyebrow">시작하기</span>
+            <h2 class="h2" style="margin-top:10px">무엇 때문에 오셨나요?</h2>
+            <p class="lead">둘 중 하나만 고르시면 됩니다. 기종을 몰라도 찾아 드립니다.</p></div>
+        </div>
+        <div class="doors">
+          <a class="door d1" href="#/t/toner" data-rv>
+            <span class="dbox">${ic("toner", 30)}</span>
+            <b>소모품이 떨어졌어요</b>
+            <p>토너 · 폐토너통 교체. 엔지니어가 직접 촬영한 영상을 보며 3분이면 끝납니다.</p>
+            <span class="dgo">기종 고르기 ${ic("arrow", 18)}</span>
+          </a>
+          <a class="door d2" href="#/fixes" data-rv>
+            <span class="dbox">${ic("error", 30)}</span>
+            <b>문제가 생겼어요</b>
+            <p>복사할 때 줄이 나오거나, 용지가 걸리거나, 화면에 오류가 뜰 때.</p>
+            <span class="dgo">증상 고르기 ${ic("arrow", 18)}</span>
+          </a>
+        </div>
       </section>
-
       <section class="section" id="models" style="padding-top:0">
         <div class="sec-head" data-rv>
-          <div><span class="eyebrow">기종으로 찾기</span>
-            <h2 class="h2" style="margin-top:10px">쓰시는 복합기를 고르세요</h2>
-            <p class="lead">기기 앞면 스티커의 번호를 확인하세요. 숫자 몇 자리만 검색해도 찾아집니다.</p></div>
+          <div><span class="eyebrow">${phone ? "1단계 · 브랜드" : "기종으로 찾기"}</span>
+            <h2 class="h2" style="margin-top:10px">${phone ? "어느 회사 복합기인가요?" : "쓰시는 복합기를 고르세요"}</h2>
+            <p class="lead">${phone ? "기기 앞면의 제조사 표시를 보고 고르면 그 회사 기종만 나옵니다." : "기기 앞면 스티커의 번호를 확인하세요. 숫자 몇 자리만 검색해도 찾아집니다."}</p></div>
           <button class="more" onclick="FIRSTOA.open()">전체 검색 ${ic("arrow", 17)}</button>
         </div>
-        <div class="tabs" role="tablist">
+        ${phone ? brandTiles() : `<div class="tabs" role="tablist">
           <button class="tab" role="tab" aria-selected="true" data-brand="">전체 <span class="n num">${D.MODELS.length}</span></button>
           ${D.BRANDS.filter(b => modelsOf(b.id).length).map(b =>
             `<button class="tab" role="tab" aria-selected="false" data-brand="${b.id}" style="--bdot:${esc(b.accent)}">
                <i class="dot"></i>${esc(b.name)} <span class="n num">${modelsOf(b.id).length}</span></button>`).join("")}
         </div>
         <div class="models collapsed" id="modelGrid">${D.MODELS.map(modelCard).join("")}</div>
-        <button class="btn ghost wide sm showall" id="showAll" onclick="FIRSTOA.showAll()">기종 ${D.MODELS.length}종 모두 보기 ${ic("chev", 16)}</button>
-      </section>
+        <button class="btn ghost wide sm showall" id="showAll" onclick="FIRSTOA.showAll()">기종 ${D.MODELS.length}종 모두 보기 ${ic("chev", 16)}</button>`}
+      </section>`}
 
       ${newVideos()}
 
@@ -337,7 +387,8 @@
 
     return `<div class="container">
       <div class="phead" style="padding-bottom:0">
-        ${crumbs([{ label: "처음", to: "/" }, { label: b?.name || "기종", to: "/#models" }, { label: m.name }])}
+        ${crumbs([{ label: "처음", to: "/" }, { label: b?.name || "기종", to: "/b/" + m.brand }, { label: m.name }])}
+        ${fromQr ? `<div class="qrhello">${ic("check", 16)}<span>복합기 QR로 연결됐습니다 · <b>${esc(m.name)}</b> 안내입니다. 아래에서 필요한 작업을 고르세요.</span></div>` : ""}
       </div>
       <div class="mpage">
         <aside class="msum" data-rv>
@@ -784,6 +835,75 @@
     </div>`;
   }
 
+  /* ── 화면: 브랜드별 기종 (2026-10-09, 폰 2단계) ───────────────────── */
+  function viewBrand(bid) {
+    const b = BRAND[bid];
+    if (!b) return view404();
+    const list = modelsOf(bid);
+    return `<div class="container">
+      <div class="phead">
+        ${crumbs([{ label: "처음", to: "/" }, { label: "기종", to: "/#models" }, { label: b.name }])}
+        <span class="eyebrow">${esc(b.full)} · 2단계 · 기종</span>
+        <h1 class="h1" style="margin-top:10px">${esc(b.name)} 복합기 ${list.length}종</h1>
+        <p class="lead">기기 앞면 스티커의 모델 번호를 보고 고르세요. 숫자 몇 자리만 맞으면 됩니다.</p>
+        <div class="bchips">${D.BRANDS.filter(x => modelsOf(x.id).length).map(x =>
+          `<a href="#/b/${x.id}" class="${x.id === bid ? "on" : ""}"><i style="background:${esc(x.accent)}"></i>${esc(x.name)}</a>`).join("")}</div>
+      </div>
+      <section class="section tight"><div class="models">${list.map(modelCard).join("")}</div></section>
+      <section class="section tight"><div class="callout info" data-rv>
+        <b>${ic("spark", 17)}내 기종이 안 보이면</b>
+        <p>위 검색에서 기기 앞면의 번호(예: 3220)를 넣어 보세요. 그래도 없으면 카카오톡으로 기기 사진을 보내 주시면 바로 안내해 드립니다.</p></div></section>
+      ${band()}
+    </div>`;
+  }
+
+  /* ── 화면: QR 스티커 (직원용 인쇄, 2026-10-09) ────────────────────────
+   * 스티커 주소는 /m/<기종>?src=qr — 고객이 찍으면 그 기종 화면이 바로 열리고 "QR로 연결됨" 안내가 뜬다.
+   * QR 그림은 qrcode-generator(cdnjs, 1.4.4)를 이 화면에서만 받아 그린다. */
+  const QR_LIB = "https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js";
+  const qrUrl = m => `${location.origin}/m/${m.id}?src=qr`;
+  const qrLabel = m => `<div class="label">
+      <div class="lhead"><span>${esc(D.meta.legal || D.meta.company)}</span><span>복합기 셀프 가이드</span></div>
+      <div class="lbody">
+        <div class="qrbox" data-url="${esc(qrUrl(m))}" aria-label="QR"></div>
+        <div class="ltx"><b>${esc(m.name)}</b><span>${esc(m.full || "")}</span>
+          <p>QR을 찍으면 이 복합기의 토너 교체 · 용지 걸림 · 검침 방법이 바로 나옵니다.</p></div>
+      </div>
+      <div class="lfoot"><span>문의 ${esc(D.meta.phone)}</span><span>카카오톡 채널 · ${esc(D.meta.company)}</span></div>
+    </div>`;
+  function viewQr(id) {
+    const m = id ? MODEL[id] : null;
+    if (id && !m) return view404();
+    const list = m ? Array(8).fill(m) : D.MODELS;
+    return `<div class="container">
+      <div class="phead qr-tools">
+        ${crumbs([{ label: "처음", to: "/" }, { label: "QR 스티커" }, ...(m ? [{ label: m.name }] : [])])}
+        <span class="eyebrow">직원용</span>
+        <h1 class="h1" style="margin-top:10px">복합기 QR 스티커</h1>
+        <p class="lead">${m ? `${esc(m.name)} 스티커 8장 — A4 라벨지(2×4칸, 한 칸 약 99×67mm) 한 장` : "기종마다 한 장씩. 기종을 누르면 그 기종만 8장(A4 한 장) 인쇄합니다."}</p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:14px">
+          <button class="btn" onclick="window.print()">${ic("printer", 17)}인쇄</button>
+          ${m ? `<a class="btn ghost" href="#/qr">전체 기종</a><a class="btn ghost" href="#/m/${m.id}?src=qr" target="_blank" rel="noopener">고객 화면 미리 보기 ${ic("ext", 15)}</a>` : ""}
+        </div>
+        <p class="muted" style="margin-top:12px">스티커 주소는 <code>${esc(location.origin)}/m/기종?src=qr</code> 입니다. 고객이 찍으면 그 기종 화면이 바로 열립니다.</p>
+      </div>
+      <section class="section tight"><div class="labels">${list.map(x => m ? qrLabel(x) : `<a class="labellink" href="#/qr/${x.id}">${qrLabel(x)}</a>`).join("")}</div></section>
+    </div>`;
+  }
+  function bindQr() {
+    const boxes = [...document.querySelectorAll(".qrbox[data-url]")];
+    if (!boxes.length) return;
+    const draw = () => boxes.forEach(box => {
+      try { const q = window.qrcode(0, "M"); q.addData(box.dataset.url); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true }); }
+      catch { box.textContent = "QR 생성 실패"; }
+    });
+    if (window.qrcode) return draw();
+    if (document.getElementById("qrlib")) return;
+    const sc = document.createElement("script"); sc.id = "qrlib"; sc.src = QR_LIB; sc.onload = draw;
+    sc.onerror = () => boxes.forEach(b => { b.textContent = "QR 라이브러리를 못 불러왔습니다"; });
+    document.head.appendChild(sc);
+  }
+
   /* ── 화면: 취급 품목 (2026-10-09: 홈 안쪽 구역이 아니라 개별 화면) ─────── */
   function viewProducts() {
     const all = D.PRODUCTS || [], byId = Object.fromEntries(all.map(p => [p.id, p]));
@@ -1198,7 +1318,10 @@
   const STALE_MS = 30 * 60 * 1000;
   function render() {
     if (Date.now() - LOADED_AT > STALE_MS) { location.reload(); return; }
-    const raw = decodeURIComponent(location.hash.replace(/^#/, "")) || "/";
+    const raw0 = decodeURIComponent(location.hash.replace(/^#/, "")) || "/";
+    const qi = raw0.indexOf("?");                                  // "#/m/samsung-3220?src=qr"
+    fromQr = new URLSearchParams(qi >= 0 ? raw0.slice(qi + 1) : "").get("src") === "qr";
+    const raw = qi >= 0 ? raw0.slice(0, qi) : raw0;
     const cut = raw.indexOf("/#");                                 // "/#models", "/m/samsung-3220/#sec-fix" 같은 화면 안 이동
     const anchor = cut >= 0 ? raw.slice(cut + 2) : null;
     const p = (cut >= 0 ? raw.slice(0, cut) : raw).split("/").filter(Boolean);
@@ -1219,6 +1342,8 @@
     else if (p[0] === "meter") { html = viewMeter(); title = `사용량 카운터 | ${D.meta.company}`; }
     else if (p[0] === "notices") { html = viewNotices(); title = `이용 안내 | ${D.meta.company}`; }
     else if (p[0] === "products") { html = viewProducts(); title = `취급 품목 | ${D.meta.company}`; }
+    else if (p[0] === "b" && p[1]) { html = viewBrand(p[1]); title = `${BRAND[p[1]]?.name || "브랜드"} 복합기 | ${D.meta.company}`; }
+    else if (p[0] === "qr") { html = viewQr(p[1]); title = `QR 스티커 | ${D.meta.company}`; }
     else if (p[0] === "f") { html = viewFixPick(p[1]); title = `${FIX[p[1]]?.title || "증상"} | ${D.meta.company}`; }
     else if (p[0] === "s") { html = viewSearch(p.slice(1).join("/")); title = `검색 | ${D.meta.company}`; }
     else html = view404();
@@ -1227,15 +1352,15 @@
     document.title = title;
     // 헤더에서 지금 보고 있는 곳 표시
     const key = p[0] === "fixes" ? "#/fixes" : p[0] === "pattern" ? "#/pattern"
-              : p[0] === "meter" ? "#/meter" : p[0] === "products" ? "#/products" : p[0] === "m" || p[0] === "t" ? "#/#models" : "";
+              : p[0] === "meter" ? "#/meter" : p[0] === "products" ? "#/products" : p[0] === "m" || p[0] === "t" || p[0] === "b" ? "#/#models" : "";
     document.querySelectorAll("#navLinks a").forEach(el =>
       el.classList.toggle("on", !!key && el.getAttribute("href") === key));
-    const tabKey = !p.length ? "home" : p[0] === "m" || p[0] === "t" ? "models"
+    const tabKey = !p.length ? "home" : p[0] === "m" || p[0] === "t" || p[0] === "b" ? "models"
                  : p[0] === "fixes" || p[0] === "f" ? "fixes"
-                 : (p[0] === "pattern" || p[0] === "meter" || p[0] === "notices" || p[0] === "products") ? "more" : "";
+                 : (p[0] === "pattern" || p[0] === "meter" || p[0] === "notices" || p[0] === "products" || p[0] === "qr") ? "more" : "";
     document.querySelectorAll("#tabbar [data-tab]").forEach(el => el.classList.toggle("on", el.dataset.tab === tabKey));
     window.FIRSTOA?.sheetClose?.();
-    bindSteps(); bindTabs(); bindJump(); reveal();
+    bindSteps(); bindTabs(); bindJump(); bindQr(); reveal();
     if (anchor) document.getElementById(anchor)?.scrollIntoView({ behavior: "instant", block: "start" });
     else window.scrollTo({ top: 0, behavior: "instant" });
   }
@@ -1322,6 +1447,7 @@
            ${row("#/meter", "meter", "사용량 카운터", "검침 숫자 확인하는 법")}
            ${row("#/notices", "book", "이용 안내", "장마철 용지 · 방문 원칙 · 소모품 신청")}
            ${row("#/products", "star", "취급 품목", "컴퓨터 · 소프트웨어 · 사무기기 · 네트워크 · 가전")}
+           ${row("#/qr", "grid", "QR 스티커 인쇄", "직원용 · 복합기에 붙이는 기종별 QR")}
            ${D.meta.channel ? row(D.meta.channel, "youtube", "유튜브 채널", "작업 영상 전체 보기", true) : ""}
            ${D.meta.homepage ? row(D.meta.homepage, "home", "본사 홈페이지", "firstoa.co.kr", true) : ""}`;
       wrap.hidden = false; document.body.style.overflow = "hidden";
@@ -1436,5 +1562,6 @@
   }
 
   addEventListener("hashchange", render);
+  matchMedia("(max-width: 759px)").addEventListener?.("change", () => { if (!location.hash || location.hash === "#/" || location.hash.startsWith("#/#")) render(); });
   chrome(); bindGlobal(); render();
 })();

@@ -33,7 +33,7 @@ console.log('\n[1] 화면 그리기');
 const routes = ['#/', '#/m/samsung-3220', '#/m/samsung-3220/toner', '#/m/hp-8710/ink',
   '#/fixes', '#/fixes/samsung', '#/fixes/samsung/acr-ctd', '#/fixes/xerox', '#/fixes/xerox/jam', '#/pattern', '#/meter', '#/notices', '#/f/jam', '#/f/acr-ctd', '#/m/samsung-3220/f/jam', '#/m/samsung-3220/f/acr-ctd',
   '#/m/xerox-c2263/f/line-copy',
-  '#/products', '#/products/#grp-office', '#/m/samsung-3220/#sec-fix', '#/t/toner', '#/t/meter', '#/s/3220', '#/s/줄', '#/s/zzz없음', '#/m/없음', '#/헛주소'];
+  '#/products', '#/products/#grp-office', '#/b/samsung', '#/qr', '#/qr/samsung-3220', '#/m/samsung-3220?src=qr', '#/m/samsung-3220/#sec-fix', '#/t/toner', '#/t/meter', '#/s/3220', '#/s/줄', '#/s/zzz없음', '#/m/없음', '#/헛주소'];
 for (const r of routes) {
   try {
     nav(r);
@@ -413,3 +413,18 @@ nav('#/m/xerox-c2263/f/adf-jam');
 appHtml().includes('좁은 유리띠') ? ok('제록스 원고 걸림: 후지필름 공통 순서') : bad('제록스 ADF 순서');
 nav('#/m/samsung-3220/f/jam');
 doc.querySelectorAll('#app .steps li').length === 9 ? ok('삼성 용지 걸림 순서는 그대로(9단계)') : bad('삼성 걸림 ' + doc.querySelectorAll('#app .steps li').length);
+
+/* 23. QR 스티커 · 브랜드 화면 · QR 연결 안내 (2026-10-09) */
+console.log('\n[23] QR · 브랜드 화면');
+nav('#/b/samsung');
+doc.querySelectorAll('#app .mcard').length === D.MODELS.filter(m => m.brand === 'samsung').length ? ok('삼성 브랜드 화면: 삼성 기종만') : bad('브랜드 화면 기종 수 ' + doc.querySelectorAll('#app .mcard').length);
+doc.querySelectorAll('#app .bchips a').length >= 5 ? ok('브랜드 화면에 다른 브랜드 칩') : bad('브랜드 칩 없음');
+nav('#/qr');
+doc.querySelectorAll('#app .label').length === D.MODELS.length && doc.querySelectorAll('#app .qrbox[data-url]').length === D.MODELS.length ? ok(`QR 스티커 전체 ${D.MODELS.length}장`) : bad('QR 전체 ' + doc.querySelectorAll('#app .label').length);
+nav('#/qr/samsung-3220');
+doc.querySelectorAll('#app .label').length === 8 && doc.querySelector('#app .qrbox').dataset.url.endsWith('/m/samsung-3220?src=qr') ? ok('삼성 3220 스티커 8장, 주소 /m/samsung-3220?src=qr') : bad('기종 스티커 ' + doc.querySelectorAll('#app .label').length + ' ' + (doc.querySelector('#app .qrbox') || {}).dataset);
+nav('#/m/samsung-3220?src=qr');
+doc.querySelector('#app .qrhello') && doc.querySelector('#app .mpage') ? ok('QR 주소로 들어오면 기종 화면 + 연결 안내') : bad('QR 연결 안내 없음');
+nav('#/m/samsung-3220');
+!doc.querySelector('#app .qrhello') ? ok('일반 주소엔 연결 안내 없음') : bad('일반 주소에 QR 안내');
+[...doc.querySelectorAll('#bsheet a, .bsheet a, #app a')].some(a => a.getAttribute('href') === '#/qr') || doc.body.innerHTML.includes('#/qr') ? ok('더보기에 QR 스티커 메뉴') : bad('QR 메뉴 없음');
