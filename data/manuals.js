@@ -327,9 +327,10 @@ window.FIRSTOA_MANUAL = {
 
   /* ── 작업 분류 ─────────────────────────────────────────────── */
   CATEGORIES: [
-    { id: "consumable", name: "소모품 교체", icon: "toner", desc: "토너 · 폐토너통" },
-    { id: "fix",        name: "자주 생기는 문제", icon: "error", desc: "줄 · 걸림 · 에러 표시" },
-    { id: "manage",     name: "관리 · 검침",   icon: "meter", desc: "카운터 확인" },
+    // short: 폰의 3칸 탭에 들어가는 짧은 이름(2026-10-09)
+    { id: "consumable", name: "소모품 교체", short: "소모품", icon: "toner", desc: "토너 · 폐토너통" },
+    { id: "fix",        name: "자주 생기는 문제", short: "문제 해결", icon: "error", desc: "줄 · 걸림 · 에러 표시" },
+    { id: "manage",     name: "관리 · 검침",   short: "관리·검침", icon: "meter", desc: "카운터 확인" },
   ],
 
   /* ── 작업 종류 ──────────────────────────────────────────────

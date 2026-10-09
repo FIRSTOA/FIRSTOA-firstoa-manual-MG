@@ -415,7 +415,7 @@
         <div class="mbody">
           <p class="lead mintro">필요한 것을 고르면 영상과 순서를 함께 보여드립니다.</p>
           <div class="jump" id="jump">${secs.map((x, i) =>
-            `<a href="#/m/${m.id}/#${x.id}" data-sec="${x.id}" class="${i ? "" : "on"}">${ic(x.cat.icon, 16)}${esc(x.cat.name)}</a>`).join("")}</div>
+            `<a href="#/m/${m.id}/#${x.id}" data-sec="${x.id}" class="${i ? "" : "on"}">${ic(x.cat.icon, 16)}<span class="lf">${esc(x.cat.name)}</span><span class="ls">${esc(x.cat.short || x.cat.name)}</span></a>`).join("")}</div>
           ${secs.map(x => `<section class="section tight" id="${x.id}">
             <div class="sec-head" data-rv><div>
               <span class="eyebrow">${esc(x.cat.desc)}</span>
@@ -918,7 +918,7 @@
         <span class="eyebrow gold">${esc(D.meta.legal || D.meta.company)}</span>
         <h1 class="h1" style="margin-top:10px">복합기만 하는 게 아닙니다</h1>
         <p class="lead">${esc(D.meta.oneStop)} — 사무실에 필요한 것은 한 곳에서 해결합니다. ${esc(D.meta.trust || "")}</p>
-        <div class="jump" id="jump">${groups.map((g, i) =>
+        <div class="jump jump-wrap" id="jump">${groups.map((g, i) =>
           `<a href="#/products/#grp-${g.id}" data-sec="grp-${g.id}" class="${i ? "" : "on"}">${ic(g.icon || "box", 16)}${esc(g.name)}</a>`).join("")}</div>
       </div>
       <div class="pgroups">

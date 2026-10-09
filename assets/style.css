@@ -932,3 +932,16 @@ body.has-tabbar{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
 .mpage > *{min-width:0}
 .mbody{min-width:0; max-width:100%}
 .mbody .jump{max-width:100%}
+
+/* ── 폰 기종 화면 탭: 가로 드래그 대신 3칸 균등 분할(아이콘 위 · 짧은 이름 아래), 2026-10-09 ── */
+.jump a .ls{display:none}
+@media(max-width:759px){
+  .mbody .jump{display:grid; grid-template-columns:repeat(3,1fr); gap:6px; overflow:visible; margin:0 -2px; padding:10px 2px 12px}
+  .mbody .jump a{flex:1 1 auto; flex-direction:column; justify-content:center; gap:5px; height:auto; min-height:58px; padding:8px 4px 9px;
+    border-radius:16px; font-size:12.5px; font-weight:750; white-space:normal; text-align:center; line-height:1.15}
+  .mbody .jump a .ic{width:19px; height:19px}
+  .mbody .jump a .lf{display:none} .mbody .jump a .ls{display:inline}
+  .mbody .jump a.on{box-shadow:0 6px 16px rgba(3,24,63,.18)}
+  /* 취급 품목 묶음 탭은 드래그 없이 줄바꿈 */
+  .jump.jump-wrap{flex-wrap:wrap; overflow:visible; margin:0; padding:12px 0}
+}
