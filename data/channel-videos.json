@@ -1,8 +1,36 @@
 {
   "channel": "https://www.youtube.com/channel/UCiXGLLxY8xwpcP1_-PQrlJw",
-  "fetchedAt": "2026-10-08",
+  "fetchedAt": "2026-10-09",
   "note": "scripts/fetch-channel.mjs 로 갱신합니다. 사이트가 읽는 파일은 아니고, 연결 누락을 점검하는 기준표입니다.",
   "videos": [
+    {
+      "id": "xxPDPqYOViE",
+      "title": "용지걸림에러,M2 1317 에러"
+    },
+    {
+      "id": "X_wbjG8dxKI",
+      "title": "출력시 흰줄,연하게 출력시 처리 방법"
+    },
+    {
+      "id": "VVAUqVdQneg",
+      "title": "출력시 틀어짐 용지 트레이 가이드조정"
+    },
+    {
+      "id": "R94JAaRZkRE",
+      "title": "복사,스캔시 줄나옴 증상 유리 PM"
+    },
+    {
+      "id": "GJwR5_t-ons",
+      "title": "복사,스캔 시 상 틀어짐 ADF 가이드조정"
+    },
+    {
+      "id": "sjxiKdqiYbE",
+      "title": "ADF 용지걸림 이물질 제거 코팅지로 해결"
+    },
+    {
+      "id": "SaDQsqdgtLA",
+      "title": "ACR,CTD센서 오염 처리 방법"
+    },
     {
       "id": "4D9fZRltgMQ",
       "title": "k7500 폐통 교체방법"
@@ -94,22 +122,6 @@
     {
       "id": "OzhlvZ4f0E8",
       "title": "K4250 폐통 교체 방법"
-    },
-    {
-      "id": "Swn0LRQpoi8",
-      "title": "K4250 토너 교체 방법"
-    },
-    {
-      "id": "0ZQ_yvoX85c",
-      "title": "4220 토너 교체 방법"
-    },
-    {
-      "id": "bBUR7V6VRYs",
-      "title": "3220,4220 폐통 교체 방법"
-    },
-    {
-      "id": "RODkrd6bfeY",
-      "title": "3220 토너 교체 방법"
     }
   ]
 }
