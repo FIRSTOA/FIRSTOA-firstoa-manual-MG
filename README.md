@@ -225,3 +225,17 @@ git push          # 1~2분 뒤 사이트에 반영
 
 작업명 인식: 토너 → 토너 교체 · 폐토너통/폐통/회수통 → 폐토너통 교체 · 드럼 → 드럼 교체 · 검침/카운터 → 검침 카운터.
 지금 당장 돌려 보려면 GitHub → Actions → "유튜브 새 영상 자동 연결" → Run workflow.
+
+
+## 주소 · 검색 노출 · 성능 (2026-10-09)
+
+- **주소는 경로 방식**: `/m/<기종>`, `/m/<기종>/<작업>`, `/m/<기종>/f/<증상>`, `/fixes/<브랜드>/<증상>`, `/b/<브랜드>`, `/qr`. 화면 안 이동만 `#models`, `#sec-fix` 같은 앵커.
+  옛 해시 주소(`#/m/x`)로 들어오면 앱이 경로로 바꿔 준다.
+- **검색엔진용 정적 페이지**: `node scripts/prerender.mjs` 가 주소마다 HTML(제목·설명·본문·JSON-LD HowTo/VideoObject/Breadcrumb)과 `sitemap.xml` 을 만든다.
+  `data/manuals.js` 를 고치면 다시 돌릴 것(유튜브 자동 연결 워크플로도 돌린다). 도메인이 바뀌면 `SITE_URL=https://manual.firstoa.co.kr node scripts/prerender.mjs`.
+  Vercel 은 파일이 있으면 그 파일(cleanUrls), 없으면 index.html 을 준다. 그래서 index.html 의 스크립트 경로는 절대 경로.
+- **등록**: 구글 Search Console · 네이버 서치어드바이저에 사이트를 등록하고 `sitemap.xml` 을 제출한다. 소유 확인 메타 태그는 index.html `<head>` 에 넣고 prerender 를 다시 돌린다.
+- **성능**: 글꼴은 Pretendard 하나, 사진은 WebP. 첫 로딩 약 1.3MB → 0.6MB.
+- **통계**: Vercel Web Analytics(`/_vercel/insights/script.js`). 대시보드 → 프로젝트 → Analytics 에서 켜야 집계된다.
+- **보안**: CSP(vercel.json). 새 외부 출처(스크립트·이미지·iframe)를 쓰면 CSP 에 추가해야 한다.
+- **오프라인**: `sw.js` — HTML·스크립트·데이터는 네트워크 우선(접속되면 항상 최신), 사진·글꼴만 캐시 우선. 캐시 버전은 `VERSION`.

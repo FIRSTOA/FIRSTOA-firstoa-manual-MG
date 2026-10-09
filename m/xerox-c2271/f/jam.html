@@ -25,9 +25,7 @@
 
 <!-- 본사 홈페이지와 같은 Pretendard. 못 받아오면 기기 기본 글꼴로 내려앉습니다. -->
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
 <!-- 경로 주소(/m/기종?src=qr, QR 스티커)에서도 스크립트가 제대로 오도록 절대 경로(2026-10-09) -->
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="canonical" href="https://firstoa-manual-mg.vercel.app/m/xerox-c2271/f/jam">
@@ -51,9 +49,9 @@
       <a href="/products">취급 품목</a>
     </nav>
     <span class="nav-sp"></span>
-    <a class="navtel" id="navTel" href="#"></a>
+    <a class="navtel" id="navTel" href="#" aria-label="대표번호로 전화"></a>
     <button class="navbtn" id="navSearch" aria-label="검색 열기"></button>
-    <a class="navbtn kko" id="navKakao" href="#" target="_blank" rel="noopener"></a>
+    <a class="navbtn kko" id="navKakao" href="#" target="_blank" rel="noopener" aria-label="카카오톡 상담"></a>
   </div>
 </header>
 
@@ -85,5 +83,10 @@
 <script src="/assets/chart.js"></script>
 <script src="/assets/ui.js"></script>
 <script src="/assets/app.js"></script>
+<!-- 방문 통계: Vercel Web Analytics(쿠키 없음). 프로젝트 설정 → Analytics 에서 켜야 집계된다(2026-10-09) -->
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<!-- 오프라인 대비: 본 화면·순서는 저장해 두고, 접속되면 항상 서버 것을 먼저 쓴다(옛 화면 고착 방지) -->
+<script>if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));</script>
 </body>
 </html>

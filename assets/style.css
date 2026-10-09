@@ -945,3 +945,9 @@ body.has-tabbar{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
   /* 취급 품목 묶음 탭은 드래그 없이 줄바꿈 */
   .jump.jump-wrap{flex-wrap:wrap; overflow:visible; margin:0; padding:12px 0}
 }
+
+/* 폰 머리말 단추를 손가락 크기(44px)로 (2026-10-09) */
+@media(max-width:759px){ .navbtn,.navbtn.kko,.navtel{min-height:44px; min-width:44px} }
+/* 정적 페이지(검색엔진용) 본문 — 앱이 그리기 전 잠깐 보이는 목록. 앱이 뜨면 바뀐다 */
+.prerender{padding:28px 0 60px; line-height:1.7} .prerender h1{font-size:24px; margin:0 0 10px} .prerender h2{font-size:17px; margin:22px 0 6px}
+.prerender ul,.prerender ol{margin:0; padding-left:22px} .prerender a{color:var(--blue)}
