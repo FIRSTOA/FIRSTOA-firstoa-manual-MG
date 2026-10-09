@@ -198,14 +198,14 @@ nav('#/m/samsung-3220');
 const mArts = doc.querySelectorAll('#sec-manage .ph.art .dev').length;
 mArts >= 3 ? ok(`관리·검침 카드 그림 ${mArts}개`) : bad('관리·검침 카드 그림 ' + mArts);
 const sFix = [...doc.querySelectorAll('#sec-fix .tcard')];
-sFix.length === 8 && sFix.every(c => c.querySelector('img')) ? ok('삼성 3220 증상 8개 모두 영상 썸네일') : bad(`삼성 증상 ${sFix.length}개, 썸네일 ${sFix.filter(c => c.querySelector('img')).length}`);
+sFix.length === 7 && sFix.every(c => c.querySelector('img')) ? ok('삼성 3220 증상 7개 모두 영상 썸네일') : bad(`삼성 증상 ${sFix.length}개, 썸네일 ${sFix.filter(c => c.querySelector('img')).length}`);
 nav('#/m/xerox-c2263');
 const xFix = [...doc.querySelectorAll('#sec-fix .tcard b')].map(b => b.textContent);
-xFix.length === 5 && !xFix.some(t => /ACR|가이드 조정/.test(t)) ? ok('제록스엔 글 순서 있는 증상 5개만') : bad('제록스 증상: ' + xFix.join(','));
+xFix.length === 4 && !xFix.some(t => /ACR|틀어짐/.test(t)) ? ok('제록스엔 공통 증상 4개만') : bad('제록스 증상: ' + xFix.join(','));
 nav('#/fixes/samsung');
 !appHtml().includes('내용 준비 중') ? ok('삼성 증상 목록에 "준비 중" 없음') : bad('삼성 증상 목록에 준비 중 남음');
 nav('#/m/samsung-3220/f/acr-ctd');
-doc.querySelector('#app .player') && appHtml().includes('영상대로 따라') ? ok('삼성 ACR·CTD: 영상 + 안내') : bad('ACR·CTD 화면');
+doc.querySelector('#app .player') && doc.querySelectorAll('#app .steps li').length === 8 ? ok('삼성 ACR·CTD: 영상 + 글 순서 8단계') : bad('ACR·CTD 화면 ' + doc.querySelectorAll('#app .steps li').length);
 nav('#/m/samsung-3220/meter');
 doc.querySelector('#app .mpanel') && appHtml().includes('X3220') && doc.querySelectorAll('#app .story .scard .scene').length === 3 && !appHtml().includes('기종 공통 일반 안내') ? ok('삼성 3220 검침: 단계별 그림 카드 3장 + 문장') : bad('검침 화면 그림 카드 ' + doc.querySelectorAll('#app .story .scard .scene').length);
 nav('#/m/kyocera/meter');
@@ -230,7 +230,7 @@ const xTx = doc.getElementById('app').textContent;
 !xTx.includes('ACR') ? ok('제록스 기종엔 삼성 전용 처리 숨김') : bad('삼성 전용 처리가 제록스에 샜다');
 xTx.includes('용지 걸림') ? ok('전 기종 공통 처리는 어디서나 표시') : bad('공통 처리 누락');
 nav('#/m/samsung-3220/f/acr-ctd');
-doc.getElementById('app').textContent.includes('준비') ? ok('내용 없는 항목은 "준비 중"으로 안내') : bad('빈 항목 처리 없음');
+doc.querySelectorAll('#app .steps li').length ? ok('ACR·CTD 에 글 순서 있음(2026-10-09 채움)') : bad('ACR·CTD 글 순서 없음');
 // 드럼은 브라더만
 const drumModels = D.MODELS.filter(m => 'drum' in m.videos).map(m => m.id);
 drumModels.length === 1 && drumModels[0] === 'brother-5700'
@@ -339,3 +339,10 @@ win.FIRSTOA.showAll();
 
 console.log(fails ? `\n실패 ${fails}건` : '\n모두 통과');
 process.exit(fails ? 1 : 0);
+
+/* 17. 2026-10-09 밤: 증상 제목은 고객 말로, 글 순서 없는 증상 0 */
+console.log('\n[17] 증상 제목 · 글 순서');
+const noSteps = D.FIXES.filter(f => !(f.steps || []).length).map(f => f.id);
+noSteps.length ? bad('글 순서 없는 증상: ' + noSteps.join(', ')) : ok(`증상 ${D.FIXES.length}개 모두 글 순서 있음`);
+!D.FIXES.some(f => f.id === 'glass-pm') ? ok('유리 PM 은 "복사/스캔 시 줄 나옴"에 합쳐짐') : bad('glass-pm 남음');
+D.FIXES.every(f => !/PM|가이드 조정/.test(f.title)) ? ok('제목에 PM · 가이드 조정 같은 말 없음') : bad('제목: ' + D.FIXES.map(f => f.title).join(' | '));
