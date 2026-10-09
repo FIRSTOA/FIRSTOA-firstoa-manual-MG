@@ -25,7 +25,10 @@ window.FIRSTOA_MANUAL = {
     company: "퍼스트전산",
     legal: "(주)퍼스트전산",
     title: "복합기 사용설명서",
-    tagline: "토너 교체부터 검침까지, 담당 엔지니어가 직접 찍은 영상을 보고 그대로 따라 하세요.",
+    // 홈 첫 문장(2026-10-09 사용자: "우리가 가기 싫은 게 아니라, 기다리는 동안 5분이면 되는 걸 해 볼 수 있다"는 조심스러운 위안 톤)
+    tagline: "AS 일정이 밀려 기다리시게 하는 날이 있습니다. 그럴 때 복합기를 바로 다시 쓰실 수 있도록, 토너 교체부터 검침까지 담당 엔지니어가 직접 찍은 영상 중 안전하고 간단한 것만 골라 담았습니다. 직접 하시는 건 선택입니다. 어렵거나 불안하시면 언제든 전화 주세요. 저희가 갑니다.",
+    heroTitle: "급하실 때,<br><em>5분</em>이면 되는 것들만 모았습니다.",
+    credits: "사진 일부: 본사 쇼핑몰 · Wikimedia Commons(공개 저작물) · WordPress Photo Directory(CC0) · Flickr cartridgesaveimages(CC BY 2.0)",
     phone: "1522-1093",
     phone2: "02-464-1095",
     hours: "평일 09:00 – 18:00",
@@ -68,6 +71,10 @@ window.FIRSTOA_MANUAL = {
     { id: "software", name: "소프트웨어", art: "software",
       desc: "윈도우 · 오피스 · 한글 등 정품 라이선스. PC와 함께 신청하시면 설치까지 해드립니다.",
       link: "https://firstoa.co.kr" },
+    // PC 유지보수(MSP) — 유튜브 채널 소개글 기준(월 15,000원 패키지, 원격+방문+대체장비). 2026-10-09 사용자 요청.
+    { id: "pc-care", name: "PC · 노트북 유지보수 (월 정액)", img: "assets/img/pc-care.jpg",
+      desc: "월 15,000원 패키지. 원격 지원 + 방문 지원 + 대체 장비까지, 사무실 PC를 저희가 관리합니다.",
+      link: "https://firstoa.co.kr" },
     { id: "copier", name: "복합기", img: "assets/img/copier.jpg",
       desc: "삼성 · 신도리코 · 후지필름 · 교세라 A3 컬러/흑백",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=6" },
@@ -86,9 +93,13 @@ window.FIRSTOA_MANUAL = {
     { id: "plotter", name: "대형 플로터", img: "assets/img/plotter.jpg",
       desc: "HP T520 · T530 / A0 · A1 도면 출력",
       link: "https://firstoa.co.kr/shop.php?goPage=GoodList&cat_no=8" },
-    // 용지는 브랜드를 특정하지 않습니다 — 특정 상품 사진을 걸면 "받은 것과 다르다"는 항의가 생깁니다
-    { id: "paper", name: "복사용지", art: "paper-ream",
+    // 용지 사진은 상표가 안 보이는 것으로 — 특정 상품 사진을 걸면 "받은 것과 다르다"는 항의가 생깁니다(2026-10-09 실제 사진으로 교체)
+    { id: "paper", name: "복사용지", img: "assets/img/paper.jpg",
       desc: "A4 · A3 복사용지 정기 납품. 복합기와 함께 신청하시면 됩니다.",
+      link: "https://firstoa.co.kr" },
+    // 사무 가구 — 2026-10-09 사용자 요청. 본사 쇼핑몰엔 분류가 없어 상담으로 연결.
+    { id: "furniture", name: "사무 가구", img: "assets/img/furniture.jpg",
+      desc: "책상 · 의자 · 파티션 · 수납장. 사무실 꾸밀 때 복합기 · PC와 함께 한 번에.",
       link: "https://firstoa.co.kr" },
     { id: "nas", name: "NAS · 네트워크", img: "assets/img/nas.jpg",
       desc: "사내 자료 공유 · 백업 · 보안 솔루션",
@@ -106,9 +117,11 @@ window.FIRSTOA_MANUAL = {
   PRODUCT_GROUPS: [
     { id: "computer",  name: "컴퓨터",     desc: "데스크탑 · 노트북 · 맥 · 워크스테이션", icon: "grid",    ids: ["desktop", "laptop", "mac", "workstation"] },
     { id: "software",  name: "소프트웨어", desc: "윈도우 · 오피스 · 한글 · 보안 프로그램", icon: "spark",   ids: ["software"] },
+    { id: "care",      name: "유지보수 · 관리", desc: "PC · 노트북 월 정액 관리(원격 + 방문 + 대체 장비)", icon: "check", ids: ["pc-care"] },
     { id: "office",    name: "사무기기",   desc: "복합기 · 플로터 · 세단기 · 전자칠판 · 복사용지", icon: "printer", ids: ["copier", "plotter", "shredder", "board", "paper"] },
     { id: "network",   name: "네트워크",   desc: "NAS · 공유기 · 스위치 · 배선 · 보안", icon: "shield",  ids: ["nas", "network"] },
     { id: "appliance", name: "가전",       desc: "공기청정기 · 냉난방", icon: "star",    ids: ["air"] },
+    { id: "furniture", name: "가구",       desc: "책상 · 의자 · 파티션 · 수납장", icon: "box",     ids: ["furniture"] },
   ],
 
   /* ── 렌탈 패키지 ───────────────────────────────────────────
@@ -320,18 +333,18 @@ window.FIRSTOA_MANUAL = {
       ],
     },
     {
-      // 잉크젯(HP 오피스젯)은 토너가 아니라 잉크 카트리지입니다(2026-10-09). 기종의 videos 에 ink 칸이 있으면 이 작업이 나옵니다.
-      id: "ink", cat: "consumable", title: "잉크 카트리지 교체", icon: "toner", minutes: 3,
-      summary: "화면에 잉크 부족 · 교체 표시가 뜰 때",
+      // 잉크젯(HP 오피스젯)은 토너가 아니라 잉크를 보충합니다(2026-10-09, 사용자: 카트리지 교체가 아니라 보충식). 기종의 videos 에 ink 칸이 있으면 이 작업이 나옵니다.
+      id: "ink", cat: "consumable", title: "잉크 보충", icon: "toner", minutes: 3,
+      summary: "화면에 잉크 부족 표시가 뜰 때",
       steps: [
-        "카트리지 덮개를 열고 카트리지 받침대가 가운데로 움직여 멈출 때까지 기다립니다.",
-        "빈 카트리지를 살짝 눌러 걸쇠를 풀고 빼냅니다.",
-        "새 카트리지의 보호 테이프를 떼고, 색 표시에 맞춰 딸깍 소리가 날 때까지 밀어 넣습니다.",
-        "덮개를 닫고 화면 안내에 따라 정렬 페이지를 인쇄합니다.",
+        "잉크 탱크 덮개를 열고, 보충할 색의 탱크 마개를 엽니다.",
+        "같은 색 잉크병의 뚜껑을 열고 병 입구를 탱크 주입구에 맞춰 세웁니다. 누르지 않아도 저절로 들어갑니다.",
+        "잉크가 더 들어가지 않으면(가득 참) 병을 빼고 탱크 마개를 꼭 닫습니다.",
+        "덮개를 닫습니다. 화면의 잉크 양 표시는 조금 뒤에 바뀝니다.",
       ],
       cautions: [
-        "카트리지의 금색 접점과 노즐은 손으로 만지지 마세요.",
-        "카트리지를 뺀 채 오래 두면 노즐이 마릅니다. 새 카트리지를 준비한 뒤 바꿔 주세요.",
+        "병 색과 탱크 색을 꼭 맞추세요. 색을 바꿔 넣으면 헤드가 막혀 수리해야 합니다.",
+        "윗선을 넘기지 마세요. 넘치면 안쪽에 잉크가 고여 번집니다.",
       ],
     },
     {
@@ -716,9 +729,9 @@ window.FIRSTOA_MANUAL = {
     },
     {
       id: "xerox-c2263", brand: "xerox",
-      name: "제록스 C2263 · C2265 · C2060",
+      name: "제록스 C2263 · C2265",
       full: "DocuCentre-V · ApeosPort 계열",
-      aka: ["마블", "2263", "2265", "2060", "C2263", "C2265", "C2060"],
+      aka: ["마블", "2263", "2265", "C2263", "C2265"],
       device: "floor-color",
       photo: "assets/img/m-xerox-c2263.jpg",
       videos: {
@@ -729,6 +742,21 @@ window.FIRSTOA_MANUAL = {
       notes: {
         waste: "이 기종의 회수통 부품 이름은 R5 입니다. 주문하실 때 이 이름으로 말씀하시면 됩니다.",
       },
+    },
+    {
+      // 2026-10-09 추가(사용자: "후지필름 쪽 2060이 빠졌다"). 사진은 본사 쇼핑몰의 Apeos C2450 — 같은 Apeos 계열 외형.
+      id: "xerox-apeos-c2060", brand: "xerox",
+      name: "후지필름 Apeos C2060 · C2560 · C3060",
+      full: "Apeos C2060 계열 (후지필름)",
+      aka: ["2060", "2560", "3060", "Apeos", "C2060", "C2560", "C3060", "아페오스", "마블3", "마블4"],
+      device: "floor-color",
+      photo: "assets/img/m-xerox-apeos-c2060.jpg",
+      videos: {
+        toner: "",
+        waste: "",
+        meter: "",
+      },
+      notes: {},
     },
     {
       id: "xerox-c2271", brand: "xerox",
@@ -868,7 +896,7 @@ window.FIRSTOA_MANUAL = {
       device: "inkjet",
       photo: "assets/img/m-hp-8710.jpg",
       videos: {
-        ink: "",   // 잉크젯 — 잉크 카트리지 교체(2026-10-09)
+        ink: "",   // 잉크젯 — 잉크 보충(2026-10-09)
         meter: "",
       },
       notes: {},
@@ -881,7 +909,7 @@ window.FIRSTOA_MANUAL = {
       device: "inkjet",
       photo: "assets/img/m-hp-9010.jpg",
       videos: {
-        ink: "",   // 잉크젯 — 잉크 카트리지 교체(2026-10-09)
+        ink: "",   // 잉크젯 — 잉크 보충(2026-10-09)
         meter: "",
       },
       notes: {},

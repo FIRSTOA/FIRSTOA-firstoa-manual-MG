@@ -211,7 +211,7 @@ doc.querySelector('#app .mpanel') && appHtml().includes('X3220') && doc.querySel
 nav('#/m/kyocera/meter');
 doc.querySelectorAll('#app .mpanel .mgroup').length === 2 ? ok('교세라 검침: 두 묶음(M5521·M5526·MA2100, 2101)') : bad('교세라 검침 묶음 ' + doc.querySelectorAll('#app .mpanel .mgroup').length);
 nav('#/m/hp-8710');
-appHtml().includes('잉크 카트리지 교체') && !appHtml().includes('토너 교체') ? ok('HP 오피스젯: 잉크 카트리지') : bad('HP 오피스젯 작업명');
+appHtml().includes('잉크 보충') && !appHtml().includes('토너 교체') ? ok('HP 오피스젯: 잉크 보충') : bad('HP 오피스젯 작업명');
 for (const id of ['kyocera', 'brother-5700', 'brother-8900', 'oki-5473', 'lexmark-mx410']) { nav('#/m/' + id); if ([...doc.querySelectorAll('#sec-consumable .tcard b')].some(b => b.textContent.includes('폐토너통'))) bad(id + ' 에 폐토너통 카드 남음'); }
 ok('교세라·브라더·오키·렉스마크 폐토너통 없음');
 nav('#/notices');
@@ -269,7 +269,7 @@ navLinks.join('/') === '기종 전체/자주 생기는 문제/4색 패턴 출력
   ? ok('헤더: ' + navLinks.join(' · ')) : bad('헤더 구성 다름: ' + navLinks.join(','));
 // 용지는 브랜드 사진을 쓰지 않는다
 const paper = D.PRODUCTS.find(p => p.id === 'paper');
-paper && !paper.img ? ok('복사용지는 상표 없는 일러스트') : bad('용지에 특정 상품 사진이 붙어 있음');
+paper && paper.img === 'assets/img/paper.jpg' ? ok('복사용지는 상표 없는 실제 사진(2026-10-09)') : bad('용지 사진이 지정한 상표 없는 사진이 아님');
 
 /* 13. 브랜드별 증상 구조 · 5장 출력 */
 console.log('\n[13] 브랜드별 증상 · 출력 5장');
@@ -357,3 +357,13 @@ nav('#/fixes/samsung/line-print');
 doc.querySelectorAll('#app .steps li').length === 7 ? ok('삼성 브랜드 화면 PC 출력 흰 줄: 청소 막대 7단계') : bad('삼성 흰 줄 단계 ' + doc.querySelectorAll('#app .steps li').length);
 nav('#/m/samsung-3220/f/line-copy');
 doc.getElementById('app').textContent.includes('물티슈') ? ok('복사/스캔 줄: 영상 순서(오염 자리 찾기 · 물티슈)') : bad('복사/스캔 줄 순서');
+
+/* 19. 취급 품목 추가(PC 유지보수 · 가구 · 용지 사진) · 후지필름 Apeos C2060 */
+console.log('\n[19] 취급 품목 추가 · Apeos C2060');
+['pc-care', 'furniture', 'paper'].every(id => { const p = D.PRODUCTS.find(x => x.id === id); return p && p.img && fs.existsSync(HOME + '/' + p.img); }) ? ok('PC 유지보수 · 가구 · 용지 카드에 실제 사진') : bad('새 품목 사진 누락');
+D.MODELS.find(m => m.id === 'xerox-apeos-c2060' && m.photo && fs.existsSync(HOME + '/' + m.photo)) ? ok('후지필름 Apeos C2060 기종 카드 + 사진') : bad('Apeos C2060 카드 없음');
+!D.MODELS.find(m => m.id === 'xerox-c2263').name.includes('2060') ? ok('제록스 C2263 카드에서 2060 분리') : bad('C2263 카드에 2060 남음');
+nav('#/m/xerox-apeos-c2060/meter');
+appHtml().includes('톱니바퀴') ? ok('Apeos C2060 검침: 톱니바퀴 방법으로 안내') : bad('Apeos C2060 검침 안내');
+nav('#/s/2060');
+doc.querySelectorAll('#app .mcard').length === 1 ? ok('"2060" 검색 → Apeos 카드 하나') : bad('2060 검색 결과 ' + doc.querySelectorAll('#app .mcard').length);

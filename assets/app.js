@@ -193,7 +193,7 @@
       <div class="hero-in">
         <div>
           <span class="eyebrow on-dark">${esc(D.meta.company)} 고객지원</span>
-          <h1 class="display">복합기,<br><em>직접</em> 해결하세요.</h1>
+          <h1 class="display">${D.meta.heroTitle || "복합기,<br><em>직접</em> 해결하세요."}</h1>
           <p class="lead">${esc(D.meta.tagline)}</p>
           <form class="searchbar" onsubmit="return FIRSTOA.go(event)">
             ${ic("search", 21)}
@@ -289,7 +289,7 @@
                ${esc(D.meta.trust || "")}</p></div>
           <a class="more" href="#/products">취급 품목 전체 보기 ${ic("arrow", 16)}</a>
         </div>
-        <div class="promo rail">${(D.PRODUCTS || []).filter(p => ["desktop", "laptop", "mac", "software", "copier", "network"].includes(p.id)).map(productCard).join("")}</div>
+        <div class="promo rail">${(D.PRODUCTS || []).filter(p => ["desktop", "laptop", "mac", "software", "pc-care", "copier"].includes(p.id)).map(productCard).join("")}</div>
       </section>
 
       <section class="section" id="packages" style="padding-top:0">
@@ -1389,6 +1389,7 @@
         <div class="fbot">
           <span>${esc(D.meta.legal || D.meta.company)}</span>
           ${D.meta.bizNo ? `<span>사업자등록번호 ${esc(D.meta.bizNo)}</span>` : ""}
+          ${D.meta.credits ? `<span>${esc(D.meta.credits)}</span>` : ""}
           <span>이 사이트는 고객 안내용입니다. 제조사 상표는 각 사에 있습니다.</span>
         </div>
       </div>`;
