@@ -15,7 +15,7 @@
   --gold:#F8B93E; --gold-2:#DE9714; --gold-soft:#FDF3DE;
   --kakao:#FEE500; --kakao-ink:#181600;
 
-  --ink:#0A1424; --ink-2:#3F4E64; --ink-3:#68768C; --ink-4:#98A3B4;
+  --ink:#0A1424; --ink-2:#3F4E64; --ink-3:#68768C; --ink-4:#6E7C92;
   --bg:#F4F6F9; --surface:#FFFFFF; --surface-2:#E9EDF3; --surface-3:#F8FAFC;
   --line:rgba(3,24,63,.10); --line-2:rgba(3,24,63,.055);
   --dark-ink:#E8EEF8; --dark-ink-2:#9FB3D2;
@@ -85,7 +85,7 @@ h1,h2,h3{margin:0; letter-spacing:-.035em; line-height:1.22; font-weight:800; te
 .h3{font-size:17px; font-weight:750; letter-spacing:-.025em}
 .eyebrow{display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:800;
   letter-spacing:.1em; text-transform:uppercase; color:var(--blue)}
-.eyebrow.gold{color:var(--gold-2)}
+.eyebrow.gold{color:var(--amber)}
 .eyebrow.on-dark{color:var(--gold)}
 .lead{color:var(--ink-2); font-size:clamp(15px,1.6vw,18px); line-height:1.66; margin:12px 0 0}
 .muted{color:var(--ink-3); font-size:14px}
@@ -296,7 +296,7 @@ h1,h2,h3{margin:0; letter-spacing:-.035em; line-height:1.22; font-weight:800; te
 .badge .ic{width:13px; height:13px}
 .b-vid{background:var(--green-bg); color:var(--green)}
 .b-soon{background:var(--surface-2); color:var(--ink-3)}
-.b-gold{background:var(--gold-soft); color:var(--gold-2)}
+.b-gold{background:var(--gold-soft); color:var(--amber)}
 
 /* ── 이용 흐름 ────────────────────────────────────────────────────────── */
 .flow{display:grid; gap:14px; grid-template-columns:1fr; counter-reset:f}

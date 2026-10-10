@@ -64,7 +64,7 @@
   const stepsOf   = (m, t) => (m.steps && m.steps[t.id]) || t.steps;
   const totalVideos = D.MODELS.reduce((n, m) => n + vidCount(m), 0);
 
-  const thumb = (v, big) => `https://i.ytimg.com/vi/${v}/${big ? "maxresdefault" : "mqdefault"}.jpg`;
+  const thumb = (v, big) => `https://i.ytimg.com/vi/${v}/${big ? (matchMedia("(min-width:760px)").matches ? "maxresdefault" : "sddefault") : "mqdefault"}.jpg`; // 폰은 640px 로(1280px 은 200KB, 2026-10-10 점검)
   const fallback = v => `this.onerror=null;this.src='https://i.ytimg.com/vi/${v}/hqdefault.jpg'`;
 
   // 기종 그림: 사진이 있으면 사진, 없으면 직접 그린 일러스트
@@ -794,7 +794,7 @@
 
   /* ── 화면: 사용량 카운터 ──────────────────────────────────────────── */
   function viewMeter() {
-    const M = D.META_ = D.METER;
+    const M = D.METER;
     return `<div class="container">
       <div class="phead">
         ${crumbs([{ label: "처음", to: "/" }, { label: "사용량 카운터" }])}
@@ -1337,6 +1337,9 @@
   // "준비 중"이 그대로였다(2026-10-09). 해시만 바뀌는 앱이라 새로고침이 없으면 영원히 옛 파일을 쓴다.
   const LOADED_AT = Date.now();
   const STALE_MS = 30 * 60 * 1000;
+  let firstRender = true;   // 첫 그리기: 서버 정적 페이지의 제목·메타를 지킨다
+  let fromHistory = false;  // popstate(뒤로·앞으로)로 온 그리기인지
+
   function render() {
     if (Date.now() - LOADED_AT > STALE_MS) { location.reload(); return; }
     if (location.hash.startsWith("#/")) { try { history.replaceState(null, "", toPath(decodeURIComponent(location.hash.slice(1)))); } catch {} }
@@ -1350,9 +1353,10 @@
     let html, title = `${D.meta.company} ${D.meta.title}`;
 
     if (!p.length) html = viewHome();
-    else if (p[0] === "m" && p[2] === "f" && p[3]) { html = viewFix(p[1], p[3]); title = `${FIX[p[3]]?.title || ""} · ${MODEL[p[1]]?.name || ""} | ${D.meta.company}`; }
-    else if (p[0] === "m" && p[2]) { html = viewTask(p[1], p[2]); title = `${TASK[p[2]]?.title || ""} · ${MODEL[p[1]]?.name || ""} | ${D.meta.company}`; }
-    else if (p[0] === "m") { html = viewModel(p[1]); title = `${MODEL[p[1]]?.name || "기종"} | ${D.meta.company}`; }
+    // 제목은 검색엔진용 정적 페이지(scripts/prerender.mjs)와 같은 꼴 — 앱이 뜬 뒤 짧은 제목으로 바뀌어 검색 결과·북마크 제목이 빈약해지던 것(2026-10-10 점검)
+    else if (p[0] === "m" && p[2] === "f" && p[3]) { html = viewFix(p[1], p[3]); title = `${MODEL[p[1]]?.name || ""} ${FIX[p[3]]?.title || ""} 해결 방법 | ${D.meta.company}`; }
+    else if (p[0] === "m" && p[2]) { html = viewTask(p[1], p[2]); title = `${MODEL[p[1]]?.name || ""} ${TASK[p[2]]?.title || ""} 방법 | ${D.meta.company}`; }
+    else if (p[0] === "m") { html = viewModel(p[1]); title = `${MODEL[p[1]]?.name || "기종"} 토너 교체 · 용지 걸림 · 검침 방법 | ${D.meta.company} 복합기 사용설명서`; }
     else if (p[0] === "t") { html = viewPick(p[1]); title = `${TASK[p[1]]?.title || "작업"} | ${D.meta.company}`; }
     else if (p[0] === "fixes" && p[2]) { html = viewFixBrand(p[1], p[2]); title = `${FIX[p[2]]?.title || ""} · ${BRAND[p[1]]?.name || ""} | ${D.meta.company}`; }
     else if (p[0] === "fixes" && p[1]) { html = viewFixesBrand(p[1]); title = `${BRAND[p[1]]?.name || ""} 자주 생기는 문제 | ${D.meta.company}`; }
@@ -1367,10 +1371,12 @@
     else if (p[0] === "s") { html = viewSearch(p.slice(1).join("/")); title = `검색 | ${D.meta.company}`; }
     else html = view404();
 
+    // 서버가 준 정적 페이지로 처음 열렸으면 그 제목·메타(긴 제목, 설명, canonical)를 그대로 둔다 — 앱이 다시 그려도 제목은 서버 것이 더 정확하다
+    const keepServerHead = firstRender && !!app.querySelector(".prerender");
+    firstRender = false;
     app.innerHTML = html;
     fixLinks(document.body);                                      // 화면·메뉴판·꼬리말의 "#/…" 링크를 경로로
-    document.title = title;
-    setMeta(path, title);
+    if (!keepServerHead) { document.title = title; setMeta(path, title); }
     // 헤더에서 지금 보고 있는 곳 표시
     const key = p[0] === "fixes" ? "/fixes" : p[0] === "pattern" ? "/pattern"
               : p[0] === "meter" ? "/meter" : p[0] === "products" ? "/products" : p[0] === "m" || p[0] === "t" || p[0] === "b" ? "/#models" : "";
@@ -1383,7 +1389,8 @@
     window.FIRSTOA?.sheetClose?.();
     bindSteps(); bindTabs(); bindJump(); bindQr(); reveal();
     if (anchor) document.getElementById(anchor)?.scrollIntoView({ behavior: "instant", block: "start" });
-    else window.scrollTo({ top: 0, behavior: "instant" });
+    else if (!fromHistory) window.scrollTo({ top: 0, behavior: "instant" }); // 뒤로가기(popstate)는 브라우저가 스크롤을 복원하게 둔다(2026-10-10 점검: 목록 → 기종 → 뒤로 가면 맨 위로 튀던 것)
+    fromHistory = false;
   }
 
   /* ── 밖에서 부르는 것들 ────────────────────────────────────────────── */
@@ -1583,7 +1590,7 @@
     addEventListener("scroll", () => nav.classList.toggle("stuck", scrollY > 8), { passive: true });
   }
 
-  addEventListener("popstate", render);
+  addEventListener("popstate", () => { fromHistory = true; render(); });
   // 어디선가 남은 "#/…" 링크(검색 결과 등)를 눌러 해시가 바뀌면 경로로 바꿔 그린다
   addEventListener("hashchange", () => { if (location.hash.startsWith("#/")) render(); });
   // 앱 안 링크는 전체 새로고침 없이 그린다(경로 링크만). 새 창·외부·전화·파일·화면 안 앵커는 그대로

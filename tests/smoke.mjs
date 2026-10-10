@@ -105,7 +105,7 @@ win.FIRSTOA.close();
 console.log('\n[7] 사내 코드명 비노출');
 const secret = ['키슈', '세이토', '마블', '베니', '보탄', '헤라'];
 let leak = [];
-for (const r of ['#/', '#/m/xerox-dcv-c2263', '#/m/xerox-dcv-c2263/toner', '#/t/toner']) {
+for (const r of ['#/', '#/m/xerox-c2263', '#/m/xerox-c2263/toner', '#/t/toner']) {
   nav(r);
   const txt = doc.getElementById('app').textContent;
   secret.forEach(w => { if (txt.includes(w)) leak.push(`${r}:${w}`); });
@@ -341,8 +341,6 @@ win.FIRSTOA.showAll();
 /#callbar/.test(doc.body.innerHTML) ? bad('옛 전화바 잔재') : ok('옛 하단 전화바 제거됨');
 /기사/.test(doc.getElementById('app').innerHTML + doc.getElementById('footer').innerHTML) ? bad("'기사' 표현 남음") : ok("'기사' 대신 엔지니어");
 
-console.log(fails ? `\n실패 ${fails}건` : '\n모두 통과');
-process.exit(fails ? 1 : 0);
 
 /* 17. 2026-10-09 밤: 증상 제목은 고객 말로, 글 순서 없는 증상 0 */
 console.log('\n[17] 증상 제목 · 글 순서');
@@ -443,3 +441,5 @@ win.location.pathname === '/m/samsung-3220' && win.location.hash === '#sec-fix' 
 const toner = doc.querySelector('#app a[href="/m/samsung-3220/toner"]');
 if (toner) { toner.dispatchEvent(new win.MouseEvent('click', { bubbles: true, cancelable: true, button: 0 })); }
 toner && win.location.pathname === '/m/samsung-3220/toner' ? ok('앱 안 링크 클릭 → pushState 이동') : bad('링크 클릭 이동 안 됨 ' + win.location.pathname);
+console.log(fails ? `\n실패 ${fails}건` : '\n모두 통과');
+process.exit(fails ? 1 : 0);
