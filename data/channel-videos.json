@@ -1,127 +1,157 @@
 {
   "channel": "https://www.youtube.com/channel/UCiXGLLxY8xwpcP1_-PQrlJw",
-  "fetchedAt": "2026-11-16",
+  "fetchedAt": "2026-11-17",
   "note": "scripts/fetch-channel.mjs 로 갱신합니다. 사이트가 읽는 파일은 아니고, 연결 누락을 점검하는 기준표입니다.",
   "videos": [
     {
       "id": "xxPDPqYOViE",
-      "title": "용지걸림에러,M2-1317 에러"
+      "title": "용지걸림에러,M2-1317 에러",
+      "published": "2026-10-09"
     },
     {
       "id": "X_wbjG8dxKI",
-      "title": "출력시 흰줄,연하게 출력시 처리 방법"
+      "title": "출력시 흰줄,연하게 출력시 처리 방법",
+      "published": "2026-10-09"
     },
     {
       "id": "VVAUqVdQneg",
-      "title": "출력시 틀어짐 용지 트레이 가이드조정"
+      "title": "출력시 틀어짐 용지 트레이 가이드조정",
+      "published": "2026-10-09"
     },
     {
       "id": "R94JAaRZkRE",
-      "title": "복사,스캔시 줄나옴 증상 유리 PM"
+      "title": "복사,스캔시 줄나옴 증상 유리 PM",
+      "published": "2026-10-09"
     },
     {
       "id": "GJwR5_t-ons",
-      "title": "복사,스캔 시 상 틀어짐 ADF 가이드조정"
+      "title": "복사,스캔 시 상 틀어짐 ADF 가이드조정",
+      "published": "2026-10-09"
     },
     {
       "id": "sjxiKdqiYbE",
-      "title": "ADF 용지걸림 이물질 제거 코팅지로 해결"
+      "title": "ADF 용지걸림 이물질 제거 코팅지로 해결",
+      "published": "2026-10-09"
     },
     {
       "id": "SaDQsqdgtLA",
-      "title": "ACR,CTD센서 오염 처리 방법"
+      "title": "ACR,CTD센서 오염 처리 방법",
+      "published": "2026-10-09"
     },
     {
       "id": "4D9fZRltgMQ",
-      "title": "k7500 폐통 교체방법"
-    },
-    {
-      "id": "LIhB66g5V6s",
-      "title": "키슈,세이토 토너 회수통R5 교체 방법"
+      "title": "k7500 폐통 교체방법",
+      "published": "2026-08-26"
     },
     {
       "id": "DFJcuPt5yZk",
-      "title": "키슈,세이토 토너 교체 방법"
+      "title": "키슈,세이토 토너 교체 방법",
+      "published": "2026-06-09"
+    },
+    {
+      "id": "LIhB66g5V6s",
+      "title": "키슈,세이토 토너 회수통R5 교체 방법",
+      "published": "2026-06-09"
     },
     {
       "id": "P6-hVPSTV8Q",
-      "title": "쇼부 토너 회수통R5 교체 방법"
+      "title": "쇼부 토너 회수통R5 교체 방법",
+      "published": "2026-06-09"
     },
     {
       "id": "Gc_NI3IdhuI",
-      "title": "쇼부 토너 교체 방법"
+      "title": "쇼부 토너 교체 방법",
+      "published": "2026-06-09"
     },
     {
       "id": "WsK67N5FjC4",
-      "title": "베니 토너 회수통R5 교체 방법"
+      "title": "베니 토너 회수통R5 교체 방법",
+      "published": "2026-06-09"
     },
     {
       "id": "yBCH8_ouEmM",
-      "title": "마블 토너 회수통R5 교체 방법"
+      "title": "마블 토너 회수통R5 교체 방법",
+      "published": "2026-06-09"
     },
     {
       "id": "Vok3STCstrQ",
-      "title": "브라더 드럼 교체 방법"
+      "title": "브라더 드럼 교체 방법",
+      "published": "2026-06-09"
     },
     {
       "id": "BvbcfG8QZYM",
-      "title": "오키 토너 교체 방법"
+      "title": "오키 토너 교체 방법",
+      "stale": true
     },
     {
       "id": "3XZ7PJaull4",
-      "title": "마블 토너 교체 방법"
+      "title": "마블 토너 교체 방법",
+      "stale": true
     },
     {
       "id": "OG7jeQmpsbs",
-      "title": "베니 토너 교체 방법"
+      "title": "베니 토너 교체 방법",
+      "stale": true
     },
     {
       "id": "3GypB534uSs",
-      "title": "브라더 토너 교체 방법"
+      "title": "브라더 토너 교체 방법",
+      "stale": true
     },
     {
       "id": "pRqyQJ5Lqns",
-      "title": "교세라 토너 교체 방법"
+      "title": "교세라 토너 교체 방법",
+      "stale": true
     },
     {
       "id": "6Stqgvl5Rf8",
-      "title": "N501 폐통 교체 방법"
+      "title": "N501 폐통 교체 방법",
+      "stale": true
     },
     {
       "id": "WYMZ-5k4prs",
-      "title": "N501 토너 교체 방법"
+      "title": "N501 토너 교체 방법",
+      "stale": true
     },
     {
       "id": "JvlmiOwwRo4",
-      "title": "450 토너 교체 방법"
+      "title": "450 토너 교체 방법",
+      "stale": true
     },
     {
       "id": "R1iJHkdYDes",
-      "title": "450 폐통 교체 방법"
+      "title": "450 폐통 교체 방법",
+      "stale": true
     },
     {
       "id": "e_iTXoxXwM8",
-      "title": "320,410,420 폐통 교체 방법"
+      "title": "320,410,420 폐통 교체 방법",
+      "stale": true
     },
     {
       "id": "us13Br3-aBM",
-      "title": "320,410,420 토너 교체 방법"
+      "title": "320,410,420 토너 교체 방법",
+      "stale": true
     },
     {
       "id": "2JuxnMC19p8",
-      "title": "x7500 폐통 교체 방법"
+      "title": "x7500 폐통 교체 방법",
+      "stale": true
     },
     {
       "id": "moTYQ3usG9c",
-      "title": "x7500 토너 교체 방법"
+      "title": "x7500 토너 교체 방법",
+      "stale": true
     },
     {
       "id": "cythI1d3bwU",
-      "title": "k7500 토너 교체 방법"
+      "title": "k7500 토너 교체 방법",
+      "stale": true
     },
     {
       "id": "OzhlvZ4f0E8",
-      "title": "K4250 폐통 교체 방법"
+      "title": "K4250 폐통 교체 방법",
+      "stale": true
     },
     {
       "id": "Swn0LRQpoi8",
